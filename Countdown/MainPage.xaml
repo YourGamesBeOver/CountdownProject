@@ -16,14 +16,14 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <RelativePanel Height="55">
+        <RelativePanel Height="48">
             <Button Name="HamburgerButton"
                     RelativePanel.AlignLeftWithPanel="True"
                     Click="HamburgerButton_Click"
                     FontFamily="Segoe MDL2 Assets"
                     FontSize="30"
-                    Height="55"
-                    Width="55"
+                    Height="48"
+                    Width="48"
                     Content="&#xE700;"/>
             <TextBlock Name="HeaderText"
                        RelativePanel.RightOf="HamburgerButton"
@@ -43,7 +43,7 @@
         </RelativePanel>
         <SplitView Grid.Row="1" Name="mySplitView"
                    DisplayMode="CompactOverlay"
-                   CompactPaneLength="55"
+                   CompactPaneLength="48"
                    OpenPaneLength="200">
             <SplitView.Pane>
                 <ListBox Name="MyListBox"
@@ -51,19 +51,19 @@
                          SelectionChanged="MyListBox_SelectionChanged">
                     <ListBoxItem Name="ListViewListBoxItem">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE15C;"/>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE15C;" Margin="-5,0,0,0"/>
                             <TextBlock Text="List View" FontSize="20" Margin="20,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
                     <ListBoxItem Name="CalendarViewListBoxItem">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE1DC;"/>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE1DC;" Margin="-5,0,0,0"/>
                             <TextBlock Text="Calendar View" FontSize="20" Margin="20,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
                     <ListBoxItem Name="SettingsListBoxItem">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE115;"/>
+                            <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE115;" Margin="-5,0,0,0"/>
                             <TextBlock Text="Settings" FontSize="20" Margin="20,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
