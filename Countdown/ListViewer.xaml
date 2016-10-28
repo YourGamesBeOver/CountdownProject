@@ -23,8 +23,8 @@
             <ListBoxItem HorizontalContentAlignment="Stretch">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" MinWidth="100"/>
-                        <ColumnDefinition Width="1*" MinWidth="100"/>
+                        <ColumnDefinition Width="1*" MinWidth="200"/>
+                        <ColumnDefinition Width="1*" MinWidth="200"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>
@@ -44,8 +44,8 @@
             <ListBoxItem HorizontalContentAlignment="Stretch">
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" MinWidth="100"/>
-                        <ColumnDefinition Width="1*" MinWidth="100"/>
+                        <ColumnDefinition Width="1*" MinWidth="200"/>
+                        <ColumnDefinition Width="1*" MinWidth="200"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="1*"/>

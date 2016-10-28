@@ -8,8 +8,14 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <CalendarView Name="MyCalendar" Margin="145,100,0,159" Height="450" Width="450">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="1*"/>
+        </Grid.ColumnDefinitions>
+        <RelativePanel >
+            <CalendarView Name="MyCalendar">
 
-        </CalendarView>
+            </CalendarView>
+        </RelativePanel>
     </Grid>
 </Page>
