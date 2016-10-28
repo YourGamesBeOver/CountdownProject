@@ -25,16 +25,8 @@
                     Height="55"
                     Width="55"
                     Content="&#xE700;"/>
-            <Button Name="BackButton"
-                    RelativePanel.RightOf="HamburgerButton"
-                    Click="BackButton_Click"
-                    FontFamily="Segoe MDL2 Assets"
-                    FontSize="30"
-                    Height="55"
-                    Width="55"
-                    Content="&#xE0a6;"/>
             <TextBlock Name="HeaderText"
-                       RelativePanel.RightOf="BackButton"
+                       RelativePanel.RightOf="HamburgerButton"
                        Text="Countdown"
                        Margin="10, 10, 10, 0"
                        FontSize="20"
@@ -50,7 +42,7 @@
                             />
         </RelativePanel>
         <SplitView Grid.Row="1" Name="mySplitView"
-                   DisplayMode="CompactInline"
+                   DisplayMode="CompactOverlay"
                    CompactPaneLength="55"
                    OpenPaneLength="200">
             <SplitView.Pane>
@@ -69,7 +61,7 @@
                             <TextBlock Text="Calendar View" FontSize="20" Margin="20,0,0,0"/>
                         </StackPanel>
                     </ListBoxItem>
-                    <ListBoxItem Name="SettingsListBoxItem" Margin="0,542,0,0">
+                    <ListBoxItem Name="SettingsListBoxItem">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontFamily="Segoe MDL2 Assets" FontSize="30" Text="&#xE115;"/>
                             <TextBlock Text="Settings" FontSize="20" Margin="20,0,0,0"/>

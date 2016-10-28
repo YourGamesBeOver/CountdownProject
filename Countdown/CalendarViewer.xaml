@@ -8,7 +8,7 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <CalendarView Name="MyCalendar" Margin="100,0,0,0" Height="500" Width="500">
+        <CalendarView Name="MyCalendar" Margin="145,100,0,159" Height="450" Width="450">
 
         </CalendarView>
     </Grid>

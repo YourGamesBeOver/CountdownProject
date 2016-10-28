@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Countdown;
+using Windows.UI.Core;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -23,15 +24,6 @@ namespace Countdown
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        List<HamOption> hamOptions = new List<HamOption>
-            {
-                new HamOption() { Title = "Profile" },
-                new HamOption() { Title = "Blog Posts" },
-                new HamOption() { Title = "Stats" },
-                new HamOption() { Title = "Settings" },
-
-            };
-
         public MainPage()
         {
             this.InitializeComponent();
@@ -51,7 +43,19 @@ namespace Countdown
 
         private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(ListViewListBoxItem.IsSelected)
+            var currentView = SystemNavigationManager.GetForCurrentView();
+            if (MyListBox.SelectedItem == null)
+            {
+                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            }
+            else
+            {
+                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
+            }
+
+            currentView.BackRequested += backButton_Tapped;
+
+            if (ListViewListBoxItem.IsSelected)
             {
                 MyFrame.Navigate(typeof(ListViewer));
             }
@@ -64,17 +68,13 @@ namespace Countdown
                 MyFrame.Navigate(typeof(SettingsViewer));
             }
         }
-    }
 
-    public class HamOption
-    {
-
-        public string Title { get; set; }
-
-        public Type PageType { get; set; }
-
-        public string IconFile { get; set; }
-
-
+        private void backButton_Tapped(object sender, BackRequestedEventArgs e)
+        {
+            var currentView = SystemNavigationManager.GetForCurrentView();
+            currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
+            MyListBox.SelectedItem = null;
+            MyFrame.Navigate(typeof(ListViewer));
+        }
     }
 }
