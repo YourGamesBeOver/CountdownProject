@@ -16,7 +16,7 @@
             <RowDefinition Height="9*"/>
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
-        <ListBox Name="TaskListBox" Background="#FFFFFFFF">
+        <ListBox Name="TaskListBox">
             <ListBoxItem>
                 <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
