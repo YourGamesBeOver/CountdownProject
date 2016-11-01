@@ -112,6 +112,7 @@
     <Compile Include="SettingsViewer.xaml.cs">
       <DependentUpon>SettingsViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">

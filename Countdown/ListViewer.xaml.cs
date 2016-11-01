@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,9 +23,25 @@ namespace Countdown
     /// </summary>
     public sealed partial class ListViewer : Page
     {
+
+        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+        public ObservableCollection<Task> TaskList
+        {
+            get { return taskList; }
+        }
+
         public ListViewer()
         {
             this.InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var list = e.Parameter as ObservableCollection<Task>;
+            if (list != null)
+            {
+                taskList = list;
+            }
         }
     }
 }

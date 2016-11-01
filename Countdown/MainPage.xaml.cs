@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Countdown;
 using Windows.UI.Core;
+using System.Collections.ObjectModel;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,21 +25,21 @@ namespace Countdown
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
+        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+        public ObservableCollection<Task> TaskList { get { return taskList; } }
+
         public MainPage()
         {
             this.InitializeComponent();
-            MyFrame.Navigate(typeof(ListViewer));
+
+            myFrame.Navigate(typeof(ListViewer), taskList);
+            
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
         {
             mySplitView.IsPaneOpen = !mySplitView.IsPaneOpen;
-        }
-
-        private void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            MyListBox.SelectedItem = null;
-            MyFrame.Navigate(typeof(ListViewer));
         }
 
         private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -57,15 +58,18 @@ namespace Countdown
 
             if (ListViewListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(ListViewer));
+                myFrame.Navigate(typeof(ListViewer), taskList);
+                MyCommandBar.Visibility = Visibility.Visible;
             }
             if(CalendarViewListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(CalendarViewer));
+                myFrame.Navigate(typeof(CalendarViewer));
+                MyCommandBar.Visibility = Visibility.Visible;
             }
             else if(SettingsListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(SettingsViewer));
+                myFrame.Navigate(typeof(SettingsViewer));
+                MyCommandBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -74,7 +78,45 @@ namespace Countdown
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MyListBox.SelectedItem = null;
-            MyFrame.Navigate(typeof(ListViewer));
+            if (myFrame.CanGoBack)
+            {
+                myFrame.GoBack();
+            }
+        }
+
+        private async void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ContentDialog { Title = "Add Task", MaxWidth = this.ActualWidth, Visibility = Visibility.Visible };
+
+            var stack = new StackPanel();
+            var NameTextBox = new TextBox();
+            var DescriptionTextBox = new TextBox();
+            var SelectedDueDate = new DatePicker();
+            var SelectedDueTime = new TimePicker();
+            stack.Children.Add(new TextBlock { Text = "Task Name" });
+            stack.Children.Add( NameTextBox );
+            stack.Children.Add(new TextBlock { Text = "Description" });
+            stack.Children.Add(DescriptionTextBox);
+            stack.Children.Add(new TextBlock { Text = "Due Date" });
+            stack.Children.Add(SelectedDueDate);
+            stack.Children.Add(SelectedDueTime);
+
+            dialog.Content = stack;
+            dialog.PrimaryButtonText = "Add";
+            dialog.SecondaryButtonText = "Cancel";
+
+            var result = await dialog.ShowAsync();
+
+            switch(result)
+            {
+                case ContentDialogResult.Primary:
+                    DateTime SelectedTime = new DateTime(SelectedDueDate.Date.Year, SelectedDueDate.Date.Month, SelectedDueDate.Date.Day, SelectedDueTime.Time.Hours, SelectedDueTime.Time.Minutes, SelectedDueTime.Time.Seconds);
+                    Task addedTask = new Task(0,NameTextBox.Text, DescriptionTextBox.Text, SelectedTime);
+                    taskList.Add(addedTask);
+                    myFrame.Navigate(typeof(ListViewer), taskList);
+                    break;
+            }
         }
     }
+
 }

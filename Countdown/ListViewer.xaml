@@ -6,62 +6,36 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-    <Page.BottomAppBar>
-        <CommandBar>
-            <AppBarButton Name="AddButton" Icon="Add" Label="Add Task" HorizontalAlignment="Right"/>
-            <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" HorizontalAlignment="Right"/>
-            <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" HorizontalAlignment="Right"/>
-        </CommandBar>
-    </Page.BottomAppBar>
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}">
-            <ListBoxItem HorizontalContentAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" MinWidth="200"/>
-                        <ColumnDefinition Width="1*" MinWidth="200"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-                    <Border BorderThickness="10" Grid.Column="0" HorizontalAlignment="Stretch">
-                        <TextBlock Text="Do EECS393 Demo" />
-                    </Border>
-                    <Border BorderThickness="10" Grid.Column="1" HorizontalAlignment="Stretch">
-                        <TextBlock Text="Days Left: 0" Margin="10,0,0,0"/>
-                    </Border>
-                    <Border BorderThickness="10" Grid.Column="1" Grid.Row="1">
-                        <TextBlock Text="Time Remaining: 0" Margin="10,0,0,0"/>
-                    </Border>
-                </Grid>
-            </ListBoxItem>
-            <ListBoxItem HorizontalContentAlignment="Stretch">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*" MinWidth="200"/>
-                        <ColumnDefinition Width="1*" MinWidth="200"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="1*"/>
-                        <RowDefinition Height="1*"/>
-                    </Grid.RowDefinitions>
-                    <Border BorderThickness="10" Grid.Column="0">
-                        <TextBlock Text="Take EECS393 Quiz"/>
-                    </Border>
-                    <Border BorderThickness="10" Grid.Column="1">
-                        <TextBlock Text="Days Left: 0" Margin="10,0,0,0"/>
-                    </Border>
-                    <Border BorderThickness="10" Grid.Column="1" Grid.Row="1">
-                        <TextBlock Text="Time Remaining: 0" Margin="10,0,0,0"/>
-                    </Border>
-                </Grid>
-            </ListBoxItem>
+        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="local:Task">
+                    <Grid >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" MinWidth="200"/>
+                            <ColumnDefinition Width="1*" MinWidth="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Border BorderThickness="10" Grid.Column="0" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{x:Bind Name}" />
+                        </Border>
+                        <Border BorderThickness="10" Grid.Column="1" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{x:Bind DueDate}" Margin="10,0,0,0"/>
+                        </Border>
+                        <Border BorderThickness="10" Grid.Column="1" Grid.Row="1">
+                            <TextBlock Text="Time Remaining: 0" Margin="10,0,0,0"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
         <ListBox Grid.Column="1" Background="{x:Null}">
             <ListBoxItem Content="NULL" Height="76"/>
