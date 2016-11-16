@@ -86,7 +86,7 @@ namespace Countdown
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ContentDialog { Title = "Add Task", MaxWidth = this.ActualWidth, Visibility = Visibility.Visible };
+            var dialog = new ContentDialog { Title = "Add Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
             var stack = new StackPanel();
             var NameTextBox = new TextBox();

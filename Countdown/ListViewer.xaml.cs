@@ -25,10 +25,12 @@ namespace Countdown
     {
 
         private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+
         public ObservableCollection<Task> TaskList
         {
             get { return taskList; }
         }
+
 
         public ListViewer()
         {
@@ -41,6 +43,24 @@ namespace Countdown
             if (list != null)
             {
                 taskList = list;
+            }
+        }
+
+        private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            int selectedIndex = TaskListBox.SelectedIndex;
+            if (selectedIndex == -1)
+            {
+                DetailsStackPanel = new StackPanel();
+            }
+            else
+            {
+                string nameText = "Task Name: " + taskList.ElementAt(selectedIndex).Name;
+                DetailsStackPanel.Children.Add(new TextBlock { Text = nameText, HorizontalAlignment = HorizontalAlignment.Center });
+                string descriptionText = "Description: " + taskList.ElementAt(selectedIndex).Description;
+                DetailsStackPanel.Children.Add(new TextBlock { Text = descriptionText, HorizontalAlignment = HorizontalAlignment.Center });
+                string dueDateText = "Due Date: " + taskList.ElementAt(selectedIndex).DueDate;
+                DetailsStackPanel.Children.Add(new TextBlock { Text = dueDateText, HorizontalAlignment = HorizontalAlignment.Center });
             }
         }
     }
