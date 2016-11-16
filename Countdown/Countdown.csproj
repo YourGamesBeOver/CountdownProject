@@ -108,11 +108,16 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Networking\Results\LoginResponse.cs" />
+    <Compile Include="Networking\Results\LoginResult.cs" />
+    <Compile Include="Networking\Serialization\ColorJsonConverter.cs" />
+    <Compile Include="Networking\Serialization\Task.cs" />
+    <Compile Include="Networking\ServerConnection.cs" />
+    <Compile Include="Networking\UserAuth.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsViewer.xaml.cs">
       <DependentUpon>SettingsViewer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Task.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
