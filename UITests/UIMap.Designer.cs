@@ -33,7 +33,7 @@ namespace UITests
         public void TestListViewButtonIsPresent()
         {
             #region Variable Declarations
-            XamlListItem listViewButton = this.UICountdownWindow.SidebarMenu.ListViewButton;
+            XamlListItem listViewButton = this.UICountdownWindow.SidebarMenuListBox.ListViewButton;
             #endregion
 
             // Verify that the 'Exists' property of 'ListViewListBoxItem' list item equals 'True'
@@ -110,47 +110,200 @@ namespace UITests
         }
         
         #region Properties
-        public SidebarMenu SidebarMenu
+        public SidebarMenuListBox SidebarMenuListBox
         {
             get
             {
-                if ((this.mSidebarMenu == null))
+                if ((this.mSidebarMenuListBox == null))
                 {
-                    this.mSidebarMenu = new SidebarMenu(this);
+                    this.mSidebarMenuListBox = new SidebarMenuListBox(this);
                 }
-                return this.mSidebarMenu;
+                return this.mSidebarMenuListBox;
             }
         }
         
-        public XamlList UITaskListBoxList
+        public TaskListBox TaskListBox
         {
             get
             {
-                if ((this.mUITaskListBoxList == null))
+                if ((this.mTaskListBox == null))
                 {
-                    this.mUITaskListBoxList = new XamlList(this);
+                    this.mTaskListBox = new TaskListBox(this);
+                }
+                return this.mTaskListBox;
+            }
+        }
+        
+        public UIMyCommandBarCustom UIMyCommandBarCustom
+        {
+            get
+            {
+                if ((this.mUIMyCommandBarCustom == null))
+                {
+                    this.mUIMyCommandBarCustom = new UIMyCommandBarCustom(this);
+                }
+                return this.mUIMyCommandBarCustom;
+            }
+        }
+        
+        public XamlControl MyCalendar
+        {
+            get
+            {
+                if ((this.mMyCalendar == null))
+                {
+                    this.mMyCalendar = new XamlControl(this);
                     #region Search Criteria
-                    this.mUITaskListBoxList.SearchProperties[XamlList.PropertyNames.AutomationId] = "TaskListBox";
-                    this.mUITaskListBoxList.WindowTitles.Add("Countdown");
+                    this.mMyCalendar.SearchProperties[UITestControl.PropertyNames.ControlType] = "Calendar";
+                    this.mMyCalendar.SearchProperties["AutomationId"] = "MyCalendar";
+                    this.mMyCalendar.WindowTitles.Add("Countdown");
                     #endregion
                 }
-                return this.mUITaskListBoxList;
+                return this.mMyCalendar;
+            }
+        }
+        
+        public UIContentScrollViewerPane UIContentScrollViewerPane
+        {
+            get
+            {
+                if ((this.mUIContentScrollViewerPane == null))
+                {
+                    this.mUIContentScrollViewerPane = new UIContentScrollViewerPane(this);
+                }
+                return this.mUIContentScrollViewerPane;
+            }
+        }
+        
+        public UIDatepickerGroup UIDatepickerGroup
+        {
+            get
+            {
+                if ((this.mUIDatepickerGroup == null))
+                {
+                    this.mUIDatepickerGroup = new UIDatepickerGroup(this);
+                }
+                return this.mUIDatepickerGroup;
+            }
+        }
+        
+        public UITimepickerGroup UITimepickerGroup
+        {
+            get
+            {
+                if ((this.mUITimepickerGroup == null))
+                {
+                    this.mUITimepickerGroup = new UITimepickerGroup(this);
+                }
+                return this.mUITimepickerGroup;
+            }
+        }
+        
+        public UIAddTaskWindow UIAddTaskWindow
+        {
+            get
+            {
+                if ((this.mUIAddTaskWindow == null))
+                {
+                    this.mUIAddTaskWindow = new UIAddTaskWindow(this);
+                }
+                return this.mUIAddTaskWindow;
+            }
+        }
+        
+        public XamlButton HamburgerButton
+        {
+            get
+            {
+                if ((this.mHamburgerButton == null))
+                {
+                    this.mHamburgerButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mHamburgerButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "HamburgerButton";
+                    this.mHamburgerButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mHamburgerButton;
+            }
+        }
+        
+        public UIPaneRootWindow UIPaneRootWindow
+        {
+            get
+            {
+                if ((this.mUIPaneRootWindow == null))
+                {
+                    this.mUIPaneRootWindow = new UIPaneRootWindow(this);
+                }
+                return this.mUIPaneRootWindow;
+            }
+        }
+        
+        public XamlText DetailedViewTaskName
+        {
+            get
+            {
+                if ((this.mDetailedViewTaskName == null))
+                {
+                    this.mDetailedViewTaskName = new XamlText(this);
+                    #region Search Criteria
+                    this.mDetailedViewTaskName.SearchProperties[XamlText.PropertyNames.Name] = "Task Name: Sample Task";
+                    this.mDetailedViewTaskName.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDetailedViewTaskName;
+            }
+        }
+        
+        public XamlText DetailedViewDescription
+        {
+            get
+            {
+                if ((this.mDetailedViewDescription == null))
+                {
+                    this.mDetailedViewDescription = new XamlText(this);
+                    #region Search Criteria
+                    this.mDetailedViewDescription.SearchProperties[XamlText.PropertyNames.Name] = "Description: Sample Description";
+                    this.mDetailedViewDescription.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDetailedViewDescription;
             }
         }
         #endregion
         
         #region Fields
-        private SidebarMenu mSidebarMenu;
+        private SidebarMenuListBox mSidebarMenuListBox;
         
-        private XamlList mUITaskListBoxList;
+        private TaskListBox mTaskListBox;
+        
+        private UIMyCommandBarCustom mUIMyCommandBarCustom;
+        
+        private XamlControl mMyCalendar;
+        
+        private UIContentScrollViewerPane mUIContentScrollViewerPane;
+        
+        private UIDatepickerGroup mUIDatepickerGroup;
+        
+        private UITimepickerGroup mUITimepickerGroup;
+        
+        private UIAddTaskWindow mUIAddTaskWindow;
+        
+        private XamlButton mHamburgerButton;
+        
+        private UIPaneRootWindow mUIPaneRootWindow;
+        
+        private XamlText mDetailedViewTaskName;
+        
+        private XamlText mDetailedViewDescription;
         #endregion
     }
     
     [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
-    public class SidebarMenu : XamlList
+    public class SidebarMenuListBox : XamlList
     {
         
-        public SidebarMenu(XamlControl searchLimitContainer) : 
+        public SidebarMenuListBox(XamlControl searchLimitContainer) : 
                 base(searchLimitContainer)
         {
             #region Search Criteria
@@ -175,10 +328,368 @@ namespace UITests
                 return this.mListViewButton;
             }
         }
+        
+        public XamlListItem CalendarViewButton
+        {
+            get
+            {
+                if ((this.mCalendarViewButton == null))
+                {
+                    this.mCalendarViewButton = new XamlListItem(this);
+                    #region Search Criteria
+                    this.mCalendarViewButton.SearchProperties[XamlListItem.PropertyNames.AutomationId] = "CalendarViewListBoxItem";
+                    this.mCalendarViewButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mCalendarViewButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlListItem mListViewButton;
+        
+        private XamlListItem mCalendarViewButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class TaskListBox : XamlList
+    {
+        
+        public TaskListBox(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlList.PropertyNames.AutomationId] = "TaskListBox";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlListItem TaskListBoxFirstItem
+        {
+            get
+            {
+                if ((this.mTaskListBoxFirstItem == null))
+                {
+                    this.mTaskListBoxFirstItem = new XamlListItem(this);
+                    #region Search Criteria
+                    this.mTaskListBoxFirstItem.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Task";
+                    this.mTaskListBoxFirstItem.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mTaskListBoxFirstItem;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlListItem mTaskListBoxFirstItem;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIMyCommandBarCustom : XamlControl
+    {
+        
+        public UIMyCommandBarCustom(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Custom";
+            this.SearchProperties[UITestControl.PropertyNames.ClassName] = "ApplicationBar";
+            this.SearchProperties["AutomationId"] = "MyCommandBar";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton UIAddTaskButton
+        {
+            get
+            {
+                if ((this.mUIAddTaskButton == null))
+                {
+                    this.mUIAddTaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIAddTaskButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "AddButton";
+                    this.mUIAddTaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIAddTaskButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mUIAddTaskButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIContentScrollViewerPane : XamlControl
+    {
+        
+        public UIContentScrollViewerPane(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Pane";
+            this.SearchProperties[UITestControl.PropertyNames.ClassName] = "ScrollViewer";
+            this.SearchProperties["AutomationId"] = "ContentScrollViewer";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public UITaskNameText UITaskNameText
+        {
+            get
+            {
+                if ((this.mUITaskNameText == null))
+                {
+                    this.mUITaskNameText = new UITaskNameText(this);
+                }
+                return this.mUITaskNameText;
+            }
+        }
+        
+        public UIDescriptionText UIDescriptionText
+        {
+            get
+            {
+                if ((this.mUIDescriptionText == null))
+                {
+                    this.mUIDescriptionText = new UIDescriptionText(this);
+                }
+                return this.mUIDescriptionText;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private UITaskNameText mUITaskNameText;
+        
+        private UIDescriptionText mUIDescriptionText;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UITaskNameText : XamlText
+    {
+        
+        public UITaskNameText(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlText.PropertyNames.Name] = "Task Name";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlEdit AddTaskTextBox
+        {
+            get
+            {
+                if ((this.mAddTaskTextBox == null))
+                {
+                    this.mAddTaskTextBox = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mAddTaskTextBox.SearchConfigurations.Add(SearchConfiguration.NextSibling);
+                    this.mAddTaskTextBox.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mAddTaskTextBox;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlEdit mAddTaskTextBox;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIDescriptionText : XamlText
+    {
+        
+        public UIDescriptionText(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlText.PropertyNames.Name] = "Description";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlEdit DescriptionTextBox
+        {
+            get
+            {
+                if ((this.mDescriptionTextBox == null))
+                {
+                    this.mDescriptionTextBox = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mDescriptionTextBox.SearchConfigurations.Add(SearchConfiguration.NextSibling);
+                    this.mDescriptionTextBox.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDescriptionTextBox;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlEdit mDescriptionTextBox;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIDatepickerGroup : XamlControl
+    {
+        
+        public UIDatepickerGroup(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Group";
+            this.SearchProperties[UITestControl.PropertyNames.Name] = "date picker";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton DueDateDatePicker
+        {
+            get
+            {
+                if ((this.mDueDateDatePicker == null))
+                {
+                    this.mDueDateDatePicker = new XamlButton(this);
+                    #region Search Criteria
+                    this.mDueDateDatePicker.SearchProperties[XamlButton.PropertyNames.AutomationId] = "FlyoutButton";
+                    this.mDueDateDatePicker.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDueDateDatePicker;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mDueDateDatePicker;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UITimepickerGroup : XamlControl
+    {
+        
+        public UITimepickerGroup(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Group";
+            this.SearchProperties[UITestControl.PropertyNames.Name] = "time picker";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton DueDateTimePicker
+        {
+            get
+            {
+                if ((this.mDueDateTimePicker == null))
+                {
+                    this.mDueDateTimePicker = new XamlButton(this);
+                    #region Search Criteria
+                    this.mDueDateTimePicker.SearchProperties[XamlButton.PropertyNames.AutomationId] = "FlyoutButton";
+                    this.mDueDateTimePicker.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDueDateTimePicker;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mDueDateTimePicker;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIAddTaskWindow : XamlWindow
+    {
+        
+        public UIAddTaskWindow(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.Name] = "Add Task";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton AddTaskAddButton
+        {
+            get
+            {
+                if ((this.mAddTaskAddButton == null))
+                {
+                    this.mAddTaskAddButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mAddTaskAddButton.SearchProperties[XamlButton.PropertyNames.Name] = "Add";
+                    this.mAddTaskAddButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mAddTaskAddButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mAddTaskAddButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIPaneRootWindow : XamlWindow
+    {
+        
+        public UIPaneRootWindow(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.AutomationId] = "PaneRoot";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlList UIMyListBoxList
+        {
+            get
+            {
+                if ((this.mUIMyListBoxList == null))
+                {
+                    this.mUIMyListBoxList = new XamlList(this);
+                    #region Search Criteria
+                    this.mUIMyListBoxList.SearchProperties[XamlList.PropertyNames.AutomationId] = "MyListBox";
+                    this.mUIMyListBoxList.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIMyListBoxList;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlList mUIMyListBoxList;
         #endregion
     }
 }

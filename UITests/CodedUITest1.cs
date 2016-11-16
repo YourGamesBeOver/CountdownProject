@@ -19,7 +19,7 @@ namespace UITests {
         }
 
         [TestMethod]
-        public void CodedUITestMethod1()
+        public void TestIfListViewButtonIsPresent()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
             // To generate code for this test, select "Generate Code for Coded UI Test" from the shortcut menu and select one of the menu items.
@@ -28,11 +28,167 @@ namespace UITests {
         }
 
         [TestMethod]
+        public void HamburgerButtonOpensSidebarMenu()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.HamburgerButton);
+            Assert.AreEqual(200, this.UIMap.UICountdownWindow.UIPaneRootWindow.UIMyListBoxList.Width, "The List Box is not open");
+        }
+
+        [TestMethod]
         public void TestListViewIsShownWhenListViewButtonIsPressed()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            this.UIMap.UICountdownWindow.SidebarMenuListBox.ListViewButton.Select();
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.TaskListBox.Exists, "List View is not shown");
+            Assert.AreEqual(true, UIMap.UICountdownWindow.TaskListBox.Enabled,"List View is not Enabled");
+        }
+
+        [TestMethod]
+        public void TestCalendarViewIsShownWhenCalendarViewButtonIsPressed()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton.Select();
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.MyCalendar.Exists, "Calendar is not Shown");
+            Assert.AreEqual(true, UIMap.UICountdownWindow.MyCalendar.Enabled, "Calendar is not Enabled");
+        }
+
+        [TestMethod]
+        public void TestDetailedInfoShownWhenTaskIsSelectedFromTaskView()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.TaskListBoxFirstItem);
+
+            Assert.AreEqual("Task Name: Sample Task", this.UIMap.UICountdownWindow.DetailedViewTaskName.DisplayText, "Details Not Shown");
+            Assert.AreEqual("Description: Sample Description", this.UIMap.UICountdownWindow.DetailedViewDescription.DisplayText, "Details Not Shown");
+        }
+
+        [TestMethod]
+        public void TestDetailedInfoShownWhenTaskIsSelectedFromCalendarView()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestDaysTasksAreShownWhenDaySelected()
+        {
             
         }
+
+        [TestMethod]
+        public void TestCreatingANewTaskWithValidValues()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+
+            Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Item Not Created");
+
+        }
+
+        [TestMethod]
+        public void TestCreatingANewTaskWithInValidValues()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestCreatingANewSubTaskWithValidValues()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestCreatingANewSubTaskWithInValidValues()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestEditTaskName()
+        {
+
+        }
+        [TestMethod]
+        public void TestEditTaskDescription()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestEditTaskDueDate()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestDeleteTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestDeleteSubTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestCompleteTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestCompleteSubTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestAddTagToTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestSignUpNewUserWithValidValues()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestSignUpNewUserWithInValidValues()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestLogInAsARegisteredUser()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestSearchForExistingTask()
+        {
+
+        }
+
+        [TestMethod]
+        public void TestSearchForNonExistingTask()
+        {
+
+        }
+
 
         #region Additional test attributes
 

@@ -12,7 +12,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch">
+        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch" SelectionChanged="TaskListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="local:Task">
                     <Grid >
@@ -37,8 +37,7 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox Grid.Column="1" Background="{x:Null}">
-            <ListBoxItem Content="NULL" Height="76"/>
-        </ListBox>
+        <StackPanel Name="DetailsStackPanel" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
     </Grid>
 </Page>

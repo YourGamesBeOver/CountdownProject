@@ -18,6 +18,8 @@
             <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" HorizontalAlignment="Right"/>
         </CommandBar>
     </Page.BottomAppBar>
+    
+    
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" FlyoutBase.AttachedFlyout="{StaticResource FlyoutBase1}">
         <Grid.RowDefinitions>

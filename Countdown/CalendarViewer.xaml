@@ -12,10 +12,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <RelativePanel >
-            <CalendarView Name="MyCalendar">
+        <CalendarView Name="MyCalendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
 
-            </CalendarView>
-        </RelativePanel>
     </Grid>
 </Page>
