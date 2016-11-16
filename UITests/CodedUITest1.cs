@@ -130,9 +130,30 @@ namespace UITests {
         }
 
         [TestMethod]
-        public void TestDeleteTask()
+        public void TestDeleteTaskWithNoTasks()
         {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Assert.AreEqual("No Tasks to delete", this.UIMap.UICountdownWindow.UIContentScrollViewerPane.NoTasksToDeleteText.DisplayText, "Message saying no tasks should be displayed");
+        }
 
+        [TestMethod]
+        public void TestDeleteTaskWithTasks()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+
+            Assert.AreEqual("Sample Task", this.UIMap.UICountdownWindow.DeleteTaskList.TaskToDelete.DisplayText, "Task not displayed in delete dialog");
+            Mouse.Click(this.UIMap.UICountdownWindow.DeleteTaskList.TaskToDelete);
+            Mouse.Click(this.UIMap.UICountdownWindow.RemoveTaskDialog.DeleteTaskButton);
+
+            Assert.AreEqual(0, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Item not deleted");
         }
 
         [TestMethod]

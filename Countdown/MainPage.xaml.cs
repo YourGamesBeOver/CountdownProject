@@ -117,6 +117,47 @@ namespace Countdown
                     break;
             }
         }
+
+        private async void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ContentDialog { Title = "Remove Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
+
+            if (taskList.Count == 0)
+            {
+                var text = new TextBlock {Text = "No Tasks to delete"};
+
+                dialog.Content = text;
+                dialog.PrimaryButtonText = "OK";
+
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                var list = new ListBox();
+
+                foreach (Task t in taskList)
+                {
+                    list.Items.Add(t.Name);
+                }
+
+                dialog.Content = list;
+                dialog.PrimaryButtonText = "Delete";
+                dialog.SecondaryButtonText = "Cancel";
+
+                var result = await dialog.ShowAsync();
+
+                switch (result)
+                {
+                    case ContentDialogResult.Primary:
+                        if (list.SelectedIndex != -1)
+                        {
+                            taskList.RemoveAt(list.SelectedIndex);
+                        }
+                        myFrame.Navigate(typeof(ListViewer), taskList);
+                        break;
+                }
+            }
+        }
     }
 
 }

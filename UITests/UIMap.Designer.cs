@@ -270,6 +270,30 @@ namespace UITests
                 return this.mDetailedViewDescription;
             }
         }
+        
+        public DeleteTaskList DeleteTaskList
+        {
+            get
+            {
+                if ((this.mDeleteTaskList == null))
+                {
+                    this.mDeleteTaskList = new DeleteTaskList(this);
+                }
+                return this.mDeleteTaskList;
+            }
+        }
+        
+        public RemoveTaskDialog RemoveTaskDialog
+        {
+            get
+            {
+                if ((this.mRemoveTaskDialog == null))
+                {
+                    this.mRemoveTaskDialog = new RemoveTaskDialog(this);
+                }
+                return this.mRemoveTaskDialog;
+            }
+        }
         #endregion
         
         #region Fields
@@ -296,6 +320,10 @@ namespace UITests
         private XamlText mDetailedViewTaskName;
         
         private XamlText mDetailedViewDescription;
+        
+        private DeleteTaskList mDeleteTaskList;
+        
+        private RemoveTaskDialog mRemoveTaskDialog;
         #endregion
     }
     
@@ -420,10 +448,28 @@ namespace UITests
                 return this.mUIAddTaskButton;
             }
         }
+        
+        public XamlButton UIRemoveTaskButton
+        {
+            get
+            {
+                if ((this.mUIRemoveTaskButton == null))
+                {
+                    this.mUIRemoveTaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIRemoveTaskButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "RemoveButton";
+                    this.mUIRemoveTaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIRemoveTaskButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlButton mUIAddTaskButton;
+        
+        private XamlButton mUIRemoveTaskButton;
         #endregion
     }
     
@@ -466,12 +512,30 @@ namespace UITests
                 return this.mUIDescriptionText;
             }
         }
+        
+        public XamlText NoTasksToDeleteText
+        {
+            get
+            {
+                if ((this.mNoTasksToDeleteText == null))
+                {
+                    this.mNoTasksToDeleteText = new XamlText(this);
+                    #region Search Criteria
+                    this.mNoTasksToDeleteText.SearchProperties[XamlText.PropertyNames.Name] = "No Tasks to delete";
+                    this.mNoTasksToDeleteText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mNoTasksToDeleteText;
+            }
+        }
         #endregion
         
         #region Fields
         private UITaskNameText mUITaskNameText;
         
         private UIDescriptionText mUIDescriptionText;
+        
+        private XamlText mNoTasksToDeleteText;
         #endregion
     }
     
@@ -690,6 +754,77 @@ namespace UITests
         
         #region Fields
         private XamlList mUIMyListBoxList;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class DeleteTaskList : XamlList
+    {
+        
+        public DeleteTaskList(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlListItem TaskToDelete
+        {
+            get
+            {
+                if ((this.mTaskToDelete == null))
+                {
+                    this.mTaskToDelete = new XamlListItem(this);
+                    #region Search Criteria
+                    this.mTaskToDelete.SearchProperties[XamlListItem.PropertyNames.Name] = "Sample Task";
+                    this.mTaskToDelete.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mTaskToDelete;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlListItem mTaskToDelete;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class RemoveTaskDialog : XamlWindow
+    {
+        
+        public RemoveTaskDialog(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.Name] = "Remove Task";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton DeleteTaskButton
+        {
+            get
+            {
+                if ((this.mDeleteTaskButton == null))
+                {
+                    this.mDeleteTaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mDeleteTaskButton.SearchProperties[XamlButton.PropertyNames.Name] = "Delete";
+                    this.mDeleteTaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDeleteTaskButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mDeleteTaskButton;
         #endregion
     }
 }
