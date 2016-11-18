@@ -71,13 +71,26 @@ namespace UITests {
         [TestMethod]
         public void TestDetailedInfoShownWhenTaskIsSelectedFromCalendarView()
         {
-
+            /*
+             *  1) Open app
+             *  2) Navigate to Calendar view
+             *  3) create a task
+             *  4) Click on a day
+             *  5) Click on specific task
+             *  6) Check that the specific details appear  
+             */
         }
 
         [TestMethod]
         public void TestDaysTasksAreShownWhenDaySelected()
         {
-            
+            /*
+                *  1) Open app
+                *  2) Navigate to Calendar view
+                *  3) create a task
+                *  4) Click on a day
+                *  5) check for specific task 
+            */
         }
 
         [TestMethod]
@@ -97,36 +110,75 @@ namespace UITests {
         [TestMethod]
         public void TestCreatingANewTaskWithInValidValues()
         {
-
+            /*
+                *  1) Open app
+                *  2) open create a task dialog
+                *  3) enter invalid info
+                *  4) check for error message
+                *  5) check that task is not created
+            */
         }
 
         [TestMethod]
         public void TestCreatingANewSubTaskWithValidValues()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) create subtask
+                *  5) check if subtask created
+            */
         }
 
         [TestMethod]
         public void TestCreatingANewSubTaskWithInValidValues()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) create subtask
+                *  5) check for correct error message
+            */
         }
 
         [TestMethod]
         public void TestEditTaskName()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) click edit task
+                *  5) edit name
+                *  6) check that name is different
+            */
         }
         [TestMethod]
         public void TestEditTaskDescription()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) click edit task
+                *  5) edit description
+                *  6) check that description is different
+            */
         }
 
         [TestMethod]
         public void TestEditTaskDueDate()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) click edit task
+                *  5) edit due date
+                *  6) check that due date is different
+            */
         }
 
         [TestMethod]
@@ -159,19 +211,40 @@ namespace UITests {
         [TestMethod]
         public void TestDeleteSubTask()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) add subtask
+                *  4) click delete
+                *  5) click delete subtask
+                *  6) choose subtask
+                *  7) check subtask is removed
+            */
         }
 
         [TestMethod]
         public void TestCompleteTask()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click complete task
+                *  4) check that app is considered completed
+            */
         }
 
         [TestMethod]
         public void TestCompleteSubTask()
         {
-
+            /*
+                *  1) Open app
+                *  2) create new task
+                *  3) click on task
+                *  4) create subtask
+                *  5) click complete/complete subtask
+                *  6) make sure subtask is considered complete
+            */
         }
 
         [TestMethod]
