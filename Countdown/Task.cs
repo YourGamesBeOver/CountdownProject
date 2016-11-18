@@ -8,16 +8,22 @@ namespace Countdown
 {
     public class Task
     {
-        int id;
-        string name, description;
-        DateTime dueDate;
+        private int id;
+        private string name, description;
+        private DateTime dueDate;
+        private List<Task> subtasks;
+        private bool completed;
+        private TimeSpan remainingTime;
 
-        public Task(int ID, string Name, string Description, DateTime DueDate)
+        public Task(int ID, string Name, string Description, DateTime DueDate, List<Task> Subtasks, bool Completed, TimeSpan RemainingTime)
         {
             id = ID;
             name = Name;
             description = Description;
             dueDate = DueDate;
+            subtasks = Subtasks;
+            completed = Completed;
+            remainingTime = RemainingTime;
         }
 
         public int ID
@@ -47,6 +53,31 @@ namespace Countdown
             {
                 return dueDate;
             }
+        }
+
+        public List<Task> Subtasks
+        {
+            get
+            {
+                return subtasks;
+            }
+        }
+
+        public bool Completed
+        {
+            get
+            {
+                return completed;
+            }
+        }
+
+        public TimeSpan RemainingTime
+        {
+            get
+            {
+                return remainingTime;
+            }
+            set { remainingTime = value; }
         }
     }
 }

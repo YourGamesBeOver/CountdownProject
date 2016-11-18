@@ -63,7 +63,7 @@ namespace Countdown
             }
             if(CalendarViewListBoxItem.IsSelected)
             {
-                myFrame.Navigate(typeof(CalendarViewer));
+                myFrame.Navigate(typeof(CalendarViewer), taskList);
                 MyCommandBar.Visibility = Visibility.Visible;
             }
             else if(SettingsListBoxItem.IsSelected)
@@ -93,6 +93,7 @@ namespace Countdown
             var DescriptionTextBox = new TextBox();
             var SelectedDueDate = new DatePicker();
             var SelectedDueTime = new TimePicker();
+            var parentTaskBox = new ComboBox();
             stack.Children.Add(new TextBlock { Text = "Task Name" });
             stack.Children.Add( NameTextBox );
             stack.Children.Add(new TextBlock { Text = "Description" });
@@ -100,6 +101,15 @@ namespace Countdown
             stack.Children.Add(new TextBlock { Text = "Due Date" });
             stack.Children.Add(SelectedDueDate);
             stack.Children.Add(SelectedDueTime);
+
+            parentTaskBox.Items.Add("None");
+            foreach (Task t in taskList)
+            {
+                parentTaskBox.Items.Add(t.Name);
+            }
+
+            stack.Children.Add(new TextBlock {Text = "Parent Task"});
+            stack.Children.Add(parentTaskBox);
 
             dialog.Content = stack;
             dialog.PrimaryButtonText = "Add";
@@ -111,8 +121,12 @@ namespace Countdown
             {
                 case ContentDialogResult.Primary:
                     DateTime SelectedTime = new DateTime(SelectedDueDate.Date.Year, SelectedDueDate.Date.Month, SelectedDueDate.Date.Day, SelectedDueTime.Time.Hours, SelectedDueTime.Time.Minutes, SelectedDueTime.Time.Seconds);
-                    Task addedTask = new Task(0,NameTextBox.Text, DescriptionTextBox.Text, SelectedTime);
+                    Task addedTask = new Task(0,NameTextBox.Text, DescriptionTextBox.Text, SelectedTime, new List<Task>(), false, SelectedTime.Subtract(DateTime.Now));
                     taskList.Add(addedTask);
+                    if (parentTaskBox.SelectedIndex > 0)
+                    {
+                        taskList.ElementAt(parentTaskBox.SelectedIndex - 1).Subtasks.Add(addedTask);
+                    }
                     myFrame.Navigate(typeof(ListViewer), taskList);
                     break;
             }

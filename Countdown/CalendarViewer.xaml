@@ -12,7 +12,8 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <CalendarView Name="MyCalendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <CalendarView Name="MyCalendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedDatesChanged="MyCalendar_SelectedDatesChanged" />
+        <ListView Name="DayTaskListBox" Grid.Column="1"/>
         
     </Grid>
 </Page>

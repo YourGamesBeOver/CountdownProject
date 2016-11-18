@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -22,10 +23,27 @@ namespace Countdown
     /// </summary>
     public sealed partial class CalendarViewer : Page
     {
+        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+
         public CalendarViewer()
         {
             this.InitializeComponent();
             
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            var list = e.Parameter as ObservableCollection<Task>;
+            if (list != null)
+            {
+                taskList = list;
+            }
+        }
+
+        private void MyCalendar_SelectedDatesChanged(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
+        {
+            var selectedDays = args.AddedDates;
+
         }
     }
 }
