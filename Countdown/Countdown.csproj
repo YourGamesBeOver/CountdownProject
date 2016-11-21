@@ -108,6 +108,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Networking\Parameters\CreateTaskParams.cs" />
+    <Compile Include="Networking\Results\GetTasksResponse.cs" />
     <Compile Include="Networking\Results\LoginResponse.cs" />
     <Compile Include="Networking\Results\LoginResult.cs" />
     <Compile Include="Networking\Serialization\ColorJsonConverter.cs" />

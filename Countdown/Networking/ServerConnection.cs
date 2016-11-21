@@ -2,74 +2,47 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using System.Threading.Tasks;
 using Countdown.Networking.Results;
 using Newtonsoft.Json;
+using Countdown.Networking.Serialization;
 
 namespace Countdown.Networking {
-    internal class ServerConnection : IDisposable
+    public class ServerConnection : IDisposable
     {
-        #region static
-        private static ServerConnection _instance;
-
-        public static void Connect(string url)
-        {
-            if (_instance != null)
-            {
-                throw new ConnectionException("Already connected; call Disconnect() first");
-            }
-            _instance = new ServerConnection(url);
-        }
-
-        public static void Disconnect()
-        {
-            if (_instance == null) {
-                throw new ConnectionException("No connection was established");
-            }
-            _instance.Dispose();
-            _instance = null;
-        }
-
-        public static async Task<LoginResult> LogIn(UserAuth auth) {
-
-            if (_instance == null) {
-                throw new ConnectionException("No connection was established");
-            }
-            return await _instance.InternalLogIn(auth);
-        }
-
-        #endregion static
-
-        #region non-static
-
+        public bool IsConnected { get; private set; }
         private HttpClient _httpClient;
         private bool _loggedIn;
 
-        private ServerConnection(string url) {
-            SetUpClient(url);
+        public ServerConnection() {
             _loggedIn = false;
+            IsConnected = false;
         }
 
-        private void SetUpClient(string url)
+        public void Connect(string url)
         {
-            _httpClient = new HttpClient { BaseAddress = new Uri(url) };
-            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("utf-8"));
+            if (IsConnected)
+            {
+                throw new ConnectionException("Already connected; call Disconnect() first");
+            }
+            SetUpClient(url);
+            IsConnected = true;
         }
 
-        private async Task<LoginResult> InternalLogIn(UserAuth auth) {
-            if (_loggedIn)
-            {
+        public async System.Threading.Tasks.Task<LoginResult> LogIn(UserAuth auth) {
+
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (_loggedIn) {
                 throw new ConnectionException("Already logged in");
             }
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes($"{auth.Username}:{auth.Password}")));
             var response = await _httpClient.GetAsync(@"/login");
             if (!response.IsSuccessStatusCode) return LoginResult.Error;
-            using (var content = response.Content)
-            {
+            using (var content = response.Content) {
                 var status = JsonConvert.DeserializeObject<LoginResponse>(await content.ReadAsStringAsync());
-                if (status.Status)
-                {
+                if (status.Status) {
                     _loggedIn = true;
                     return LoginResult.Success;
                 }
@@ -78,7 +51,47 @@ namespace Countdown.Networking {
             }
         }
 
-        #endregion non-static
+        public async System.Threading.Tasks.Task<Task[]> GetTasksForUser()
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var rawresponse = await _httpClient.GetAsync(@"/get_active_tasks");
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content)
+            {
+                var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
+                return !response.Status ? null : response.Tasks;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<Task[]> GetInactiveTasksForUser() {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var rawresponse = await _httpClient.GetAsync(@"/get_inactive_tasks");
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
+                return !response.Status ? null : response.Tasks;
+            }
+        }
+
+
+        private void SetUpClient(string url)
+        {
+            _httpClient = new HttpClient { BaseAddress = new Uri(url) };
+            _httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _httpClient.DefaultRequestHeaders.AcceptEncoding.Add(new StringWithQualityHeaderValue("utf-8"));
+        }
 
         #region exceptions
         internal class ConnectionException : Exception
