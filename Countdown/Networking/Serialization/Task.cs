@@ -41,5 +41,65 @@ namespace Countdown.Networking.Serialization {
 
         [JsonProperty("completed")]
         public bool IsCompleted { get; set; }
+
+        public Task DeepClone()
+        {
+            return new Task
+            {
+                TaskId = TaskId,
+                OwnerId = OwnerId,
+                Name = Name,
+                Description = Description,
+                DueDate = DueDate,
+                CreationDate = CreationDate,
+                LastModifiedTime = LastModifiedTime,
+                BackgroundColor = BackgroundColor,
+                ForegroundColor = ForegroundColor,
+                Tag = Tag,
+                Priority = Priority,
+                IsCompleted = IsCompleted
+            };
+        }
+
+        #region ReSharper generated Equals() code
+
+        protected bool Equals(Task other)
+        {
+            return TaskId == other.TaskId && OwnerId == other.OwnerId && string.Equals(Name, other.Name) &&
+                   string.Equals(Description, other.Description) && DueDate.Equals(other.DueDate) &&
+                   CreationDate.Equals(other.CreationDate) && LastModifiedTime.Equals(other.LastModifiedTime) &&
+                   BackgroundColor.Equals(other.BackgroundColor) && ForegroundColor.Equals(other.ForegroundColor) &&
+                   string.Equals(Tag, other.Tag) && Priority == other.Priority && IsCompleted == other.IsCompleted;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Task) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                var hashCode = TaskId;
+                hashCode = (hashCode*397) ^ OwnerId;
+                hashCode = (hashCode*397) ^ (Name?.GetHashCode() ?? 0);
+                hashCode = (hashCode*397) ^ (Description?.GetHashCode() ?? 0);
+                hashCode = (hashCode*397) ^ DueDate.GetHashCode();
+                hashCode = (hashCode*397) ^ CreationDate.GetHashCode();
+                hashCode = (hashCode*397) ^ LastModifiedTime.GetHashCode();
+                hashCode = (hashCode*397) ^ BackgroundColor.GetHashCode();
+                hashCode = (hashCode*397) ^ ForegroundColor.GetHashCode();
+                hashCode = (hashCode*397) ^ (Tag?.GetHashCode() ?? 0);
+                hashCode = (hashCode*397) ^ Priority;
+                hashCode = (hashCode*397) ^ IsCompleted.GetHashCode();
+                return hashCode;
+            }
+        }
+
+        #endregion ReSharper generated Equals() code
     }
 }

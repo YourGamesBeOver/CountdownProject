@@ -2,6 +2,7 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Countdown.Networking.Parameters;
 using Countdown.Networking.Results;
 using Newtonsoft.Json;
 using Countdown.Networking.Serialization;
@@ -82,6 +83,28 @@ namespace Countdown.Networking {
             using (var content = rawresponse.Content) {
                 var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
                 return !response.Status ? null : response.Tasks;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<int?> CreateTask(Task newTask)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+
+            var param = new CreateTaskParams {Task = newTask};
+            var rawresponse =
+                await _httpClient.PostAsync(@"/create_task", new StringContent(JsonConvert.SerializeObject(param)));
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<CreateTaskResponse>(await content.ReadAsStringAsync());
+                if (!response.Status) return null;
+                newTask.TaskId = response.TaskId;
+                return response.TaskId;
             }
         }
 
