@@ -14,10 +14,12 @@
     <Page.BottomAppBar>
         <CommandBar Name="MyCommandBar">
             <AppBarButton Name="AddButton" Icon="Add" Label="Add Task" Click="AddButton_Click" HorizontalAlignment="Right"/>
-            <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" HorizontalAlignment="Right"/>
+            <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" Click="RemoveButton_Click" HorizontalAlignment="Right"/>
             <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" HorizontalAlignment="Right"/>
         </CommandBar>
     </Page.BottomAppBar>
+    
+    
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" FlyoutBase.AttachedFlyout="{StaticResource FlyoutBase1}">
         <Grid.RowDefinitions>

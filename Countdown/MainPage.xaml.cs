@@ -66,20 +66,30 @@ namespace Countdown
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ContentDialog { Title = "Add Task", MaxWidth = this.ActualWidth, Visibility = Visibility.Visible };
+            var dialog = new ContentDialog { Title = "Add Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
             var stack = new StackPanel();
-            var nameTextBox = new TextBox();
-            var descriptionTextBox = new TextBox();
-            var selectedDueDate = new DatePicker();
-            var selectedDueTime = new TimePicker();
+            var NameTextBox = new TextBox();
+            var DescriptionTextBox = new TextBox();
+            var SelectedDueDate = new DatePicker();
+            var SelectedDueTime = new TimePicker();
+            var parentTaskBox = new ComboBox();
             stack.Children.Add(new TextBlock { Text = "Task Name" });
-            stack.Children.Add( nameTextBox );
+            stack.Children.Add( NameTextBox );
             stack.Children.Add(new TextBlock { Text = "Description" });
-            stack.Children.Add(descriptionTextBox);
+            stack.Children.Add(DescriptionTextBox);
             stack.Children.Add(new TextBlock { Text = "Due Date" });
-            stack.Children.Add(selectedDueDate);
-            stack.Children.Add(selectedDueTime);
+            stack.Children.Add(SelectedDueDate);
+            stack.Children.Add(SelectedDueTime);
+
+            parentTaskBox.Items.Add("None");
+            foreach (Task t in taskList)
+            {
+                parentTaskBox.Items.Add(t.Name);
+            }
+
+            stack.Children.Add(new TextBlock {Text = "Parent Task"});
+            stack.Children.Add(parentTaskBox);
 
             dialog.Content = stack;
             dialog.PrimaryButtonText = "Add";
@@ -101,6 +111,47 @@ namespace Countdown
             };
             TaskList.Add(addedTask);
             MyFrame.Navigate(typeof(ListViewer), TaskList);
+        }
+
+        private async void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ContentDialog { Title = "Remove Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
+
+            if (taskList.Count == 0)
+            {
+                var text = new TextBlock { Text = "No Tasks to delete" };
+
+                dialog.Content = text;
+                dialog.PrimaryButtonText = "OK";
+
+                await dialog.ShowAsync();
+            }
+            else
+            {
+                var list = new ListBox();
+
+                foreach (Task t in taskList)
+                {
+                    list.Items.Add(t.Name);
+                }
+
+                dialog.Content = list;
+                dialog.PrimaryButtonText = "Delete";
+                dialog.SecondaryButtonText = "Cancel";
+
+                var result = await dialog.ShowAsync();
+
+                switch (result)
+                {
+                    case ContentDialogResult.Primary:
+                        if (list.SelectedIndex != -1)
+                        {
+                            taskList.RemoveAt(list.SelectedIndex);
+                        }
+                        myFrame.Navigate(typeof(ListViewer), taskList);
+                        break;
+                }
+            }
         }
     }
 
