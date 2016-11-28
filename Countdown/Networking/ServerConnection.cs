@@ -6,6 +6,7 @@ using Countdown.Networking.Parameters;
 using Countdown.Networking.Results;
 using Newtonsoft.Json;
 using Countdown.Networking.Serialization;
+using System.Linq;
 
 namespace Countdown.Networking {
     public class ServerConnection : IDisposable
@@ -66,7 +67,15 @@ namespace Countdown.Networking {
             using (var content = rawresponse.Content)
             {
                 var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
-                return !response.Status ? null : response.Tasks;
+                if(!response.Status) return null;
+                if (response.Tasks != null && response.Tasks.Length > 0)
+                {
+                    foreach (var responseTask in response.Tasks)
+                    {
+                        responseTask.IsCompleted = false;
+                    }
+                }
+                return response.Tasks;
             }
         }
 
@@ -82,7 +91,13 @@ namespace Countdown.Networking {
             if (!rawresponse.IsSuccessStatusCode) return null;
             using (var content = rawresponse.Content) {
                 var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
-                return !response.Status ? null : response.Tasks;
+                if (!response.Status) return null;
+                if (response.Tasks != null && response.Tasks.Length > 0) {
+                    foreach (var responseTask in response.Tasks) {
+                        responseTask.IsCompleted = true;
+                    }
+                }
+                return response.Tasks;
             }
         }
 
