@@ -6,7 +6,6 @@ using Countdown.Networking.Parameters;
 using Countdown.Networking.Results;
 using Newtonsoft.Json;
 using Countdown.Networking.Serialization;
-using System.Linq;
 
 namespace Countdown.Networking {
     public class ServerConnection : IDisposable
@@ -43,7 +42,7 @@ namespace Countdown.Networking {
             var response = await _httpClient.GetAsync(@"/login");
             if (!response.IsSuccessStatusCode) return LoginResult.Error;
             using (var content = response.Content) {
-                var status = JsonConvert.DeserializeObject<LoginResponse>(await content.ReadAsStringAsync());
+                var status = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
                 if (status.Status) {
                     _loggedIn = true;
                     return LoginResult.Success;
@@ -72,6 +71,7 @@ namespace Countdown.Networking {
                 {
                     foreach (var responseTask in response.Tasks)
                     {
+                        responseTask.Subtasks = await GetSubTasksForTask(responseTask);
                         responseTask.IsCompleted = false;
                     }
                 }
@@ -94,6 +94,7 @@ namespace Countdown.Networking {
                 if (!response.Status) return null;
                 if (response.Tasks != null && response.Tasks.Length > 0) {
                     foreach (var responseTask in response.Tasks) {
+                        responseTask.Subtasks = await GetSubTasksForTask(responseTask);
                         responseTask.IsCompleted = true;
                     }
                 }
@@ -123,6 +124,59 @@ namespace Countdown.Networking {
             }
         }
 
+        public async System.Threading.Tasks.Task<Task[]> GetSubTasksForTask(Task parentTask)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var rawresponse = await _httpClient.GetAsync($"/get_subtasks/{parentTask.TaskId}");
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<GetTasksResponse>(await content.ReadAsStringAsync());
+                return !response.Status ? null : response.Tasks;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<Task> GetNextCountdown()
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var rawresponse = await _httpClient.GetAsync(@"/get_next_countdown");
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content)
+            {
+                var response = JsonConvert.DeserializeObject<SingleTaskResponse>(await content.ReadAsStringAsync());
+                return !response.Status ? null : response.Task;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<DeleteTaskResult> DeleteTask(Task task)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var param = new SingleTaskIdParams {TaskId = task.TaskId};
+            var rawresponse =
+                await _httpClient.PostAsync(@"/delete_task", new StringContent(JsonConvert.SerializeObject(param)));
+            if (!rawresponse.IsSuccessStatusCode) return DeleteTaskResult.Error;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
+                return response.Status ? DeleteTaskResult.Success : DeleteTaskResult.Failure;
+            }
+        }
 
         private void SetUpClient(string url)
         {

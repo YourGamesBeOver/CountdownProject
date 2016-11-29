@@ -79,7 +79,7 @@ namespace Countdown
                     HorizontalAlignment = HorizontalAlignment.Center
                 });
 
-                if (TaskList[selectedIndex].Subtasks.Count == 0)
+                if (TaskList[selectedIndex].Subtasks.Length == 0)
                 {
                     DetailsStackPanel.Children.Add(new TextBlock
                     {

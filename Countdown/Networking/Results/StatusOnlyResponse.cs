@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace Countdown.Networking.Results {
-    public struct LoginResponse
+    public struct StatusOnlyResponse
     {
         [JsonProperty("status")]
         public bool Status;

@@ -35,7 +35,7 @@ namespace Countdown.Networking.Serialization {
         public Color ForegroundColor { get; set; }
 
         [JsonProperty("tag")]
-        public string Tag { get; set; }
+        public string Tag { get; set; } = "None";
 
         [JsonProperty("priority")]
         public int Priority { get; set; }
@@ -44,7 +44,7 @@ namespace Countdown.Networking.Serialization {
         public bool IsCompleted { get; set; }
 
         [JsonIgnore]
-        public List<Task> Subtasks { get; set; } = new List<Task>();
+        public Task[] Subtasks { get; set; } = {};
 
         [JsonIgnore]
         public TimeSpan RemainingTime { get; set; }

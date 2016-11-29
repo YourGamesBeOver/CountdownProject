@@ -109,10 +109,13 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Networking\Parameters\CreateTaskParams.cs" />
+    <Compile Include="Networking\Parameters\SingleTaskIdParams.cs" />
     <Compile Include="Networking\Results\CreateTaskResponse.cs" />
+    <Compile Include="Networking\Results\DeleteTaskResult.cs" />
     <Compile Include="Networking\Results\GetTasksResponse.cs" />
-    <Compile Include="Networking\Results\LoginResponse.cs" />
+    <Compile Include="Networking\Results\StatusOnlyResponse.cs" />
     <Compile Include="Networking\Results\LoginResult.cs" />
+    <Compile Include="Networking\Results\SingleTaskResponse.cs" />
     <Compile Include="Networking\Serialization\ColorJsonConverter.cs" />
     <Compile Include="Networking\Serialization\Task.cs" />
     <Compile Include="Networking\ServerConnection.cs" />
