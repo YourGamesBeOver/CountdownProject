@@ -121,6 +121,13 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public async AsyncTask CannotEditTasksIfNotConnected() {
+            var con = new ServerConnection();
+            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.EditTask(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
         public async AsyncTask CannotDeleteTasksIfNotConnected() {
             var con = new ServerConnection();
             Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
@@ -175,6 +182,13 @@ namespace UnitTests
             var con = new ServerConnection();
             Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.CreateTask(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
+        public async AsyncTask CannotEditTasksIfNotLoggedIn() {
+            var con = new ServerConnection();
+            Connect(con);
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.EditTask(TestTask.DeepClone()));
         }
 
         [TestMethod]
@@ -295,6 +309,49 @@ namespace UnitTests
                 activeTasks = await con.GetTasksForUser();
                 Assert.IsTrue(activeTasks.Any(t => t.TaskId == newTaskId), "Sent task did not come back in the active task list");
 
+            }
+        }
+
+        [TestMethod]
+        public async AsyncTask TestEditTask()
+        {
+            using (var con = new ServerConnection())
+            {
+                Connect(con);
+                await LogIn(con);
+
+                //create the task
+
+                var sentTask = TestTask.DeepClone();
+                var newTaskId = await CreateNewTask(con, sentTask);
+
+                var activeTasks = await con.GetTasksForUser();
+                var responseTask = activeTasks.First(t => t.TaskId == newTaskId);
+                Assert.IsNotNull(responseTask, "Could not find newly created task");
+                Assert.IsNotNull(responseTask.Subtasks, "Response task subtask list is null");
+                //the creation and modification timestamps are not valid on the sent task, so we force them to be equal
+                sentTask.CreationDate = responseTask.CreationDate;
+                sentTask.LastModifiedTime = responseTask.LastModifiedTime;
+                Assert.AreEqual(sentTask, responseTask, "Sent task and response task are not equal");
+
+                //modify the task and verify again
+                var modifiedTask = sentTask.DeepClone();
+                modifiedTask.Name = "Changed name!";
+                modifiedTask.Description = "Changed Description";
+
+                var editResponse = await con.EditTask(modifiedTask);
+                Assert.AreEqual(ModifyTaskResult.Success, editResponse, "Edit call did not respond with Success");
+
+                //now we get the task from the server to compare how it changed
+                activeTasks = await con.GetTasksForUser();
+                responseTask = activeTasks.First(t => t.TaskId == newTaskId);
+                Assert.IsNotNull(responseTask, "Could not find edited task");
+                Assert.IsNotNull(responseTask.Subtasks, "Response task subtask list is null");
+                //creation date should still be the same
+                Assert.AreNotEqual(modifiedTask.LastModifiedTime, responseTask.LastModifiedTime, "Modified task and modified response task have the same last modified date");
+                modifiedTask.LastModifiedTime = responseTask.LastModifiedTime;
+                Assert.AreEqual(modifiedTask, responseTask, "Modified task and response task are not equal");
+                
             }
         }
 

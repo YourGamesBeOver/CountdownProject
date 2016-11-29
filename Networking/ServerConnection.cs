@@ -112,7 +112,7 @@ namespace Countdown.Networking {
                 throw new ConnectionException("No user logged in");
             }
 
-            var param = new CreateTaskParams {Task = newTask};
+            var param = new SingleTaskParams {Task = newTask};
             var rawresponse =
                 await _httpClient.PostAsync(@"/create_task", new StringContent(JsonConvert.SerializeObject(param)));
             if (!rawresponse.IsSuccessStatusCode) return null;
@@ -211,6 +211,27 @@ namespace Countdown.Networking {
             var rawresponse =
                 await _httpClient.PostAsync(@"/unarchive_task", new StringContent(JsonConvert.SerializeObject(param)));
             if (!rawresponse.IsSuccessStatusCode) return ModifyTaskResult.Error;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
+                if (!response.Status) return ModifyTaskResult.Failure;
+                task.IsCompleted = false;
+                return ModifyTaskResult.Success;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<ModifyTaskResult> EditTask(Task task)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            task.LastModifiedTime = DateTime.Now;
+            var param = new SingleTaskParams {Task = task};
+            var rawresponse =
+                await _httpClient.PostAsync(@"/edit_task", new StringContent(JsonConvert.SerializeObject(param)));
             using (var content = rawresponse.Content) {
                 var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
                 if (!response.Status) return ModifyTaskResult.Failure;

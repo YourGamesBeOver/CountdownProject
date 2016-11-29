@@ -107,7 +107,7 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parameters\CreateTaskParams.cs" />
+    <Compile Include="Parameters\SingleTaskParams.cs" />
     <Compile Include="Parameters\SingleTaskIdParams.cs" />
     <Compile Include="Results\CreateTaskResponse.cs" />
     <Compile Include="Results\ModifyTaskResult.cs" />

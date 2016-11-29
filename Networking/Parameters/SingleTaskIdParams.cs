@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 
 namespace Countdown.Networking.Parameters {
-    public class SingleTaskIdParams {
+    public struct SingleTaskIdParams {
         [JsonProperty("taskid")]
         public int TaskId { get; set; }
     }
