@@ -31,6 +31,19 @@ namespace UnitTests
             IsCompleted = false
         };
 
+        private static readonly Task TestSubTask = new Task {
+            TaskId = -1,
+            Name = "Test SubTask",
+            Description = "Test SubTask Description",
+            DueDate = DateTime.Now.Add(TimeSpan.FromDays(15)),
+            CreationDate = DateTime.Now,
+            LastModifiedTime = DateTime.Now,
+            BackgroundColor = new Color { R = 0x23, G = 0x45, B = 0x67 },
+            ForegroundColor = new Color { R = 0x89, G = 0xAB, B = 0xCD },
+            Priority = 0,
+            IsCompleted = false
+        };
+
         [TestMethod]
         public void TestTaskEquals()
         {
@@ -121,6 +134,13 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public async AsyncTask CannotCreateSubTasksIfNotConnected() {
+            var con = new ServerConnection();
+            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.CreateSubTask(TestSubTask.DeepClone(), TestTask));
+        }
+
+        [TestMethod]
         public async AsyncTask CannotEditTasksIfNotConnected() {
             var con = new ServerConnection();
             Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
@@ -182,6 +202,13 @@ namespace UnitTests
             var con = new ServerConnection();
             Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.CreateTask(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
+        public async AsyncTask CannotCreateSubTasksIfNotLoggedIn() {
+            var con = new ServerConnection();
+            Connect(con);
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.CreateSubTask(TestSubTask.DeepClone(), TestTask));
         }
 
         [TestMethod]
@@ -352,6 +379,38 @@ namespace UnitTests
                 modifiedTask.LastModifiedTime = responseTask.LastModifiedTime;
                 Assert.AreEqual(modifiedTask, responseTask, "Modified task and response task are not equal");
                 
+            }
+        }
+
+        [TestMethod]
+        public async AsyncTask TestCreateSubTask()
+        {
+            using (var con = new ServerConnection())
+            {
+                Connect(con);
+                await LogIn(con);
+
+                var parentTask = TestTask.DeepClone();
+                var newTaskId = await CreateNewTask(con, parentTask);
+
+
+                var usersTasks = await con.GetTasksForUser();
+                var responseTask = usersTasks.First(t => t.TaskId == newTaskId);
+                Assert.IsTrue(responseTask.Subtasks.Length == 0, "Newly created task did not start off with no subtasks");
+
+                var subTask = TestSubTask.DeepClone();
+                var subTaskId = await con.CreateSubTask(subTask, parentTask);
+                Assert.AreEqual(subTaskId, subTask.TaskId, "create subtask did not automatically set the input task's task id");
+
+                usersTasks = await con.GetTasksForUser();
+                responseTask = usersTasks.First(t => t.TaskId == newTaskId);
+
+                Assert.AreEqual(1, responseTask.Subtasks.Length, "Response task does not have exactly one subtask");
+                //the creation and modification timestamps are not valid on the sent task, so we force them to be equal
+                var responseSubTask = responseTask.Subtasks[0];
+                subTask.CreationDate = responseSubTask.CreationDate;
+                subTask.LastModifiedTime = responseSubTask.LastModifiedTime;
+                Assert.AreEqual(subTask, responseSubTask, "Sent subtask and response subtask are not equal");
             }
         }
 

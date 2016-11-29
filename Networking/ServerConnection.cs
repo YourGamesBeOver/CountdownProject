@@ -240,6 +240,28 @@ namespace Countdown.Networking {
             }
         }
 
+        public async System.Threading.Tasks.Task<int?> CreateSubTask(Task subtask, Task parentTask)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+
+            var param = new TaskAndIdParams {Task = subtask, TaskId = parentTask.TaskId};
+            var rawresponse =
+                await _httpClient.PostAsync(@"/create_subtask", new StringContent(JsonConvert.SerializeObject(param)));
+            if (!rawresponse.IsSuccessStatusCode) return null;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<CreateTaskResponse>(await content.ReadAsStringAsync());
+                if (!response.Status) return null;
+                subtask.TaskId = response.TaskId;
+                return response.TaskId;
+            }
+        }
+
         private void SetUpClient(string url)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(url) };

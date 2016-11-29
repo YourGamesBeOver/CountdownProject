@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Parameters\SingleTaskParams.cs" />
     <Compile Include="Parameters\SingleTaskIdParams.cs" />
+    <Compile Include="Parameters\TaskAndIdParams.cs" />
     <Compile Include="Results\CreateTaskResponse.cs" />
     <Compile Include="Results\ModifyTaskResult.cs" />
     <Compile Include="Results\GetTasksResponse.cs" />
