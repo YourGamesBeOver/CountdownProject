@@ -16,12 +16,12 @@ namespace Countdown
     public sealed partial class MainPage : Page
     {
         public ObservableCollection<Task> TaskList { get; } = new ObservableCollection<Task>();
+        public ObservableCollection<Task> SearchedTaskList { get; set; } = new ObservableCollection<Task>();
 
         public MainPage()
         {
             this.InitializeComponent();
             MyContentControl.Content = new ListViewer();
-
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -82,15 +82,6 @@ namespace Countdown
             stack.Children.Add(selectedDueDate);
             stack.Children.Add(selectedDueTime);
 
-            parentTaskBox.Items.Add("None");
-            foreach (Task t in TaskList)
-            {
-                parentTaskBox.Items.Add(t.Name);
-            }
-
-            stack.Children.Add(new TextBlock { Text = "Parent Task" });
-            stack.Children.Add(parentTaskBox);
-
             dialog.Content = stack;
             dialog.PrimaryButtonText = "Add";
             dialog.SecondaryButtonText = "Cancel";
@@ -150,6 +141,29 @@ namespace Countdown
                     break;
             }
             return childElement;
+        }
+
+        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyContentControl.Content is ListViewer)
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItemToComplete = TaskComboBox.SelectedIndex;
+                TaskList[selectedItemToComplete].IsCompleted = true;
+            }
+        }
+
+        private void SearchBar_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            foreach(Task t in TaskList)
+            {
+                if (t.Name.Contains(sender.Text))
+                {
+                    SearchedTaskList.Add(t);
+                }
+            }
+            MyContentControl.Content = new ListViewer(SearchedTaskList);
+            SearchedTaskList = new ObservableCollection<Task>();
         }
     }
 
