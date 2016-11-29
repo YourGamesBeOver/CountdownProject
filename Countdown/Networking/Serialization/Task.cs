@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Windows.UI;
 using Newtonsoft.Json;
 
@@ -42,6 +43,12 @@ namespace Countdown.Networking.Serialization {
         [JsonProperty("completed")]
         public bool IsCompleted { get; set; }
 
+        [JsonIgnore]
+        public List<Task> Subtasks { get; set; } = new List<Task>();
+
+        [JsonIgnore]
+        public TimeSpan RemainingTime { get; set; }
+
         public Task DeepClone()
         {
             return new Task
@@ -57,7 +64,9 @@ namespace Countdown.Networking.Serialization {
                 ForegroundColor = ForegroundColor,
                 Tag = Tag,
                 Priority = Priority,
-                IsCompleted = IsCompleted
+                IsCompleted = IsCompleted,
+                Subtasks = Subtasks,
+                RemainingTime = RemainingTime
             };
         }
 

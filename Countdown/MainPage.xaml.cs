@@ -69,21 +69,21 @@ namespace Countdown
             var dialog = new ContentDialog { Title = "Add Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
             var stack = new StackPanel();
-            var NameTextBox = new TextBox();
-            var DescriptionTextBox = new TextBox();
-            var SelectedDueDate = new DatePicker();
-            var SelectedDueTime = new TimePicker();
+            var nameTextBox = new TextBox();
+            var descriptionTextBox = new TextBox();
+            var selectedDueDate = new DatePicker();
+            var selectedDueTime = new TimePicker();
             var parentTaskBox = new ComboBox();
             stack.Children.Add(new TextBlock { Text = "Task Name" });
-            stack.Children.Add( NameTextBox );
+            stack.Children.Add( nameTextBox );
             stack.Children.Add(new TextBlock { Text = "Description" });
-            stack.Children.Add(DescriptionTextBox);
+            stack.Children.Add(descriptionTextBox);
             stack.Children.Add(new TextBlock { Text = "Due Date" });
-            stack.Children.Add(SelectedDueDate);
-            stack.Children.Add(SelectedDueTime);
+            stack.Children.Add(selectedDueDate);
+            stack.Children.Add(selectedDueTime);
 
             parentTaskBox.Items.Add("None");
-            foreach (Task t in taskList)
+            foreach (Task t in TaskList)
             {
                 parentTaskBox.Items.Add(t.Name);
             }
@@ -117,7 +117,7 @@ namespace Countdown
         {
             var dialog = new ContentDialog { Title = "Remove Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
-            if (taskList.Count == 0)
+            if (TaskList.Count == 0)
             {
                 var text = new TextBlock { Text = "No Tasks to delete" };
 
@@ -130,7 +130,7 @@ namespace Countdown
             {
                 var list = new ListBox();
 
-                foreach (Task t in taskList)
+                foreach (Task t in TaskList)
                 {
                     list.Items.Add(t.Name);
                 }
@@ -146,9 +146,9 @@ namespace Countdown
                     case ContentDialogResult.Primary:
                         if (list.SelectedIndex != -1)
                         {
-                            taskList.RemoveAt(list.SelectedIndex);
+                            TaskList.RemoveAt(list.SelectedIndex);
                         }
-                        myFrame.Navigate(typeof(ListViewer), taskList);
+                        MyFrame.Navigate(typeof(ListViewer), TaskList);
                         break;
                 }
             }

@@ -1,4 +1,7 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
@@ -19,7 +22,7 @@ namespace Countdown
         {
             this.InitializeComponent();
             DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += new EventHandler<object>(timer_Tick);
+            timer.Tick += timer_Tick;
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Start();
         }
@@ -35,10 +38,11 @@ namespace Countdown
 
         private void timer_Tick(object sender, object e)
         {
-            foreach (Task t in taskList)
+            foreach (Task t in TaskList)
             {
                 t.RemainingTime = t.DueDate.Subtract(DateTime.Now);
             }
+            InvalidateArrange();
         }
 
         private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -51,19 +55,19 @@ namespace Countdown
 
             if (selectedIndex != -1)
             {
-                string nameText = "Task Name: " + taskList.ElementAt(selectedIndex).Name;
+                string nameText = "Task Name: " + TaskList[selectedIndex].Name;
                 DetailsStackPanel.Children.Add(new TextBlock
                 {
                     Text = nameText,
                     HorizontalAlignment = HorizontalAlignment.Center
                 });
-                string descriptionText = "Description: " + taskList.ElementAt(selectedIndex).Description;
+                string descriptionText = "Description: " + TaskList[selectedIndex].Description;
                 DetailsStackPanel.Children.Add(new TextBlock
                 {
                     Text = descriptionText,
                     HorizontalAlignment = HorizontalAlignment.Center
                 });
-                string dueDateText = "Due Date: " + taskList.ElementAt(selectedIndex).DueDate;
+                string dueDateText = "Due Date: " + TaskList[selectedIndex].DueDate;
                 DetailsStackPanel.Children.Add(new TextBlock
                 {
                     Text = dueDateText,
@@ -75,7 +79,7 @@ namespace Countdown
                     HorizontalAlignment = HorizontalAlignment.Center
                 });
 
-                if (taskList.ElementAt(selectedIndex).Subtasks.Count == 0)
+                if (TaskList[selectedIndex].Subtasks.Count == 0)
                 {
                     DetailsStackPanel.Children.Add(new TextBlock
                     {
@@ -90,7 +94,8 @@ namespace Countdown
                         Text = "Subtasks:",
                         HorizontalAlignment = HorizontalAlignment.Center
                     });
-                    foreach (Task t in taskList.ElementAt(selectedIndex).Subtasks)
+                    if (TaskList[selectedIndex].Subtasks == null) return;
+                    foreach (Task t in TaskList[selectedIndex].Subtasks)
                     {
                         string subtaskInfo = t.Name + ", Due: " + t.DueDate;
                         DetailsStackPanel.Children.Add(new TextBlock
