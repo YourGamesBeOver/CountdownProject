@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using Windows.UI;
 using Countdown.Networking;
 using Countdown.Networking.Results;
 using Countdown.Networking.Serialization;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using AsyncTask = System.Threading.Tasks.Task;
+using Task = Countdown.Networking.Serialization.Task;
 
 namespace UnitTests
 {
@@ -52,7 +53,7 @@ namespace UnitTests
         public void CannotConnectTwice()
         {
             var con = new ServerConnection();
-            con.Connect(ServerUrl);
+            Connect(con);
             Assert.ThrowsException<ServerConnection.ConnectionException>(() => con.Connect(ServerUrl));
         }
 
@@ -80,11 +81,8 @@ namespace UnitTests
         {
             using (var con = new ServerConnection())
             {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
-                var response = await con.LogIn(new UserAuth {Username = Username, Password = Password});
-                Assert.AreEqual(LoginResult.Success, response, "LogIn did not return LoginResult.Success");
+                Connect(con);
+                await LogIn(con);
             }
         }
 
@@ -93,9 +91,7 @@ namespace UnitTests
         {
             using (var con = new ServerConnection())
             {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
+                Connect(con);
                 var response =
                     await con.LogIn(new UserAuth {Username = "NOT A VALID USERNAME!!!", Password = "INVALID PASSWORD"});
                 Assert.AreEqual(LoginResult.BadParams, response, "LogIn did not return LoginResult.BadParams");
@@ -132,6 +128,20 @@ namespace UnitTests
         }
 
         [TestMethod]
+        public async AsyncTask CannotSetTaskAsCompletedIfNotConnected() {
+            var con = new ServerConnection();
+            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.MarkTaskAsCompleted(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
+        public async AsyncTask CannotSetTaskAsNotCompletedIfNotConnected() {
+            var con = new ServerConnection();
+            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.MarkTaskAsNotCompleted(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
         public async AsyncTask CannotGetSubTasksIfNotConnected() {
             var con = new ServerConnection();
             Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
@@ -149,48 +159,56 @@ namespace UnitTests
         [TestMethod]
         public async AsyncTask CannotGetTasksIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.GetTasksForUser());
         }
 
         [TestMethod]
         public async AsyncTask CannotGetInactiveTasksIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.GetInactiveTasksForUser());
         }
 
         [TestMethod]
         public async AsyncTask CannotCreateTasksIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.CreateTask(TestTask.DeepClone()));
         }
 
         [TestMethod]
         public async AsyncTask CannotDeleteTasksIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.DeleteTask(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
+        public async AsyncTask CannotSetTaskAsCompleteIfNotLoggedIn() {
+            var con = new ServerConnection();
+            Connect(con);
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.MarkTaskAsCompleted(TestTask.DeepClone()));
+        }
+
+        [TestMethod]
+        public async AsyncTask CannotSetTaskAsNotCompleteIfNotLoggedIn() {
+            var con = new ServerConnection();
+            Connect(con);
+            await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.MarkTaskAsNotCompleted(TestTask.DeepClone()));
         }
 
         [TestMethod]
         public async AsyncTask CannotGetSubTasksIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.GetSubTasksForTask(TestTask.DeepClone()));
         }
 
         [TestMethod]
         public async AsyncTask CannotGetNextTaskIfNotLoggedIn() {
             var con = new ServerConnection();
-            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-            con.Connect(ServerUrl);
+            Connect(con);
             await AssertThrowsAsync<ServerConnection.ConnectionException>(async () => await con.GetNextCountdown());
         }
 
@@ -199,19 +217,11 @@ namespace UnitTests
         {
             using (var con = new ServerConnection())
             {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
-                var loginResponse = await con.LogIn(new UserAuth {Username = Username, Password = Password});
-                Assert.AreEqual(LoginResult.Success, loginResponse, "LogIn did not return LoginResult.Success");
+                Connect(con);
+                await LogIn(con);
 
                 var sentTask = TestTask.DeepClone();
-                var newTaskId = await con.CreateTask(sentTask);
-                Assert.IsNotNull(newTaskId, "CreateTask did not return a task id");
-                Assert.AreEqual(newTaskId, sentTask.TaskId, "Task id was not updated in input Task instance");
-                Assert.AreNotEqual(TestTask.TaskId, newTaskId, "returned task id matches sent task id");
-                Assert.AreNotEqual(TestTask.TaskId, newTaskId,
-                    "task id of sent task matches sent task id after CreateTask call");
+                var newTaskId = await CreateNewTask(con, sentTask);
 
 
                 var usersTasks = await con.GetTasksForUser();
@@ -225,14 +235,66 @@ namespace UnitTests
 
 
                 var deleteResult = await con.DeleteTask(sentTask);
-                Assert.AreEqual(DeleteTaskResult.Success, deleteResult, "Delete task did not return success");
+                Assert.AreEqual(ModifyTaskResult.Success, deleteResult, "Delete task did not return success");
 
 
                 usersTasks = await con.GetTasksForUser();
                 Assert.IsFalse(usersTasks.Any(t => t.TaskId == newTaskId), "deleted task was still returned from server");
 
                 deleteResult = await con.DeleteTask(sentTask);
-                Assert.AreEqual(DeleteTaskResult.Failure, deleteResult, "Repeated delete task did not return Failure");
+                Assert.AreEqual(ModifyTaskResult.Failure, deleteResult, "Repeated delete task did not return Failure");
+            }
+        }
+
+        [TestMethod]
+        public async AsyncTask TestSettingCompletion()
+        {
+            using (var con = new ServerConnection())
+            {
+                Connect(con);
+                await LogIn(con);
+
+                var sentTask = TestTask.DeepClone();
+                var newTaskId = await CreateNewTask(con, sentTask);
+
+                var activeTasks = await con.GetTasksForUser();
+                var responseTask = activeTasks.First(t => t.TaskId == newTaskId);
+                Assert.IsNotNull(responseTask, "Could not find newly created task");
+                Assert.IsNotNull(responseTask.Subtasks, "Response task subtask list is null");
+                //the creation and modification timestamps are not valid on the sent task, so we force them to be equal
+                sentTask.CreationDate = responseTask.CreationDate;
+                sentTask.LastModifiedTime = responseTask.LastModifiedTime;
+                Assert.AreEqual(sentTask, responseTask, "Sent task and response task are not equal");
+
+                Assert.IsFalse(sentTask.IsCompleted, "Sent task is marked as complete");
+                Assert.IsFalse(responseTask.IsCompleted, "response task is marked as complete");
+
+                var inactiveTasks = await con.GetInactiveTasksForUser();
+                Assert.IsFalse(inactiveTasks.Any(t => t.TaskId == newTaskId), "Sent task came back in the inactive task list");
+
+                //mark the task as complete
+
+                var setCompleteResult = await con.MarkTaskAsCompleted(sentTask);
+                Assert.AreEqual(ModifyTaskResult.Success, setCompleteResult, "Set task as completed did not return ModifyTaskResult.Success");
+                Assert.IsTrue(sentTask.IsCompleted, "Original task did not have its isCompleted flag set after calling MarkTaskAsCompleted");
+
+                inactiveTasks = await con.GetInactiveTasksForUser();
+                Assert.IsTrue(inactiveTasks.Any(t => t.TaskId == newTaskId), "Sent task did not come back in the inactive task list");
+
+                activeTasks = await con.GetTasksForUser();
+                Assert.IsFalse(activeTasks.Any(t => t.TaskId == newTaskId), "Sent task came back in the active task list");
+
+                //now we set the task back to not completed and verify it again
+                var setIncompleteResult = await con.MarkTaskAsNotCompleted(sentTask);
+                Assert.AreEqual(ModifyTaskResult.Success, setCompleteResult, "Set task as completed did not return ModifyTaskResult.Success");
+                Assert.IsFalse(sentTask.IsCompleted, "Original task did not have its isCompleted flag reset after calling MarkTaskAsCompleted");
+
+                inactiveTasks = await con.GetInactiveTasksForUser();
+                Assert.IsFalse(inactiveTasks.Any(t => t.TaskId == newTaskId), "Sent task came back in the inactive task list");
+
+                activeTasks = await con.GetTasksForUser();
+                Assert.IsTrue(activeTasks.Any(t => t.TaskId == newTaskId), "Sent task did not come back in the active task list");
+
             }
         }
 
@@ -241,11 +303,8 @@ namespace UnitTests
         {
             using (var con = new ServerConnection())
             {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
-                var loginResponse = await con.LogIn(new UserAuth {Username = Username, Password = Password});
-                Assert.AreEqual(LoginResult.Success, loginResponse, "LogIn did not return LoginResult.Success");
+                Connect(con);
+                await LogIn(con);
 
                 var responseTask = await con.GetNextCountdown();
                 Assert.IsNotNull(responseTask, "GetNextCountdown returned null");
@@ -257,11 +316,8 @@ namespace UnitTests
         {
             using (var con = new ServerConnection())
             {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
-                var loginResponse = await con.LogIn(new UserAuth {Username = Username, Password = Password});
-                Assert.AreEqual(LoginResult.Success, loginResponse, "LogIn did not return LoginResult.Success");
+                Connect(con);
+                await LogIn(con);
 
                 var usersTasks = await con.GetTasksForUser();
                 Assert.IsNotNull(usersTasks, "get tasks returned null");
@@ -276,11 +332,8 @@ namespace UnitTests
         [TestMethod]
         public async AsyncTask AllInactiveTasksAreMarkedAsIncomplete() {
             using (var con = new ServerConnection()) {
-                Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
-                con.Connect(ServerUrl);
-                Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
-                var loginResponse = await con.LogIn(new UserAuth { Username = Username, Password = Password });
-                Assert.AreEqual(LoginResult.Success, loginResponse, "LogIn did not return LoginResult.Success");
+                Connect(con);
+                await LogIn(con);
 
                 var usersTasks = await con.GetInactiveTasksForUser();
                 Assert.IsNotNull(usersTasks, "get inactive tasks returned null");
@@ -289,6 +342,28 @@ namespace UnitTests
                     Assert.IsTrue(t.IsCompleted, "task returned by get inactive tasks was not marked as completed");
                 }
             }
+        }
+
+        private static async AsyncTask LogIn(ServerConnection con)
+        {
+            var loginResponse = await con.LogIn(new UserAuth {Username = Username, Password = Password});
+            Assert.AreEqual(LoginResult.Success, loginResponse, "LogIn did not return LoginResult.Success");
+        }
+
+        private static void Connect(ServerConnection con) {
+            Assert.IsFalse(con.IsConnected, "ServerConnection not initially disconnected");
+            con.Connect(ServerUrl);
+            Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
+        }
+
+        private static async Task<int?> CreateNewTask(ServerConnection con, Task sentTask) {
+            var newTaskId = await con.CreateTask(sentTask);
+            Assert.IsNotNull(newTaskId, "CreateTask did not return a task id");
+            Assert.AreEqual(newTaskId, sentTask.TaskId, "Task id was not updated in input Task instance");
+            Assert.AreNotEqual(TestTask.TaskId, newTaskId, "returned task id matches sent task id");
+            Assert.AreNotEqual(TestTask.TaskId, newTaskId,
+                "task id of sent task matches sent task id after CreateTask call");
+            return newTaskId;
         }
 
 

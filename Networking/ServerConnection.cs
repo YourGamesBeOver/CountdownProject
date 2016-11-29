@@ -159,7 +159,7 @@ namespace Countdown.Networking {
             }
         }
 
-        public async System.Threading.Tasks.Task<DeleteTaskResult> DeleteTask(Task task)
+        public async System.Threading.Tasks.Task<ModifyTaskResult> DeleteTask(Task task)
         {
             if (!IsConnected) {
                 throw new ConnectionException("No connection was established");
@@ -171,10 +171,51 @@ namespace Countdown.Networking {
             var param = new SingleTaskIdParams {TaskId = task.TaskId};
             var rawresponse =
                 await _httpClient.PostAsync(@"/delete_task", new StringContent(JsonConvert.SerializeObject(param)));
-            if (!rawresponse.IsSuccessStatusCode) return DeleteTaskResult.Error;
+            if (!rawresponse.IsSuccessStatusCode) return ModifyTaskResult.Error;
             using (var content = rawresponse.Content) {
                 var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
-                return response.Status ? DeleteTaskResult.Success : DeleteTaskResult.Failure;
+                return response.Status ? ModifyTaskResult.Success : ModifyTaskResult.Failure;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<ModifyTaskResult> MarkTaskAsCompleted(Task task)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var param = new SingleTaskIdParams { TaskId = task.TaskId };
+            var rawresponse =
+                await _httpClient.PostAsync(@"/complete_task", new StringContent(JsonConvert.SerializeObject(param)));
+            if (!rawresponse.IsSuccessStatusCode) return ModifyTaskResult.Error;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
+                if (!response.Status) return ModifyTaskResult.Failure;
+                task.IsCompleted = true;
+                return ModifyTaskResult.Success;
+            }
+        }
+
+        public async System.Threading.Tasks.Task<ModifyTaskResult> MarkTaskAsNotCompleted(Task task) {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            if (!_loggedIn) {
+                throw new ConnectionException("No user logged in");
+            }
+            var param = new SingleTaskIdParams { TaskId = task.TaskId };
+            var rawresponse =
+                await _httpClient.PostAsync(@"/unarchive_task", new StringContent(JsonConvert.SerializeObject(param)));
+            if (!rawresponse.IsSuccessStatusCode) return ModifyTaskResult.Error;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
+                if (!response.Status) return ModifyTaskResult.Failure;
+                task.IsCompleted = false;
+                return ModifyTaskResult.Success;
             }
         }
 

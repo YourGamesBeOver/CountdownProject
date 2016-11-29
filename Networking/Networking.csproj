@@ -110,7 +110,7 @@
     <Compile Include="Parameters\CreateTaskParams.cs" />
     <Compile Include="Parameters\SingleTaskIdParams.cs" />
     <Compile Include="Results\CreateTaskResponse.cs" />
-    <Compile Include="Results\DeleteTaskResult.cs" />
+    <Compile Include="Results\ModifyTaskResult.cs" />
     <Compile Include="Results\GetTasksResponse.cs" />
     <Compile Include="Results\LoginResult.cs" />
     <Compile Include="Results\SingleTaskResponse.cs" />
