@@ -186,7 +186,7 @@ namespace Countdown.Networking {
         }
 
         #region exceptions
-        internal class ConnectionException : Exception
+        public class ConnectionException : Exception
         {
             public ConnectionException(string message) : base(message) { }
         }
