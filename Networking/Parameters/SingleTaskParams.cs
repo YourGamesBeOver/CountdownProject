@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 
 namespace Countdown.Networking.Parameters
 {
-    public struct CreateTaskParams
+    internal struct SingleTaskParams
     {
         [JsonProperty("task")]
         public Task Task;

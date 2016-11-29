@@ -121,6 +121,10 @@
       <Project>{bf6f6f13-ea37-4042-bb76-7f029090a3ef}</Project>
       <Name>Countdown</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Networking\Networking.csproj">
+      <Project>{ad34c37b-edf9-4bff-b228-664dd4b4a262}</Project>
+      <Name>Networking</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
