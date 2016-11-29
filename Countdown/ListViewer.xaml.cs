@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.UI.Xaml;
@@ -21,10 +22,16 @@ namespace Countdown
         public ListViewer()
         {
             this.InitializeComponent();
-            DispatcherTimer timer = new DispatcherTimer();
-            timer.Tick += timer_Tick;
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Start();
+            //DispatcherTimer timer = new DispatcherTimer();
+            //timer.Tick += timer_Tick;
+            //timer.Interval = TimeSpan.FromSeconds(1);
+            //timer.Start();
+        }
+
+        public ListViewer(ObservableCollection<Task> tasks)
+        {
+            this.InitializeComponent();
+            TaskList = tasks;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)

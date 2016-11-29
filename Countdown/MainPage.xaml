@@ -18,8 +18,8 @@
             <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" HorizontalAlignment="Right"/>
         </CommandBar>
     </Page.BottomAppBar>
-    
-    
+
+
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" FlyoutBase.AttachedFlyout="{StaticResource FlyoutBase1}">
         <Grid.RowDefinitions>
@@ -80,9 +80,9 @@
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>
-                <Frame Name="MyFrame">
+                <ContentControl Name="MyContentControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-                </Frame>
+                </ContentControl>
             </SplitView.Content>
         </SplitView>
 
