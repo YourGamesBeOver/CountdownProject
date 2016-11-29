@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Windows.UI;
 using Countdown.Networking;
 using Countdown.Networking.Results;
 using Countdown.Networking.Serialization;
 using Microsoft.VisualStudio.TestPlatform.UnitTestFramework;
 using AsyncTask = System.Threading.Tasks.Task;
-using Task = Countdown.Networking.Serialization.Task;
 
 namespace UnitTests
 {
@@ -327,7 +325,7 @@ namespace UnitTests
 
                 //now we set the task back to not completed and verify it again
                 var setIncompleteResult = await con.MarkTaskAsNotCompleted(sentTask);
-                Assert.AreEqual(ModifyTaskResult.Success, setCompleteResult, "Set task as completed did not return ModifyTaskResult.Success");
+                Assert.AreEqual(ModifyTaskResult.Success, setIncompleteResult, "Set task as completed did not return ModifyTaskResult.Success");
                 Assert.IsFalse(sentTask.IsCompleted, "Original task did not have its isCompleted flag reset after calling MarkTaskAsCompleted");
 
                 inactiveTasks = await con.GetInactiveTasksForUser();
@@ -472,7 +470,7 @@ namespace UnitTests
             Assert.IsTrue(con.IsConnected, "ServerConnection not not connected after calling Connect");
         }
 
-        private static async Task<int?> CreateNewTask(ServerConnection con, Task sentTask) {
+        private static async System.Threading.Tasks.Task<int?> CreateNewTask(ServerConnection con, Task sentTask) {
             var newTaskId = await con.CreateTask(sentTask);
             Assert.IsNotNull(newTaskId, "CreateTask did not return a task id");
             Assert.AreEqual(newTaskId, sentTask.TaskId, "Task id was not updated in input Task instance");
