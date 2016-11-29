@@ -5,6 +5,7 @@
     xmlns:local="using:Countdown"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:serialization="using:Countdown.Networking.Serialization"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -14,7 +15,7 @@
         </Grid.ColumnDefinitions>
         <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch" SelectionChanged="TaskListBox_SelectionChanged">
             <ListBox.ItemTemplate>
-                <DataTemplate x:DataType="local:Task">
+                <DataTemplate x:DataType="serialization:Task">
                     <Grid >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" MinWidth="200"/>

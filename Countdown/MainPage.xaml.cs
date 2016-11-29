@@ -1,20 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-using Countdown;
 using Windows.UI.Core;
 using System.Collections.ObjectModel;
+using Countdown.Networking.Serialization;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -25,15 +14,13 @@ namespace Countdown
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
-        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
-        public ObservableCollection<Task> TaskList { get { return taskList; } }
+        public ObservableCollection<Task> TaskList { get; } = new ObservableCollection<Task>();
 
         public MainPage()
         {
             this.InitializeComponent();
 
-            myFrame.Navigate(typeof(ListViewer), taskList);
+            MyFrame.Navigate(typeof(ListViewer), TaskList);
             
         }
 
@@ -45,30 +32,23 @@ namespace Countdown
         private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var currentView = SystemNavigationManager.GetForCurrentView();
-            if (MyListBox.SelectedItem == null)
-            {
-                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            }
-            else
-            {
-                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-            }
+            currentView.AppViewBackButtonVisibility = MyListBox.SelectedItem == null ? AppViewBackButtonVisibility.Collapsed : AppViewBackButtonVisibility.Visible;
 
             currentView.BackRequested += backButton_Tapped;
 
             if (ListViewListBoxItem.IsSelected)
             {
-                myFrame.Navigate(typeof(ListViewer), taskList);
+                MyFrame.Navigate(typeof(ListViewer), TaskList);
                 MyCommandBar.Visibility = Visibility.Visible;
             }
             if(CalendarViewListBoxItem.IsSelected)
             {
-                myFrame.Navigate(typeof(CalendarViewer), taskList);
+                MyFrame.Navigate(typeof(CalendarViewer));
                 MyCommandBar.Visibility = Visibility.Visible;
             }
             else if(SettingsListBoxItem.IsSelected)
             {
-                myFrame.Navigate(typeof(SettingsViewer));
+                MyFrame.Navigate(typeof(SettingsViewer));
                 MyCommandBar.Visibility = Visibility.Collapsed;
             }
         }
@@ -78,9 +58,9 @@ namespace Countdown
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MyListBox.SelectedItem = null;
-            if (myFrame.CanGoBack)
+            if (MyFrame.CanGoBack)
             {
-                myFrame.GoBack();
+                MyFrame.GoBack();
             }
         }
 
@@ -89,21 +69,21 @@ namespace Countdown
             var dialog = new ContentDialog { Title = "Add Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
             var stack = new StackPanel();
-            var NameTextBox = new TextBox();
-            var DescriptionTextBox = new TextBox();
-            var SelectedDueDate = new DatePicker();
-            var SelectedDueTime = new TimePicker();
+            var nameTextBox = new TextBox();
+            var descriptionTextBox = new TextBox();
+            var selectedDueDate = new DatePicker();
+            var selectedDueTime = new TimePicker();
             var parentTaskBox = new ComboBox();
             stack.Children.Add(new TextBlock { Text = "Task Name" });
-            stack.Children.Add( NameTextBox );
+            stack.Children.Add( nameTextBox );
             stack.Children.Add(new TextBlock { Text = "Description" });
-            stack.Children.Add(DescriptionTextBox);
+            stack.Children.Add(descriptionTextBox);
             stack.Children.Add(new TextBlock { Text = "Due Date" });
-            stack.Children.Add(SelectedDueDate);
-            stack.Children.Add(SelectedDueTime);
+            stack.Children.Add(selectedDueDate);
+            stack.Children.Add(selectedDueTime);
 
             parentTaskBox.Items.Add("None");
-            foreach (Task t in taskList)
+            foreach (Task t in TaskList)
             {
                 parentTaskBox.Items.Add(t.Name);
             }
@@ -117,26 +97,27 @@ namespace Countdown
 
             var result = await dialog.ShowAsync();
 
-            switch(result)
+            if (result != ContentDialogResult.Primary) return;
+
+            var selectedTime = new DateTime(selectedDueDate.Date.Year, selectedDueDate.Date.Month,
+                selectedDueDate.Date.Day, selectedDueTime.Time.Hours, selectedDueTime.Time.Minutes,
+                selectedDueTime.Time.Seconds);
+            var addedTask = new Task
             {
-                case ContentDialogResult.Primary:
-                    DateTime SelectedTime = new DateTime(SelectedDueDate.Date.Year, SelectedDueDate.Date.Month, SelectedDueDate.Date.Day, SelectedDueTime.Time.Hours, SelectedDueTime.Time.Minutes, SelectedDueTime.Time.Seconds);
-                    Task addedTask = new Task(0,NameTextBox.Text, DescriptionTextBox.Text, SelectedTime, new List<Task>(), false, SelectedTime.Subtract(DateTime.Now));
-                    taskList.Add(addedTask);
-                    if (parentTaskBox.SelectedIndex > 0)
-                    {
-                        taskList.ElementAt(parentTaskBox.SelectedIndex - 1).Subtasks.Add(addedTask);
-                    }
-                    myFrame.Navigate(typeof(ListViewer), taskList);
-                    break;
-            }
+                TaskId = 0,
+                Name = nameTextBox.Text,
+                Description = descriptionTextBox.Text,
+                DueDate = selectedTime
+            };
+            TaskList.Add(addedTask);
+            MyFrame.Navigate(typeof(ListViewer), TaskList);
         }
 
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new ContentDialog { Title = "Remove Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
 
-            if (taskList.Count == 0)
+            if (TaskList.Count == 0)
             {
                 var text = new TextBlock { Text = "No Tasks to delete" };
 
@@ -149,7 +130,7 @@ namespace Countdown
             {
                 var list = new ListBox();
 
-                foreach (Task t in taskList)
+                foreach (Task t in TaskList)
                 {
                     list.Items.Add(t.Name);
                 }
@@ -165,9 +146,9 @@ namespace Countdown
                     case ContentDialogResult.Primary:
                         if (list.SelectedIndex != -1)
                         {
-                            taskList.RemoveAt(list.SelectedIndex);
+                            TaskList.RemoveAt(list.SelectedIndex);
                         }
-                        myFrame.Navigate(typeof(ListViewer), taskList);
+                        MyFrame.Navigate(typeof(ListViewer), TaskList);
                         break;
                 }
             }
