@@ -3,6 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;
 using System.Collections.ObjectModel;
+using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
 using Windows.UI.Xaml.Media;
 
@@ -22,6 +23,23 @@ namespace Countdown
         {
             this.InitializeComponent();
             MyContentControl.Content = new ListViewer();
+            CreateTimer();
+        }
+
+        public void CreateTimer()
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, object e)
+        {
+            foreach (Task t in TaskList)
+            {
+                t.RemainingTime = t.DueDate.Subtract(DateTime.Now);
+            }
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -98,20 +116,38 @@ namespace Countdown
                 TaskId = 0,
                 Name = nameTextBox.Text,
                 Description = descriptionTextBox.Text,
-                DueDate = selectedTime
+                DueDate = selectedTime,
+                RemainingTime = selectedTime.Subtract(DateTime.Now)
             };
             TaskList.Add(addedTask);
-            MyContentControl.Content = new ListViewer(TaskList);
+            if (MyContentControl.Content is ListViewer)
+            {
+                MyContentControl.Content = new ListViewer(TaskList);
+            }
+            else if (MyContentControl.Content is CalendarViewer)
+            {
+                MyContentControl.Content = new CalendarViewer(TaskList);
+            }
         }
 
-        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
+            var dialog = new ContentDialog {Title="Delete"};
+            TextBlock text = new TextBlock {Text = "Are you sure you want to delete this task?"};
+            dialog.Content = text;
+            dialog.PrimaryButtonText = "Yes";
+            dialog.SecondaryButtonText = "Cancel";
+
+
+
             if (MyContentControl.Content is ListViewer)
             {
                 var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
                 int selectedItemToRemove = TaskComboBox.SelectedIndex;
                 if (selectedItemToRemove != -1)
                 {
+                    var result = await dialog.ShowAsync();
+                    if (result != ContentDialogResult.Primary) return;
                     TaskList.RemoveAt(selectedItemToRemove);
                 }
                 MyContentControl.Content = new ListViewer(TaskList);
