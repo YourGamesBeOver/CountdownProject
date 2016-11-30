@@ -193,7 +193,7 @@ namespace Countdown
         {
             foreach(Task t in TaskList)
             {
-                if (t.Name.Contains(sender.Text))
+                if (t.Name.ToLower().Contains(sender.Text.ToLower()))
                 {
                     SearchedTaskList.Add(t);
                 }
