@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
@@ -13,11 +15,17 @@ namespace Countdown
     public sealed partial class CalendarViewer : Page
     {
         private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+        private ObservableCollection<Task> daysTasksList { get; } = new ObservableCollection<Task>();
 
         public CalendarViewer()
         {
             this.InitializeComponent();
             
+        }
+
+        public CalendarViewer(ObservableCollection<Task> newList)
+        {
+            taskList = newList;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -32,6 +40,19 @@ namespace Countdown
         private void MyCalendar_SelectedDatesChanged(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
         {
             var selectedDays = args.AddedDates;
+            List<DateTime> dateTimes = new List<DateTime>();
+            foreach (DateTimeOffset dt in selectedDays)
+            {
+                dateTimes.Add(dt.DateTime.Date);
+            }
+
+            foreach (Task t in taskList)
+            {
+                if (dateTimes.Contains(t.DueDate.Date))
+                {
+                    daysTasksList.Add(t);
+                } 
+            }
 
         }
     }

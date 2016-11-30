@@ -13,13 +13,14 @@
 
     <Page.BottomAppBar>
         <CommandBar Name="MyCommandBar">
+            <AppBarButton Name="AddSubtaskButton" Icon="Attach"  Label="Add Subtask" HorizontalAlignment="Right" Visibility="Collapsed"/>
             <AppBarButton Name="AddButton" Icon="Add" Label="Add Task" Click="AddButton_Click" HorizontalAlignment="Right"/>
             <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" Click="RemoveButton_Click" HorizontalAlignment="Right"/>
-            <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" HorizontalAlignment="Right"/>
+            <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" Click="CompleteButton_Click" HorizontalAlignment="Right"/>
         </CommandBar>
     </Page.BottomAppBar>
-    
-    
+
+
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" FlyoutBase.AttachedFlyout="{StaticResource FlyoutBase1}">
         <Grid.RowDefinitions>
@@ -48,7 +49,7 @@
                             Width="200"
                             QueryIcon="Find"
                             Margin="0,5,10,0"
-                            RelativePanel.AlignRightWithPanel="True"
+                            RelativePanel.AlignRightWithPanel="True" TextChanged="SearchBar_TextChanged"
                             />
         </RelativePanel>
         <SplitView Grid.Row="1" Name="mySplitView"
@@ -80,9 +81,9 @@
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>
-                <Frame Name="MyFrame">
+                <ContentControl Name="MyContentControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
-                </Frame>
+                </ContentControl>
             </SplitView.Content>
         </SplitView>
 

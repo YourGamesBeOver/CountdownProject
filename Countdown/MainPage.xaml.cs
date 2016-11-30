@@ -3,7 +3,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;
 using System.Collections.ObjectModel;
+using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
+using Windows.UI.Xaml.Media;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -15,13 +17,29 @@ namespace Countdown
     public sealed partial class MainPage : Page
     {
         public ObservableCollection<Task> TaskList { get; } = new ObservableCollection<Task>();
+        public ObservableCollection<Task> SearchedTaskList { get; set; } = new ObservableCollection<Task>();
 
         public MainPage()
         {
             this.InitializeComponent();
+            MyContentControl.Content = new ListViewer();
+            CreateTimer();
+        }
 
-            MyFrame.Navigate(typeof(ListViewer), TaskList);
-            
+        public void CreateTimer()
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, object e)
+        {
+            foreach (Task t in TaskList)
+            {
+                t.RemainingTime = t.DueDate.Subtract(DateTime.Now);
+            }
         }
 
         private void HamburgerButton_Click(object sender, RoutedEventArgs e)
@@ -38,17 +56,17 @@ namespace Countdown
 
             if (ListViewListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(ListViewer), TaskList);
+                MyContentControl.Content = new ListViewer(TaskList);
                 MyCommandBar.Visibility = Visibility.Visible;
             }
-            if(CalendarViewListBoxItem.IsSelected)
+            if (CalendarViewListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(CalendarViewer));
+                MyContentControl.Content = new CalendarViewer();
                 MyCommandBar.Visibility = Visibility.Visible;
             }
-            else if(SettingsListBoxItem.IsSelected)
+            else if (SettingsListBoxItem.IsSelected)
             {
-                MyFrame.Navigate(typeof(SettingsViewer));
+                MyContentControl.Content = new SettingsViewer();
                 MyCommandBar.Visibility = Visibility.Collapsed;
             }
         }
@@ -58,9 +76,9 @@ namespace Countdown
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MyListBox.SelectedItem = null;
-            if (MyFrame.CanGoBack)
+            //if (MyFrame.CanGoBack)
             {
-                MyFrame.GoBack();
+                //MyFrame.GoBack();
             }
         }
 
@@ -75,21 +93,12 @@ namespace Countdown
             var selectedDueTime = new TimePicker();
             var parentTaskBox = new ComboBox();
             stack.Children.Add(new TextBlock { Text = "Task Name" });
-            stack.Children.Add( nameTextBox );
+            stack.Children.Add(nameTextBox);
             stack.Children.Add(new TextBlock { Text = "Description" });
             stack.Children.Add(descriptionTextBox);
             stack.Children.Add(new TextBlock { Text = "Due Date" });
             stack.Children.Add(selectedDueDate);
             stack.Children.Add(selectedDueTime);
-
-            parentTaskBox.Items.Add("None");
-            foreach (Task t in TaskList)
-            {
-                parentTaskBox.Items.Add(t.Name);
-            }
-
-            stack.Children.Add(new TextBlock {Text = "Parent Task"});
-            stack.Children.Add(parentTaskBox);
 
             dialog.Content = stack;
             dialog.PrimaryButtonText = "Add";
@@ -107,51 +116,90 @@ namespace Countdown
                 TaskId = 0,
                 Name = nameTextBox.Text,
                 Description = descriptionTextBox.Text,
-                DueDate = selectedTime
+                DueDate = selectedTime,
+                RemainingTime = selectedTime.Subtract(DateTime.Now)
             };
             TaskList.Add(addedTask);
-            MyFrame.Navigate(typeof(ListViewer), TaskList);
+            if (MyContentControl.Content is ListViewer)
+            {
+                MyContentControl.Content = new ListViewer(TaskList);
+            }
+            else if (MyContentControl.Content is CalendarViewer)
+            {
+                MyContentControl.Content = new CalendarViewer(TaskList);
+            }
         }
 
         private async void RemoveButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ContentDialog { Title = "Remove Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
+            var dialog = new ContentDialog {Title="Delete"};
+            TextBlock text = new TextBlock {Text = "Are you sure you want to delete this task?"};
+            dialog.Content = text;
+            dialog.PrimaryButtonText = "Yes";
+            dialog.SecondaryButtonText = "Cancel";
 
-            if (TaskList.Count == 0)
+
+
+            if (MyContentControl.Content is ListViewer)
             {
-                var text = new TextBlock { Text = "No Tasks to delete" };
-
-                dialog.Content = text;
-                dialog.PrimaryButtonText = "OK";
-
-                await dialog.ShowAsync();
-            }
-            else
-            {
-                var list = new ListBox();
-
-                foreach (Task t in TaskList)
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItemToRemove = TaskComboBox.SelectedIndex;
+                if (selectedItemToRemove != -1)
                 {
-                    list.Items.Add(t.Name);
+                    var result = await dialog.ShowAsync();
+                    if (result != ContentDialogResult.Primary) return;
+                    TaskList.RemoveAt(selectedItemToRemove);
+                }
+                MyContentControl.Content = new ListViewer(TaskList);
+            }
+        }
+
+        public T FindElementByName<T>(FrameworkElement element, string sChildName) where T : FrameworkElement
+        {
+            T childElement = null;
+            var nChildCount = VisualTreeHelper.GetChildrenCount(element);
+            for (int i = 0; i < nChildCount; i++)
+            {
+                FrameworkElement child = VisualTreeHelper.GetChild(element, i) as FrameworkElement;
+
+                if (child == null)
+                    continue;
+
+                if (child is T && child.Name.Equals(sChildName))
+                {
+                    childElement = (T)child;
+                    break;
                 }
 
-                dialog.Content = list;
-                dialog.PrimaryButtonText = "Delete";
-                dialog.SecondaryButtonText = "Cancel";
+                childElement = FindElementByName<T>(child, sChildName);
 
-                var result = await dialog.ShowAsync();
+                if (childElement != null)
+                    break;
+            }
+            return childElement;
+        }
 
-                switch (result)
+        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyContentControl.Content is ListViewer)
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItemToComplete = TaskComboBox.SelectedIndex;
+                TaskList[selectedItemToComplete].IsCompleted = true;
+            }
+        }
+
+        private void SearchBar_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            foreach(Task t in TaskList)
+            {
+                if (t.Name.ToLower().Contains(sender.Text.ToLower()))
                 {
-                    case ContentDialogResult.Primary:
-                        if (list.SelectedIndex != -1)
-                        {
-                            TaskList.RemoveAt(list.SelectedIndex);
-                        }
-                        MyFrame.Navigate(typeof(ListViewer), TaskList);
-                        break;
+                    SearchedTaskList.Add(t);
                 }
             }
+            MyContentControl.Content = new ListViewer(SearchedTaskList);
+            SearchedTaskList = new ObservableCollection<Task>();
         }
     }
 
