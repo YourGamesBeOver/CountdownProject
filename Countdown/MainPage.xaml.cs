@@ -236,6 +236,94 @@ namespace Countdown
             MyContentControl.Content = new ListViewer(SearchedTaskList);
             SearchedTaskList = new ObservableCollection<Task>();
         }
+
+        private async void AddSubtaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (MyContentControl.Content is ListViewer)
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItem = TaskComboBox.SelectedIndex;
+                if (selectedItem != -1)
+                {
+                    bool Invalid = true;
+                    String name = "", description = "";
+                    DateTime date = new DateTime();
+                    TimeSpan time = new TimeSpan();
+
+                    while (Invalid)
+                    {
+                        var dialog = new ContentDialog
+                        {
+                            Title = "Add Subtask",
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Visibility = Visibility.Visible
+                        };
+
+                        var stack = new StackPanel();
+                        var nameTextBox = new TextBox();
+                        var descriptionTextBox = new TextBox();
+                        var selectedDueDate = new DatePicker();
+                        var selectedDueTime = new TimePicker();
+                        stack.Children.Add(new TextBlock { Text = "Subtask Name" });
+                        stack.Children.Add(nameTextBox);
+                        stack.Children.Add(new TextBlock { Text = "Description" });
+                        stack.Children.Add(descriptionTextBox);
+                        stack.Children.Add(new TextBlock { Text = "Due Date" });
+                        stack.Children.Add(selectedDueDate);
+                        stack.Children.Add(selectedDueTime);
+
+                        dialog.Content = stack;
+                        dialog.PrimaryButtonText = "Add";
+                        dialog.SecondaryButtonText = "Cancel";
+
+                        var result = await dialog.ShowAsync();
+
+                        if (result != ContentDialogResult.Primary) return;
+
+                        Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
+                        if (Invalid)
+                        {
+                            MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
+                            var ok = error.ShowAsync();
+                        }
+                        else
+                        {
+                            name = nameTextBox.Text;
+                            description = descriptionTextBox.Text;
+                            date = selectedDueDate.Date.DateTime;
+                            time = selectedDueTime.Time;
+                        }
+                    }
+
+                    var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
+                        date.Date.Day, time.Hours, time.Minutes,
+                        time.Seconds);
+                    var addedTask = new Task
+                    {
+                        TaskId = 0,
+                        Name = name,
+                        Description = description,
+                        DueDate = selectedTime,
+                        RemainingTime = selectedTime.Subtract(DateTime.Now)
+                    };
+
+                    Task[] updatedSubtaskList = new Task[TaskList[selectedItem].Subtasks.Length + 1];
+                    for(int i = 0; i < TaskList[selectedItem].Subtasks.Length; i++)
+                    {
+                        updatedSubtaskList[i + 1] = TaskList[selectedItem].Subtasks[i];
+                    }
+                    updatedSubtaskList[0] = addedTask;
+                    TaskList[selectedItem].Subtasks = updatedSubtaskList;
+                    MyContentControl.Content = new ListViewer(TaskList);
+                }
+            }
+        }
+
+        private void EditTaskButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
     }
 
 }

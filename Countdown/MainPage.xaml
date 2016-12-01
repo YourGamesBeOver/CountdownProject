@@ -13,10 +13,11 @@
 
     <Page.BottomAppBar>
         <CommandBar Name="MyCommandBar">
-            <AppBarButton Name="AddSubtaskButton" Icon="Attach"  Label="Add Subtask" HorizontalAlignment="Right" Visibility="Collapsed"/>
             <AppBarButton Name="AddButton" Icon="Add" Label="Add Task" Click="AddButton_Click" HorizontalAlignment="Right"/>
-            <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" Click="RemoveButton_Click" HorizontalAlignment="Right"/>
+            <AppBarButton Name="AddSubtaskButton" Icon="Attach"  Label="Add Subtask" Click="AddSubtaskButton_Click"  HorizontalAlignment="Right"/>
+            <AppBarButton Name="EditTaskButton" Icon ="Edit" Label="Edit Task" Click="EditTaskButton_Click" HorizontalAlignment="Right"/>
             <AppBarButton Name="CompleteButton" Icon="Accept" Label="Complete Task" Click="CompleteButton_Click" HorizontalAlignment="Right"/>
+            <AppBarButton Name="RemoveButton" Icon="Delete" Label="Remove Task" Click="RemoveButton_Click" HorizontalAlignment="Right"/>
         </CommandBar>
     </Page.BottomAppBar>
 
