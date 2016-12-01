@@ -16,6 +16,7 @@ namespace UITests
     using Microsoft.VisualStudio.TestTools.UITest.Extension;
     using Microsoft.VisualStudio.TestTools.UITest.Input;
     using Microsoft.VisualStudio.TestTools.UITesting;
+    using Microsoft.VisualStudio.TestTools.UITesting.DirectUIControls;
     using Microsoft.VisualStudio.TestTools.UITesting.WindowsRuntimeControls;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Keyboard = Microsoft.VisualStudio.TestTools.UITesting.Keyboard;
@@ -67,12 +68,26 @@ namespace UITests
                 return this.mUICountdownWindow;
             }
         }
+        
+        public ErrorWindow ErrorWindow
+        {
+            get
+            {
+                if ((this.mErrorWindow == null))
+                {
+                    this.mErrorWindow = new ErrorWindow();
+                }
+                return this.mErrorWindow;
+            }
+        }
         #endregion
         
         #region Fields
         private TestListViewButtonIsPresentExpectedValues mTestListViewButtonIsPresentExpectedValues;
         
         private UICountdownWindow mUICountdownWindow;
+        
+        private ErrorWindow mErrorWindow;
         #endregion
     }
     
@@ -294,6 +309,30 @@ namespace UITests
                 return this.mRemoveTaskDialog;
             }
         }
+        
+        public UIDeleteWindow UIDeleteWindow
+        {
+            get
+            {
+                if ((this.mUIDeleteWindow == null))
+                {
+                    this.mUIDeleteWindow = new UIDeleteWindow(this);
+                }
+                return this.mUIDeleteWindow;
+            }
+        }
+        
+        public UISearchBar UISearchBar
+        {
+            get
+            {
+                if ((this.mUISearchBar == null))
+                {
+                    this.mUISearchBar = new UISearchBar(this);
+                }
+                return this.mUISearchBar;
+            }
+        }
         #endregion
         
         #region Fields
@@ -324,6 +363,10 @@ namespace UITests
         private DeleteTaskList mDeleteTaskList;
         
         private RemoveTaskDialog mRemoveTaskDialog;
+        
+        private UIDeleteWindow mUIDeleteWindow;
+        
+        private UISearchBar mUISearchBar;
         #endregion
     }
     
@@ -395,25 +438,25 @@ namespace UITests
         }
         
         #region Properties
-        public XamlListItem TaskListBoxFirstItem
+        public XamlListItem FirstListBoxItem
         {
             get
             {
-                if ((this.mTaskListBoxFirstItem == null))
+                if ((this.mFirstListBoxItem == null))
                 {
-                    this.mTaskListBoxFirstItem = new XamlListItem(this);
+                    this.mFirstListBoxItem = new XamlListItem(this);
                     #region Search Criteria
-                    this.mTaskListBoxFirstItem.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Task";
-                    this.mTaskListBoxFirstItem.WindowTitles.Add("Countdown");
+                    this.mFirstListBoxItem.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Networking.Serialization.Task";
+                    this.mFirstListBoxItem.WindowTitles.Add("Countdown");
                     #endregion
                 }
-                return this.mTaskListBoxFirstItem;
+                return this.mFirstListBoxItem;
             }
         }
         #endregion
         
         #region Fields
-        private XamlListItem mTaskListBoxFirstItem;
+        private XamlListItem mFirstListBoxItem;
         #endregion
     }
     
@@ -528,6 +571,22 @@ namespace UITests
                 return this.mNoTasksToDeleteText;
             }
         }
+        
+        public XamlText NoTaskSelectedText
+        {
+            get
+            {
+                if ((this.mNoTaskSelectedText == null))
+                {
+                    this.mNoTaskSelectedText = new XamlText(this);
+                    #region Search Criteria
+                    this.mNoTaskSelectedText.SearchProperties[XamlText.PropertyNames.Name] = "No task selected";
+                    this.mNoTaskSelectedText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mNoTaskSelectedText;
+            }
+        }
         #endregion
         
         #region Fields
@@ -536,6 +595,8 @@ namespace UITests
         private UIDescriptionText mUIDescriptionText;
         
         private XamlText mNoTasksToDeleteText;
+        
+        private XamlText mNoTaskSelectedText;
         #endregion
     }
     
@@ -714,10 +775,28 @@ namespace UITests
                 return this.mAddTaskAddButton;
             }
         }
+        
+        public XamlButton AddTaskCancelButton
+        {
+            get
+            {
+                if ((this.mAddTaskCancelButton == null))
+                {
+                    this.mAddTaskCancelButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mAddTaskCancelButton.SearchProperties[XamlButton.PropertyNames.Name] = "Cancel";
+                    this.mAddTaskCancelButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mAddTaskCancelButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlButton mAddTaskAddButton;
+        
+        private XamlButton mAddTaskCancelButton;
         #endregion
     }
     
@@ -825,6 +904,149 @@ namespace UITests
         
         #region Fields
         private XamlButton mDeleteTaskButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIDeleteWindow : XamlWindow
+    {
+        
+        public UIDeleteWindow(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.Name] = "Delete";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton UIYesButton
+        {
+            get
+            {
+                if ((this.mUIYesButton == null))
+                {
+                    this.mUIYesButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIYesButton.SearchProperties[XamlButton.PropertyNames.Name] = "Yes";
+                    this.mUIYesButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIYesButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mUIYesButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UISearchBar : XamlControl
+    {
+        
+        public UISearchBar(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Group";
+            this.SearchProperties["AutomationId"] = "SearchBar";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlEdit SearchBar
+        {
+            get
+            {
+                if ((this.mSearchBar == null))
+                {
+                    this.mSearchBar = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mSearchBar.SearchProperties[XamlEdit.PropertyNames.AutomationId] = "TextBox";
+                    this.mSearchBar.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mSearchBar;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlEdit mSearchBar;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class ErrorWindow : UITestControl
+    {
+        
+        public ErrorWindow()
+        {
+            #region Search Criteria
+            this.TechnologyName = "UIA";
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Window";
+            this.SearchProperties[UITestControl.PropertyNames.Name] = "ERROR";
+            this.SearchProperties["FrameworkId"] = "Win32";
+            this.WindowTitles.Add("ERROR");
+            #endregion
+        }
+        
+        #region Properties
+        public ErrorWindowButtons ErrorWindowButtons
+        {
+            get
+            {
+                if ((this.mErrorWindowButtons == null))
+                {
+                    this.mErrorWindowButtons = new ErrorWindowButtons(this);
+                }
+                return this.mErrorWindowButtons;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private ErrorWindowButtons mErrorWindowButtons;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class ErrorWindowButtons : DirectUIControl
+    {
+        
+        public ErrorWindowButtons(UITestControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[DirectUIControl.PropertyNames.AutomationId] = "ButtonBar";
+            this.WindowTitles.Add("ERROR");
+            #endregion
+        }
+        
+        #region Properties
+        public DirectUIControl CloseButton
+        {
+            get
+            {
+                if ((this.mCloseButton == null))
+                {
+                    this.mCloseButton = new DirectUIControl(this);
+                    #region Search Criteria
+                    this.mCloseButton.SearchProperties[DirectUIControl.PropertyNames.AutomationId] = "Button0";
+                    this.mCloseButton.WindowTitles.Add("ERROR");
+                    #endregion
+                }
+                return this.mCloseButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private DirectUIControl mCloseButton;
         #endregion
     }
 }

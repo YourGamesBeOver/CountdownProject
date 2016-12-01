@@ -84,38 +84,65 @@ namespace Countdown
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new ContentDialog { Title = "Add Task", HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center, Visibility = Visibility.Visible };
+            bool Invalid = true;
+            String name = "", description = "";
+            DateTime date = new DateTime();
+            TimeSpan time = new TimeSpan();
 
-            var stack = new StackPanel();
-            var nameTextBox = new TextBox();
-            var descriptionTextBox = new TextBox();
-            var selectedDueDate = new DatePicker();
-            var selectedDueTime = new TimePicker();
-            var parentTaskBox = new ComboBox();
-            stack.Children.Add(new TextBlock { Text = "Task Name" });
-            stack.Children.Add(nameTextBox);
-            stack.Children.Add(new TextBlock { Text = "Description" });
-            stack.Children.Add(descriptionTextBox);
-            stack.Children.Add(new TextBlock { Text = "Due Date" });
-            stack.Children.Add(selectedDueDate);
-            stack.Children.Add(selectedDueTime);
+            while (Invalid)
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = "Add Task",
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Visibility = Visibility.Visible
+                };
 
-            dialog.Content = stack;
-            dialog.PrimaryButtonText = "Add";
-            dialog.SecondaryButtonText = "Cancel";
+                var stack = new StackPanel();
+                var nameTextBox = new TextBox();
+                var descriptionTextBox = new TextBox();
+                var selectedDueDate = new DatePicker();
+                var selectedDueTime = new TimePicker();
+                stack.Children.Add(new TextBlock {Text = "Task Name"});
+                stack.Children.Add(nameTextBox);
+                stack.Children.Add(new TextBlock {Text = "Description"});
+                stack.Children.Add(descriptionTextBox);
+                stack.Children.Add(new TextBlock {Text = "Due Date"});
+                stack.Children.Add(selectedDueDate);
+                stack.Children.Add(selectedDueTime);
 
-            var result = await dialog.ShowAsync();
+                dialog.Content = stack;
+                dialog.PrimaryButtonText = "Add";
+                dialog.SecondaryButtonText = "Cancel";
 
-            if (result != ContentDialogResult.Primary) return;
+                var result = await dialog.ShowAsync();
 
-            var selectedTime = new DateTime(selectedDueDate.Date.Year, selectedDueDate.Date.Month,
-                selectedDueDate.Date.Day, selectedDueTime.Time.Hours, selectedDueTime.Time.Minutes,
-                selectedDueTime.Time.Seconds);
+                if (result != ContentDialogResult.Primary) return;
+
+                Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
+                if (Invalid)
+                {
+                    MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
+                    var ok = error.ShowAsync();
+                }
+                else
+                {
+                    name = nameTextBox.Text;
+                    description = descriptionTextBox.Text;
+                    date = selectedDueDate.Date.DateTime;
+                    time = selectedDueTime.Time;
+                }
+            }
+
+            var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
+                date.Date.Day, time.Hours, time.Minutes,
+                time.Seconds);
             var addedTask = new Task
             {
                 TaskId = 0,
-                Name = nameTextBox.Text,
-                Description = descriptionTextBox.Text,
+                Name = name,
+                Description = description,
                 DueDate = selectedTime,
                 RemainingTime = selectedTime.Subtract(DateTime.Now)
             };
@@ -149,6 +176,14 @@ namespace Countdown
                     var result = await dialog.ShowAsync();
                     if (result != ContentDialogResult.Primary) return;
                     TaskList.RemoveAt(selectedItemToRemove);
+                }
+                else
+                {
+                    text.Text = "No task selected";
+                    dialog.Content = text;
+                    dialog.IsSecondaryButtonEnabled = false;
+                    dialog.PrimaryButtonText = "OK";
+                    var result = await dialog.ShowAsync();
                 }
                 MyContentControl.Content = new ListViewer(TaskList);
             }
