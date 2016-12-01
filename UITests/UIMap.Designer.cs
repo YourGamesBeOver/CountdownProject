@@ -333,6 +333,66 @@ namespace UITests
                 return this.mUISearchBar;
             }
         }
+        
+        public UIAddSubtaskWindow UIAddSubtaskWindow
+        {
+            get
+            {
+                if ((this.mUIAddSubtaskWindow == null))
+                {
+                    this.mUIAddSubtaskWindow = new UIAddSubtaskWindow(this);
+                }
+                return this.mUIAddSubtaskWindow;
+            }
+        }
+        
+        public XamlList SubtaskListBox
+        {
+            get
+            {
+                if ((this.mSubtaskListBox == null))
+                {
+                    this.mSubtaskListBox = new XamlList(this);
+                    #region Search Criteria
+                    this.mSubtaskListBox.SearchProperties[XamlList.PropertyNames.Instance] = "2";
+                    this.mSubtaskListBox.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mSubtaskListBox;
+            }
+        }
+        
+        public XamlText DetailsTaskNameText
+        {
+            get
+            {
+                if ((this.mDetailsTaskNameText == null))
+                {
+                    this.mDetailsTaskNameText = new XamlText(this);
+                    #region Search Criteria
+                    this.mDetailsTaskNameText.SearchProperties[XamlText.PropertyNames.Name] = "Sample Task";
+                    this.mDetailsTaskNameText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDetailsTaskNameText;
+            }
+        }
+        
+        public XamlText DetailsTaskDescriptionText
+        {
+            get
+            {
+                if ((this.mDetailsTaskDescriptionText == null))
+                {
+                    this.mDetailsTaskDescriptionText = new XamlText(this);
+                    #region Search Criteria
+                    this.mDetailsTaskDescriptionText.SearchProperties[XamlText.PropertyNames.Name] = "Sample Description";
+                    this.mDetailsTaskDescriptionText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDetailsTaskDescriptionText;
+            }
+        }
         #endregion
         
         #region Fields
@@ -367,6 +427,14 @@ namespace UITests
         private UIDeleteWindow mUIDeleteWindow;
         
         private UISearchBar mUISearchBar;
+        
+        private UIAddSubtaskWindow mUIAddSubtaskWindow;
+        
+        private XamlList mSubtaskListBox;
+        
+        private XamlText mDetailsTaskNameText;
+        
+        private XamlText mDetailsTaskDescriptionText;
         #endregion
     }
     
@@ -507,12 +575,30 @@ namespace UITests
                 return this.mUIRemoveTaskButton;
             }
         }
+        
+        public XamlButton UIAddSubtaskButton
+        {
+            get
+            {
+                if ((this.mUIAddSubtaskButton == null))
+                {
+                    this.mUIAddSubtaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIAddSubtaskButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "AddSubtaskButton";
+                    this.mUIAddSubtaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIAddSubtaskButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlButton mUIAddTaskButton;
         
         private XamlButton mUIRemoveTaskButton;
+        
+        private XamlButton mUIAddSubtaskButton;
         #endregion
     }
     
@@ -587,6 +673,18 @@ namespace UITests
                 return this.mNoTaskSelectedText;
             }
         }
+        
+        public UISubtaskNameText UISubtaskNameText
+        {
+            get
+            {
+                if ((this.mUISubtaskNameText == null))
+                {
+                    this.mUISubtaskNameText = new UISubtaskNameText(this);
+                }
+                return this.mUISubtaskNameText;
+            }
+        }
         #endregion
         
         #region Fields
@@ -597,6 +695,8 @@ namespace UITests
         private XamlText mNoTasksToDeleteText;
         
         private XamlText mNoTaskSelectedText;
+        
+        private UISubtaskNameText mUISubtaskNameText;
         #endregion
     }
     
@@ -669,6 +769,42 @@ namespace UITests
         
         #region Fields
         private XamlEdit mDescriptionTextBox;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UISubtaskNameText : XamlText
+    {
+        
+        public UISubtaskNameText(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlText.PropertyNames.Name] = "Subtask Name";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlEdit NameTextBox
+        {
+            get
+            {
+                if ((this.mNameTextBox == null))
+                {
+                    this.mNameTextBox = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mNameTextBox.SearchConfigurations.Add(SearchConfiguration.NextSibling);
+                    this.mNameTextBox.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mNameTextBox;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlEdit mNameTextBox;
         #endregion
     }
     
@@ -977,6 +1113,42 @@ namespace UITests
         
         #region Fields
         private XamlEdit mSearchBar;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIAddSubtaskWindow : XamlWindow
+    {
+        
+        public UIAddSubtaskWindow(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.Name] = "Add Subtask";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton AddSubtaskButton
+        {
+            get
+            {
+                if ((this.mAddSubtaskButton == null))
+                {
+                    this.mAddSubtaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mAddSubtaskButton.SearchProperties[XamlButton.PropertyNames.Name] = "Add";
+                    this.mAddSubtaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mAddSubtaskButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mAddSubtaskButton;
         #endregion
     }
     

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;
@@ -179,11 +180,8 @@ namespace Countdown
                 }
                 else
                 {
-                    text.Text = "No task selected";
-                    dialog.Content = text;
-                    dialog.IsSecondaryButtonEnabled = false;
-                    dialog.PrimaryButtonText = "OK";
-                    var result = await dialog.ShowAsync();
+                    var error = new MessageDialog("No Task selected to delete", "ERROR");
+                    await error.ShowAsync();
                 }
                 MyContentControl.Content = new ListViewer(TaskList);
             }
@@ -284,7 +282,7 @@ namespace Countdown
                         Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
                         if (Invalid)
                         {
-                            MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
+                            MessageDialog error = new MessageDialog("Invalid Subtask Name or Description", "ERROR");
                             var ok = error.ShowAsync();
                         }
                         else
@@ -311,11 +309,16 @@ namespace Countdown
                     Task[] updatedSubtaskList = new Task[TaskList[selectedItem].Subtasks.Length + 1];
                     for(int i = 0; i < TaskList[selectedItem].Subtasks.Length; i++)
                     {
-                        updatedSubtaskList[i + 1] = TaskList[selectedItem].Subtasks[i];
+                        updatedSubtaskList[i] = TaskList[selectedItem].Subtasks[i];
                     }
-                    updatedSubtaskList[0] = addedTask;
+                    updatedSubtaskList[TaskList[selectedItem].Subtasks.Length] = addedTask;
                     TaskList[selectedItem].Subtasks = updatedSubtaskList;
                     MyContentControl.Content = new ListViewer(TaskList);
+                }
+                else
+                {
+                    var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
+                    await error.ShowAsync();
                 }
             }
         }

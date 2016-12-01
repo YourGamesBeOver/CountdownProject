@@ -38,7 +38,53 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel Name="DetailsStackPanel" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+        <StackPanel Name="DetailsStackPanel" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Task Name: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Name}" />
+                </Grid>
+            </ItemsControl>
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Task Description: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Description}"/>
+                </Grid>
+            </ItemsControl>
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Due Date: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.DueDate}"/>
+                </Grid>
+            </ItemsControl>
+            <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
+            <ListBox ItemsSource="{x:Bind SelectedTask.Subtasks}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="serialization:Task">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="{x:Bind Name}"/>
+                            <TextBlock Grid.Row="1" Text="{x:Bind DueDate}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
         
     </Grid>
 </Page>
