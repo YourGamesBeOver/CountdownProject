@@ -32,15 +32,6 @@ namespace Countdown
             TaskList = tasks;
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            var list = e.Parameter as ObservableCollection<Task>;
-            if (list != null)
-            {
-                TaskList = list;
-            }
-        }
-
         private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selectedIndex = TaskListBox.SelectedIndex;

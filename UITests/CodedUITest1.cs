@@ -174,26 +174,40 @@ namespace UITests {
         [TestMethod]
         public void TestEditTaskName()
         {
-            /*
-                *  1) Open app
-                *  2) create new task
-                *  3) click on task
-                *  4) click edit task
-                *  5) edit name
-                *  6) check that name is different
-            */
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
+
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Find();
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Edited Task";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIEditTaskWindow.UIUpdateButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+
+            Assert.AreEqual("Edited Task", this.UIMap.UICountdownWindow.EditedTaskText.DisplayText, "Name not edited");
         }
         [TestMethod]
         public void TestEditTaskDescription()
         {
-            /*
-                *  1) Open app
-                *  2) create new task
-                *  3) click on task
-                *  4) click edit task
-                *  5) edit description
-                *  6) check that description is different
-            */
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
+
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text = "Edited Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIEditTaskWindow.UIUpdateButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+
+            Assert.AreEqual("Edited Description", this.UIMap.UICountdownWindow.EditedDescriptionText.DisplayText, "Description not edited");
         }
 
         [TestMethod]

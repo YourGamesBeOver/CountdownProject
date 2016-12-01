@@ -4,6 +4,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
 using Windows.UI.Xaml.Media;
@@ -17,7 +18,7 @@ namespace Countdown
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public ObservableCollection<Task> TaskList { get; } = new ObservableCollection<Task>();
+        public ObservableCollection<Task> TaskList = new ObservableCollection<Task>();
         public ObservableCollection<Task> SearchedTaskList { get; set; } = new ObservableCollection<Task>();
 
         public MainPage()
@@ -323,9 +324,87 @@ namespace Countdown
             }
         }
 
-        private void EditTaskButton_Click(object sender, RoutedEventArgs e)
+        private async void EditTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (MyContentControl.Content is ListViewer)
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItem = TaskComboBox.SelectedIndex;
+                if (selectedItem != -1)
+                {
+                    bool Invalid = true;
+                    String name = TaskList[selectedItem].Name, description = TaskList[selectedItem].Description;
+                    DateTime date = TaskList[selectedItem].DueDate.Date;
+                    TimeSpan time = TaskList[selectedItem].DueDate.TimeOfDay;
+
+                    while (Invalid)
+                    {
+                        var dialog = new ContentDialog
+                        {
+                            Title = "Edit Task",
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Visibility = Visibility.Visible
+                        };
+
+                        var stack = new StackPanel();
+                        var nameTextBox = new TextBox {Text = name};
+                        var descriptionTextBox = new TextBox {Text = description};
+                        var selectedDueDate = new DatePicker {Date = date};
+                        var selectedDueTime = new TimePicker {Time = time};
+                        stack.Children.Add(new TextBlock { Text = "Task Name" });
+                        stack.Children.Add(nameTextBox);
+                        stack.Children.Add(new TextBlock { Text = "Description" });
+                        stack.Children.Add(descriptionTextBox);
+                        stack.Children.Add(new TextBlock { Text = "Due Date" });
+                        stack.Children.Add(selectedDueDate);
+                        stack.Children.Add(selectedDueTime);
+
+                        dialog.Content = stack;
+                        dialog.PrimaryButtonText = "Update";
+                        dialog.SecondaryButtonText = "Cancel";
+
+                        var result = await dialog.ShowAsync();
+
+                        if (result != ContentDialogResult.Primary) return;
+
+                        Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
+                        if (Invalid)
+                        {
+                            MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
+                            var ok = error.ShowAsync();
+                        }
+                        else
+                        {
+                            name = nameTextBox.Text;
+                            description = descriptionTextBox.Text;
+                            date = selectedDueDate.Date.DateTime;
+                            time = selectedDueTime.Time;
+                        }
+                    }
+
+                    var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
+                        date.Date.Day, time.Hours, time.Minutes,
+                        time.Seconds);
+                    var editedTask = new Task
+                    {
+                        TaskId = 0,
+                        Name = name,
+                        Description = description,
+                        DueDate = selectedTime,
+                        Subtasks = TaskList[selectedItem].Subtasks,
+                        RemainingTime = selectedTime.Subtract(DateTime.Now)
+                    };
+
+                    TaskList[selectedItem] = editedTask;
+                    MyContentControl.Content = new ListViewer(TaskList);
+                }
+                else
+                {
+                    var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
+                    await error.ShowAsync();
+                }
+            }
         }
     }
 

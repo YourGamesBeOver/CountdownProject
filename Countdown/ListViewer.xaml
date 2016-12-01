@@ -13,10 +13,10 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch" SelectionChanged="TaskListBox_SelectionChanged">
+        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" SelectionChanged="TaskListBox_SelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
-                    <Grid >
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" MinWidth="200"/>
                             <ColumnDefinition Width="1*" MinWidth="200"/>
@@ -32,7 +32,7 @@
                             <TextBlock Text="{x:Bind DueDate}" Margin="10,0,0,0"/>
                         </Border>
                         <Border BorderThickness="10" Grid.Column="1" Grid.Row="1">
-                            <TextBlock Text="{x:Bind RemainingTime}" Margin="10,0,0,0"/>
+                            <TextBlock Text="{x:Bind RemainingTime, Mode=OneWay}" Margin="10,0,0,0"/>
                         </Border>
                     </Grid>
                 </DataTemplate>
@@ -85,6 +85,6 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        
+       
     </Grid>
 </Page>

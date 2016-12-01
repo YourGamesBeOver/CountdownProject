@@ -393,6 +393,66 @@ namespace UITests
                 return this.mDetailsTaskDescriptionText;
             }
         }
+        
+        public UIEditTaskWindow UIEditTaskWindow
+        {
+            get
+            {
+                if ((this.mUIEditTaskWindow == null))
+                {
+                    this.mUIEditTaskWindow = new UIEditTaskWindow(this);
+                }
+                return this.mUIEditTaskWindow;
+            }
+        }
+        
+        public XamlText EditedTaskText
+        {
+            get
+            {
+                if ((this.mEditedTaskText == null))
+                {
+                    this.mEditedTaskText = new XamlText(this);
+                    #region Search Criteria
+                    this.mEditedTaskText.SearchProperties[XamlText.PropertyNames.Name] = "Edited Task";
+                    this.mEditedTaskText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mEditedTaskText;
+            }
+        }
+        
+        public XamlText EditedDescriptionText
+        {
+            get
+            {
+                if ((this.mEditedDescriptionText == null))
+                {
+                    this.mEditedDescriptionText = new XamlText(this);
+                    #region Search Criteria
+                    this.mEditedDescriptionText.SearchProperties[XamlText.PropertyNames.Name] = "Edited Description";
+                    this.mEditedDescriptionText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mEditedDescriptionText;
+            }
+        }
+        
+        public XamlText EditedDueDateText
+        {
+            get
+            {
+                if ((this.mEditedDueDateText == null))
+                {
+                    this.mEditedDueDateText = new XamlText(this);
+                    #region Search Criteria
+                    this.mEditedDueDateText.SearchProperties[XamlText.PropertyNames.Name] = "12/25/2016 12:00:00 PM";
+                    this.mEditedDueDateText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mEditedDueDateText;
+            }
+        }
         #endregion
         
         #region Fields
@@ -435,6 +495,14 @@ namespace UITests
         private XamlText mDetailsTaskNameText;
         
         private XamlText mDetailsTaskDescriptionText;
+        
+        private UIEditTaskWindow mUIEditTaskWindow;
+        
+        private XamlText mEditedTaskText;
+        
+        private XamlText mEditedDescriptionText;
+        
+        private XamlText mEditedDueDateText;
         #endregion
     }
     
@@ -591,6 +659,22 @@ namespace UITests
                 return this.mUIAddSubtaskButton;
             }
         }
+        
+        public XamlButton UIEditTaskButton
+        {
+            get
+            {
+                if ((this.mUIEditTaskButton == null))
+                {
+                    this.mUIEditTaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIEditTaskButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "EditTaskButton";
+                    this.mUIEditTaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIEditTaskButton;
+            }
+        }
         #endregion
         
         #region Fields
@@ -599,6 +683,8 @@ namespace UITests
         private XamlButton mUIRemoveTaskButton;
         
         private XamlButton mUIAddSubtaskButton;
+        
+        private XamlButton mUIEditTaskButton;
         #endregion
     }
     
@@ -1149,6 +1235,42 @@ namespace UITests
         
         #region Fields
         private XamlButton mAddSubtaskButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UIEditTaskWindow : XamlWindow
+    {
+        
+        public UIEditTaskWindow(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlControl.PropertyNames.Name] = "Edit Task";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlButton UIUpdateButton
+        {
+            get
+            {
+                if ((this.mUIUpdateButton == null))
+                {
+                    this.mUIUpdateButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUIUpdateButton.SearchProperties[XamlButton.PropertyNames.Name] = "Update";
+                    this.mUIUpdateButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUIUpdateButton;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlButton mUIUpdateButton;
         #endregion
     }
     
