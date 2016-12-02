@@ -140,13 +140,14 @@ namespace Countdown
             var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
                 date.Date.Day, time.Hours, time.Minutes,
                 time.Seconds);
+            var rawTime = selectedTime.Subtract(DateTime.Now);
             var addedTask = new Task
             {
                 TaskId = 0,
                 Name = name,
                 Description = description,
                 DueDate = selectedTime,
-                RemainingTime = selectedTime.Subtract(DateTime.Now)
+                RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
             };
             TaskList.Add(addedTask);
             if (MyContentControl.Content is ListViewer)
@@ -298,13 +299,14 @@ namespace Countdown
                     var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
                         date.Date.Day, time.Hours, time.Minutes,
                         time.Seconds);
+                    var rawTime = selectedTime.Subtract(DateTime.Now);
                     var addedTask = new Task
                     {
                         TaskId = 0,
                         Name = name,
                         Description = description,
                         DueDate = selectedTime,
-                        RemainingTime = selectedTime.Subtract(DateTime.Now)
+                        RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                     };
 
                     Task[] updatedSubtaskList = new Task[TaskList[selectedItem].Subtasks.Length + 1];
@@ -386,6 +388,7 @@ namespace Countdown
                     var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
                         date.Date.Day, time.Hours, time.Minutes,
                         time.Seconds);
+                    var rawTime = selectedTime.Subtract(DateTime.Now);
                     var editedTask = new Task
                     {
                         TaskId = 0,
@@ -393,7 +396,7 @@ namespace Countdown
                         Description = description,
                         DueDate = selectedTime,
                         Subtasks = TaskList[selectedItem].Subtasks,
-                        RemainingTime = selectedTime.Subtract(DateTime.Now)
+                        RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                     };
 
                     TaskList[selectedItem] = editedTask;

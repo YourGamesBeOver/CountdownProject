@@ -30,6 +30,25 @@ namespace Countdown
         {
             this.InitializeComponent();
             TaskList = tasks;
+            CreateTimer();
+        }
+
+        public void CreateTimer()
+        {
+            DispatcherTimer timer = new DispatcherTimer();
+            timer.Tick += timer_Tick;
+            timer.Interval = TimeSpan.FromSeconds(1);
+            timer.Start();
+        }
+
+        private void timer_Tick(object sender, object e)
+        {
+            if (TaskListBox.SelectedIndex != -1)
+            {
+                TimeSpan rawValue = SelectedTask.DueDate.Subtract(DateTime.Now);
+                SelectedTask.RemainingTime = new TimeSpan(rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
+                Bindings.Update();
+            }
         }
 
         private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
