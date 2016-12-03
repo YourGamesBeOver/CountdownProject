@@ -21,10 +21,19 @@ namespace Countdown
         public ObservableCollection<Task> TaskList = new ObservableCollection<Task>();
         public ObservableCollection<Task> SearchedTaskList { get; set; } = new ObservableCollection<Task>();
 
+        public Page DisplayedPage;
+        private ListViewer ListTaskView = new ListViewer();
+        private CalendarViewer CalendarTaskView = new CalendarViewer();
+        private SettingsViewer SettingsView = new SettingsViewer();
+
+        private int uniqueID = 0;
+
         public MainPage()
         {
             this.InitializeComponent();
-            MyContentControl.Content = new ListViewer();
+            //MyContentControl.Content = new ListViewer();
+            DisplayedPage = ListTaskView;
+            Bindings.Update();
             CreateTimer();
         }
 
@@ -58,17 +67,21 @@ namespace Countdown
 
             if (ListViewListBoxItem.IsSelected)
             {
-                MyContentControl.Content = new ListViewer(TaskList);
+                DisplayedPage = ListTaskView;
+                ListTaskView.TaskList = TaskList;
+                Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Visible;
             }
             if (CalendarViewListBoxItem.IsSelected)
             {
-                MyContentControl.Content = new CalendarViewer();
+                DisplayedPage = CalendarTaskView;
+                Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Visible;
             }
             else if (SettingsListBoxItem.IsSelected)
             {
-                MyContentControl.Content = new SettingsViewer();
+                DisplayedPage = SettingsView;
+                Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Collapsed;
             }
         }
@@ -78,10 +91,10 @@ namespace Countdown
             var currentView = SystemNavigationManager.GetForCurrentView();
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MyListBox.SelectedItem = null;
-            //if (MyFrame.CanGoBack)
-            {
-                //MyFrame.GoBack();
-            }
+            DisplayedPage = ListTaskView;
+            ListTaskView.TaskList = TaskList;
+            Bindings.Update();
+            MyCommandBar.Visibility = Visibility.Visible;
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -143,16 +156,19 @@ namespace Countdown
             var rawTime = selectedTime.Subtract(DateTime.Now);
             var addedTask = new Task
             {
-                TaskId = 0,
+                TaskId = uniqueID,
                 Name = name,
                 Description = description,
                 DueDate = selectedTime,
                 RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
             };
+            uniqueID++;
             TaskList.Add(addedTask);
             if (MyContentControl.Content is ListViewer)
             {
-                MyContentControl.Content = new ListViewer(TaskList);
+                DisplayedPage = ListTaskView;
+                ListTaskView.TaskList = TaskList;
+                Bindings.Update();
             }
             else if (MyContentControl.Content is CalendarViewer)
             {
@@ -178,14 +194,34 @@ namespace Countdown
                 {
                     var result = await dialog.ShowAsync();
                     if (result != ContentDialogResult.Primary) return;
-                    TaskList.RemoveAt(selectedItemToRemove);
+                    if (SearchedTaskList.Count != 0)
+                    {
+                        foreach (Task t in TaskList)
+                        {
+                            if (t.TaskId == SearchedTaskList[selectedItemToRemove].TaskId)
+                            {
+                                TaskList.Remove(t);
+                                break;
+                            }
+                        }
+                        SearchedTaskList.RemoveAt(selectedItemToRemove);
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = SearchedTaskList;
+                        Bindings.Update();
+                    }
+                    else
+                    {
+                        TaskList.RemoveAt(selectedItemToRemove);
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = TaskList;
+                        Bindings.Update();
+                    }
                 }
                 else
                 {
                     var error = new MessageDialog("No Task selected to delete", "ERROR");
                     await error.ShowAsync();
                 }
-                MyContentControl.Content = new ListViewer(TaskList);
             }
         }
 
@@ -226,15 +262,18 @@ namespace Countdown
 
         private void SearchBar_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-            foreach(Task t in TaskList)
+            SearchedTaskList = new ObservableCollection<Task>();
+            foreach (Task t in TaskList)
             {
                 if (t.Name.ToLower().Contains(sender.Text.ToLower()))
                 {
                     SearchedTaskList.Add(t);
                 }
             }
-            MyContentControl.Content = new ListViewer(SearchedTaskList);
-            SearchedTaskList = new ObservableCollection<Task>();
+            DisplayedPage = ListTaskView;
+            ListTaskView.TaskList = SearchedTaskList;
+            Bindings.Update();
+            
         }
 
         private async void AddSubtaskButton_Click(object sender, RoutedEventArgs e)
@@ -302,21 +341,46 @@ namespace Countdown
                     var rawTime = selectedTime.Subtract(DateTime.Now);
                     var addedTask = new Task
                     {
-                        TaskId = 0,
+                        TaskId = uniqueID,
                         Name = name,
                         Description = description,
                         DueDate = selectedTime,
                         RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                     };
+                    uniqueID++;
+                    var updatedSubtaskList = SearchedTaskList.Count == 0
+                        ? new Task[TaskList[selectedItem].Subtasks.Length + 1]
+                        : new Task[SearchedTaskList[selectedItem].Subtasks.Length + 1];
 
-                    Task[] updatedSubtaskList = new Task[TaskList[selectedItem].Subtasks.Length + 1];
                     for(int i = 0; i < TaskList[selectedItem].Subtasks.Length; i++)
                     {
                         updatedSubtaskList[i] = TaskList[selectedItem].Subtasks[i];
                     }
-                    updatedSubtaskList[TaskList[selectedItem].Subtasks.Length] = addedTask;
-                    TaskList[selectedItem].Subtasks = updatedSubtaskList;
-                    MyContentControl.Content = new ListViewer(TaskList);
+
+                    if (SearchedTaskList.Count == 0)
+                    {
+                        updatedSubtaskList[TaskList[selectedItem].Subtasks.Length] = addedTask;
+                        TaskList[selectedItem].Subtasks = updatedSubtaskList;
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = TaskList;
+                        Bindings.Update();
+                    }
+                    else
+                    {
+                        updatedSubtaskList[SearchedTaskList[selectedItem].Subtasks.Length] = addedTask;
+                        SearchedTaskList[selectedItem].Subtasks = updatedSubtaskList;
+                        foreach (Task t in TaskList)
+                        {
+                            if (t.TaskId == SearchedTaskList[selectedItem].TaskId)
+                            {
+                                t.Subtasks = updatedSubtaskList;
+                                break;
+                            }
+                        }
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = SearchedTaskList;
+                        Bindings.Update();
+                    }
                 }
                 else
                 {
@@ -335,9 +399,10 @@ namespace Countdown
                 if (selectedItem != -1)
                 {
                     bool Invalid = true;
-                    String name = TaskList[selectedItem].Name, description = TaskList[selectedItem].Description;
-                    DateTime date = TaskList[selectedItem].DueDate.Date;
-                    TimeSpan time = TaskList[selectedItem].DueDate.TimeOfDay;
+                    var currentList = SearchedTaskList.Count != 0 ? SearchedTaskList : TaskList;
+                    String name = currentList[selectedItem].Name, description = currentList[selectedItem].Description;
+                    DateTime date = currentList[selectedItem].DueDate.Date;
+                    TimeSpan time = currentList[selectedItem].DueDate.TimeOfDay;
 
                     while (Invalid)
                     {
@@ -391,16 +456,37 @@ namespace Countdown
                     var rawTime = selectedTime.Subtract(DateTime.Now);
                     var editedTask = new Task
                     {
-                        TaskId = 0,
+                        TaskId = currentList[selectedItem].TaskId,
                         Name = name,
                         Description = description,
                         DueDate = selectedTime,
-                        Subtasks = TaskList[selectedItem].Subtasks,
+                        Subtasks = currentList[selectedItem].Subtasks,
                         RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                     };
 
-                    TaskList[selectedItem] = editedTask;
-                    MyContentControl.Content = new ListViewer(TaskList);
+                    if (SearchedTaskList.Count != 0)
+                    {
+                        SearchedTaskList[selectedItem] = editedTask;
+                        for (int i = 0; i < TaskList.Count; i++)
+                        {
+                            if (TaskList[i].TaskId == SearchedTaskList[selectedItem].TaskId)
+                            {
+                                TaskList[i] = editedTask;
+                                break;
+                            }
+                        }
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = SearchedTaskList;
+                        Bindings.Update();
+                        SearchBar_TextChanged(SearchBar, null);
+                    }
+                    else
+                    {
+                        TaskList[selectedItem] = editedTask;
+                        DisplayedPage = ListTaskView;
+                        ListTaskView.TaskList = TaskList;
+                        Bindings.Update();
+                    }
                 }
                 else
                 {

@@ -82,7 +82,7 @@
                 </ListBox>
             </SplitView.Pane>
             <SplitView.Content>
-                <ContentControl Name="MyContentControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ContentControl Name="MyContentControl" Content="{x:Bind DisplayedPage, Mode=OneWay}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 
                 </ContentControl>
             </SplitView.Content>

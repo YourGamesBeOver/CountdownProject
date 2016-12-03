@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
 using System.ComponentModel;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -18,18 +19,25 @@ namespace Countdown
     /// </summary>
     public sealed partial class ListViewer : Page
     {
-        public ObservableCollection<Task> TaskList { get; private set; } = new ObservableCollection<Task>();
-        public Task SelectedTask = new Task();
+        public ObservableCollection<Task> TaskList
+        {
+            get { return taskList; }
+            set
+            {
+                taskList = value;
+                Bindings.Update();
+            }
+        }
+
+        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+
+        public Task SelectedTask;
+
+        private int previousSelection = -1;
 
         public ListViewer()
         {
             this.InitializeComponent();
-        }
-
-        public ListViewer(ObservableCollection<Task> tasks)
-        {
-            this.InitializeComponent();
-            TaskList = tasks;
             CreateTimer();
         }
 
@@ -43,7 +51,7 @@ namespace Countdown
 
         private void timer_Tick(object sender, object e)
         {
-            if (TaskListBox.SelectedIndex != -1)
+            if (SelectedTask != null)
             {
                 TimeSpan rawValue = SelectedTask.DueDate.Subtract(DateTime.Now);
                 SelectedTask.RemainingTime = new TimeSpan(rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
@@ -56,7 +64,20 @@ namespace Countdown
             int selectedIndex = TaskListBox.SelectedIndex;
             if (selectedIndex != -1)
             {
-                SelectedTask = TaskList[selectedIndex];
+                if (selectedIndex == previousSelection)
+                {
+                    TaskListBox.SelectedIndex = -1;
+                    previousSelection = selectedIndex;
+                }
+                else
+                {
+                    SelectedTask = TaskList[selectedIndex];
+                    Bindings.Update();
+                }
+            }
+            else
+            {
+                SelectedTask = null;
                 Bindings.Update();
             }
 

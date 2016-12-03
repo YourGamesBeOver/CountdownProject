@@ -39,7 +39,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Task Name: " HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Name}" />
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Name, Mode=OneWay}" />
                 </Grid>
             </ItemsControl>
             <ItemsControl>
@@ -49,7 +49,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Task Description: " HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Description}"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Description, Mode=OneWay}"/>
                 </Grid>
             </ItemsControl>
             <ItemsControl>
@@ -59,7 +59,7 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Due Date: " HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.DueDate}"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.DueDate, Mode=OneWay}"/>
                 </Grid>
             </ItemsControl>
             <ItemsControl>
@@ -69,11 +69,11 @@
                         <ColumnDefinition Width="1*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" Text="Remaining Time: " HorizontalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.RemainingTime}"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.RemainingTime, Mode=OneWay}"/>
                 </Grid>
             </ItemsControl>
             <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
-            <ListBox ItemsSource="{x:Bind SelectedTask.Subtasks}">
+            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="serialization:Task">
                         <Grid>
