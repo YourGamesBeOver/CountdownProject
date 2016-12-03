@@ -84,13 +84,35 @@ namespace UITests {
         [TestMethod]
         public void TestDaysTasksAreShownWhenDaySelected()
         {
-            /*
-                *  1) Open app
-                *  2) Navigate to Calendar view
-                *  3) create a task
-                *  4) Click on a day
-                *  5) check for specific task 
-            */
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task 1";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December3);
+
+            Assert.AreEqual(1, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
+        }
+
+        [TestMethod]
+        public void TestCalendarViewClickedDayShowsNoEvents()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task 1";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December4);
+
+            Assert.AreEqual(0, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
+
+            Assert.AreEqual("No Tasks Today", this.UIMap.UICountdownWindow.NoTasksTodayText.DisplayText, "Text Not Displayed");
         }
 
         [TestMethod]
@@ -169,6 +191,7 @@ namespace UITests {
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
 
             Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Message not shown");
+            Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
         }
 
         [TestMethod]
@@ -343,6 +366,7 @@ namespace UITests {
 
             this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Find();
             this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "task 3";
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
             Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "search didn't work with different capitalization");
         }
 

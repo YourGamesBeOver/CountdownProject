@@ -453,6 +453,46 @@ namespace UITests
                 return this.mEditedDueDateText;
             }
         }
+        
+        public CalendarView CalendarView
+        {
+            get
+            {
+                if ((this.mCalendarView == null))
+                {
+                    this.mCalendarView = new CalendarView(this);
+                }
+                return this.mCalendarView;
+            }
+        }
+        
+        public DayTaskListBox DayTaskListBox
+        {
+            get
+            {
+                if ((this.mDayTaskListBox == null))
+                {
+                    this.mDayTaskListBox = new DayTaskListBox(this);
+                }
+                return this.mDayTaskListBox;
+            }
+        }
+        
+        public XamlText NoTasksTodayText
+        {
+            get
+            {
+                if ((this.mNoTasksTodayText == null))
+                {
+                    this.mNoTasksTodayText = new XamlText(this);
+                    #region Search Criteria
+                    this.mNoTasksTodayText.SearchProperties[XamlText.PropertyNames.Name] = "No Tasks Today";
+                    this.mNoTasksTodayText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mNoTasksTodayText;
+            }
+        }
         #endregion
         
         #region Fields
@@ -503,6 +543,12 @@ namespace UITests
         private XamlText mEditedDescriptionText;
         
         private XamlText mEditedDueDateText;
+        
+        private CalendarView mCalendarView;
+        
+        private DayTaskListBox mDayTaskListBox;
+        
+        private XamlText mNoTasksTodayText;
         #endregion
     }
     
@@ -1271,6 +1317,100 @@ namespace UITests
         
         #region Fields
         private XamlButton mUIUpdateButton;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class CalendarView : XamlControl
+    {
+        
+        public CalendarView(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[UITestControl.PropertyNames.ControlType] = "Pane";
+            this.SearchProperties[UITestControl.PropertyNames.ClassName] = "CalendarScrollViewer";
+            this.SearchProperties["AutomationId"] = "MonthViewScrollViewer";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlControl December3
+        {
+            get
+            {
+                if ((this.mDecember3 == null))
+                {
+                    this.mDecember3 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember3.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember3.SearchProperties[UITestControl.PropertyNames.Name] = "3";
+                    this.mDecember3.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember3;
+            }
+        }
+        
+        public XamlControl December4
+        {
+            get
+            {
+                if ((this.mDecember4 == null))
+                {
+                    this.mDecember4 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember4.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember4.SearchProperties[UITestControl.PropertyNames.Name] = "4";
+                    this.mDecember4.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember4;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlControl mDecember3;
+        
+        private XamlControl mDecember4;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class DayTaskListBox : XamlList
+    {
+        
+        public DayTaskListBox(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlList.PropertyNames.AutomationId] = "DayTaskListBox";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlListItem FirstItemOfDay
+        {
+            get
+            {
+                if ((this.mFirstItemOfDay == null))
+                {
+                    this.mFirstItemOfDay = new XamlListItem(this);
+                    #region Search Criteria
+                    this.mFirstItemOfDay.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Networking.Serialization.Task";
+                    this.mFirstItemOfDay.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mFirstItemOfDay;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlListItem mFirstItemOfDay;
         #endregion
     }
     

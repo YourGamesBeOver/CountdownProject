@@ -726,6 +726,87 @@
               <SupportLevel>0</SupportLevel>
               <Descendants />
             </UIObject>
+            <UIObject ControlType="Pane" Id="CalendarView" FriendlyName="MonthViewScrollViewer" SpecialControlType="None">
+              <TechnologyName>UIA</TechnologyName>
+              <WindowTitles>
+                <WindowTitle>Countdown</WindowTitle>
+              </WindowTitles>
+              <AndCondition>
+                <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                <PropertyCondition Name="ControlType">Pane</PropertyCondition>
+                <PropertyCondition Name="ClassName">CalendarScrollViewer</PropertyCondition>
+                <PropertyCondition Name="AutomationId">MonthViewScrollViewer</PropertyCondition>
+              </AndCondition>
+              <SupportLevel>0</SupportLevel>
+              <Descendants>
+                <UIObject ControlType="DataItem" Id="December3" FriendlyName="3" SpecialControlType="None">
+                  <TechnologyName>UIA</TechnologyName>
+                  <WindowTitles>
+                    <WindowTitle>Countdown</WindowTitle>
+                  </WindowTitles>
+                  <AndCondition>
+                    <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                    <PropertyCondition Name="ControlType">DataItem</PropertyCondition>
+                    <PropertyCondition Name="Name">3</PropertyCondition>
+                  </AndCondition>
+                  <SupportLevel>0</SupportLevel>
+                  <Descendants />
+                </UIObject>
+                <UIObject ControlType="DataItem" Id="December4" FriendlyName="4" SpecialControlType="None">
+                  <TechnologyName>UIA</TechnologyName>
+                  <WindowTitles>
+                    <WindowTitle>Countdown</WindowTitle>
+                  </WindowTitles>
+                  <AndCondition>
+                    <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                    <PropertyCondition Name="ControlType">DataItem</PropertyCondition>
+                    <PropertyCondition Name="Name">4</PropertyCondition>
+                  </AndCondition>
+                  <SupportLevel>0</SupportLevel>
+                  <Descendants />
+                </UIObject>
+              </Descendants>
+            </UIObject>
+            <UIObject ControlType="List" Id="DayTaskListBox" FriendlyName="DayTaskListBox" SpecialControlType="None">
+              <TechnologyName>UIA</TechnologyName>
+              <WindowTitles>
+                <WindowTitle>Countdown</WindowTitle>
+              </WindowTitles>
+              <AndCondition>
+                <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                <PropertyCondition Name="ControlType">List</PropertyCondition>
+                <PropertyCondition Name="AutomationId">DayTaskListBox</PropertyCondition>
+              </AndCondition>
+              <SupportLevel>0</SupportLevel>
+              <Descendants>
+                <UIObject ControlType="ListItem" Id="FirstItemOfDay" FriendlyName="Countdown.Networking.Serialization.Task" SpecialControlType="None">
+                  <TechnologyName>UIA</TechnologyName>
+                  <WindowTitles>
+                    <WindowTitle>Countdown</WindowTitle>
+                  </WindowTitles>
+                  <AndCondition>
+                    <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                    <PropertyCondition Name="ControlType">ListItem</PropertyCondition>
+                    <PropertyCondition Name="Name">Countdown.Networking.Serialization.Task</PropertyCondition>
+                  </AndCondition>
+                  <SupportLevel>0</SupportLevel>
+                  <Descendants />
+                </UIObject>
+              </Descendants>
+            </UIObject>
+            <UIObject ControlType="Text" Id="NoTasksTodayText" FriendlyName="No Tasks Today" SpecialControlType="None">
+              <TechnologyName>UIA</TechnologyName>
+              <WindowTitles>
+                <WindowTitle>Countdown</WindowTitle>
+              </WindowTitles>
+              <AndCondition>
+                <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                <PropertyCondition Name="ControlType">Text</PropertyCondition>
+                <PropertyCondition Name="Name">No Tasks Today</PropertyCondition>
+              </AndCondition>
+              <SupportLevel>0</SupportLevel>
+              <Descendants />
+            </UIObject>
           </Descendants>
         </TopLevelWindow>
         <TopLevelWindow ControlType="Window" Id="ErrorWindow" FriendlyName="ERROR" SpecialControlType="None" SessionId="17564538">
