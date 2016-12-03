@@ -75,6 +75,7 @@ namespace Countdown
             if (CalendarViewListBoxItem.IsSelected)
             {
                 DisplayedPage = CalendarTaskView;
+                CalendarTaskView.TaskList = TaskList;
                 Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Visible;
             }
@@ -172,7 +173,9 @@ namespace Countdown
             }
             else if (MyContentControl.Content is CalendarViewer)
             {
-                MyContentControl.Content = new CalendarViewer(TaskList);
+                DisplayedPage = CalendarTaskView;
+                CalendarTaskView.TaskList = TaskList;
+                Bindings.Update();
             }
         }
 

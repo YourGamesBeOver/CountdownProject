@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
@@ -15,7 +16,16 @@ namespace Countdown
     public sealed partial class CalendarViewer : Page
     {
         private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
-        private ObservableCollection<Task> daysTasksList { get; } = new ObservableCollection<Task>();
+
+        public ObservableCollection<Task> TaskList
+        {
+            get { return taskList; }
+            set { taskList = value; Bindings.Update(); }
+        }
+
+        private ObservableCollection<Task> DaysTasksList { get; set; } = new ObservableCollection<Task>();
+
+        public string NoTasksMessage = "No Tasks Today";
 
         public CalendarViewer()
         {
@@ -23,36 +33,27 @@ namespace Countdown
             
         }
 
-        public CalendarViewer(ObservableCollection<Task> newList)
-        {
-            taskList = newList;
-        }
-
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            var list = e.Parameter as ObservableCollection<Task>;
-            if (list != null)
-            {
-                taskList = list;
-            }
-        }
-
         private void MyCalendar_SelectedDatesChanged(CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
         {
             var selectedDays = args.AddedDates;
             List<DateTime> dateTimes = new List<DateTime>();
+            DaysTasksList = new ObservableCollection<Task>();
             foreach (DateTimeOffset dt in selectedDays)
             {
                 dateTimes.Add(dt.DateTime.Date);
             }
 
-            foreach (Task t in taskList)
+            foreach (Task t in TaskList)
             {
                 if (dateTimes.Contains(t.DueDate.Date))
                 {
-                    daysTasksList.Add(t);
+                    DaysTasksList.Add(t);
                 } 
             }
+
+            NoTasksMessage = DaysTasksList.Count == 0 ? "No Tasks Today": " ";
+
+            Bindings.Update();
 
         }
     }
