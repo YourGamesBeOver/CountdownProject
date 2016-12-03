@@ -794,7 +794,7 @@
                 </UIObject>
               </Descendants>
             </UIObject>
-            <UIObject ControlType="Text" Id="NoTasksTodayText" FriendlyName="No Tasks Today" SpecialControlType="None">
+            <UIObject ControlType="Text" Id="NoTasksText" FriendlyName="No Tasks" SpecialControlType="None">
               <TechnologyName>UIA</TechnologyName>
               <WindowTitles>
                 <WindowTitle>Countdown</WindowTitle>
@@ -802,7 +802,7 @@
               <AndCondition>
                 <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
                 <PropertyCondition Name="ControlType">Text</PropertyCondition>
-                <PropertyCondition Name="Name">No Tasks Today</PropertyCondition>
+                <PropertyCondition Name="Name">No Tasks</PropertyCondition>
               </AndCondition>
               <SupportLevel>0</SupportLevel>
               <Descendants />

@@ -112,7 +112,7 @@ namespace UITests {
 
             Assert.AreEqual(0, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
 
-            Assert.AreEqual("No Tasks Today", this.UIMap.UICountdownWindow.NoTasksTodayText.DisplayText, "Text Not Displayed");
+            Assert.AreEqual("No Tasks", this.UIMap.UICountdownWindow.NoTasksText.DisplayText, "Text Not Displayed");
         }
 
         [TestMethod]

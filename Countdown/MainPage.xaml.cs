@@ -68,22 +68,26 @@ namespace Countdown
             if (ListViewListBoxItem.IsSelected)
             {
                 DisplayedPage = ListTaskView;
-                ListTaskView.TaskList = TaskList;
+                ListTaskView.TaskList = SearchBar.Text.Length == 0 ? TaskList: SearchedTaskList;
                 Bindings.Update();
+                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 MyCommandBar.Visibility = Visibility.Visible;
+                SearchBar.IsEnabled = true;
             }
-            if (CalendarViewListBoxItem.IsSelected)
+            else if (CalendarViewListBoxItem.IsSelected)
             {
                 DisplayedPage = CalendarTaskView;
-                CalendarTaskView.TaskList = TaskList;
+                CalendarTaskView.TaskList = SearchBar.Text.Length == 0 ? TaskList : SearchedTaskList;
                 Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Visible;
+                SearchBar.IsEnabled = true;
             }
             else if (SettingsListBoxItem.IsSelected)
             {
                 DisplayedPage = SettingsView;
                 Bindings.Update();
                 MyCommandBar.Visibility = Visibility.Collapsed;
+                SearchBar.IsEnabled = false;
             }
         }
 
@@ -93,7 +97,7 @@ namespace Countdown
             currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
             MyListBox.SelectedItem = null;
             DisplayedPage = ListTaskView;
-            ListTaskView.TaskList = TaskList;
+            ListTaskView.TaskList = SearchBar.Text.Length == 0 ? TaskList : SearchedTaskList;
             Bindings.Update();
             MyCommandBar.Visibility = Visibility.Visible;
         }
@@ -167,13 +171,11 @@ namespace Countdown
             TaskList.Add(addedTask);
             if (MyContentControl.Content is ListViewer)
             {
-                DisplayedPage = ListTaskView;
                 ListTaskView.TaskList = TaskList;
                 Bindings.Update();
             }
             else if (MyContentControl.Content is CalendarViewer)
             {
-                DisplayedPage = CalendarTaskView;
                 CalendarTaskView.TaskList = TaskList;
                 Bindings.Update();
             }
@@ -199,31 +201,45 @@ namespace Countdown
                     if (result != ContentDialogResult.Primary) return;
                     if (SearchedTaskList.Count != 0)
                     {
-                        foreach (Task t in TaskList)
-                        {
-                            if (t.TaskId == SearchedTaskList[selectedItemToRemove].TaskId)
-                            {
-                                TaskList.Remove(t);
-                                break;
-                            }
-                        }
+                        TaskList.Remove(SearchedTaskList[selectedItemToRemove]);
                         SearchedTaskList.RemoveAt(selectedItemToRemove);
-                        DisplayedPage = ListTaskView;
                         ListTaskView.TaskList = SearchedTaskList;
-                        Bindings.Update();
                     }
                     else
                     {
                         TaskList.RemoveAt(selectedItemToRemove);
-                        DisplayedPage = ListTaskView;
                         ListTaskView.TaskList = TaskList;
-                        Bindings.Update();
                     }
                 }
                 else
                 {
                     var error = new MessageDialog("No Task selected to delete", "ERROR");
                     await error.ShowAsync();
+                }
+            }
+            else if (MyContentControl.Content is CalendarViewer)
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+                int selectedItemToRemove = TaskComboBox.SelectedIndex;
+                if (selectedItemToRemove != -1)
+                {
+                    var currentList = CalendarTaskView.DaysTasksList;
+
+                    var TaskToRemove = currentList[selectedItemToRemove];
+
+                    var result = await dialog.ShowAsync();
+                    if (result != ContentDialogResult.Primary) return;
+                    if (SearchedTaskList.Count != 0)
+                    {
+                        TaskList.Remove(TaskToRemove);
+                        SearchedTaskList.Remove(TaskToRemove);
+                        CalendarTaskView.TaskList = SearchedTaskList;
+                    }
+                    else
+                    {
+                        TaskList.Remove(TaskToRemove);
+                        CalendarTaskView.TaskList = TaskList;
+                    }
                 }
             }
         }
@@ -259,7 +275,7 @@ namespace Countdown
             {
                 var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
                 int selectedItemToComplete = TaskComboBox.SelectedIndex;
-                TaskList[selectedItemToComplete].IsCompleted = true;
+                TaskList[selectedItemToComplete].IsCompleted = !TaskList[selectedItemToComplete].IsCompleted;
             }
         }
 
@@ -273,105 +289,107 @@ namespace Countdown
                     SearchedTaskList.Add(t);
                 }
             }
-            DisplayedPage = ListTaskView;
-            ListTaskView.TaskList = SearchedTaskList;
-            Bindings.Update();
-            
+            if (MyContentControl.Content is ListViewer)
+            {
+                ListTaskView.TaskList = SearchedTaskList;
+            }
+            else if (MyContentControl.Content is CalendarViewer)
+            {
+                CalendarTaskView.TaskList = SearchedTaskList;
+            }
+
         }
 
         private async void AddSubtaskButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MyContentControl.Content is ListViewer)
+            var TaskComboBox = MyContentControl.Content is ListViewer
+                ? FindElementByName<ListBox>(MyContentControl, "TaskListBox")
+                : FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+            int selectedItem = TaskComboBox.SelectedIndex;
+            if (selectedItem != -1)
             {
-                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
-                int selectedItem = TaskComboBox.SelectedIndex;
-                if (selectedItem != -1)
+                bool Invalid = true;
+                String name = "", description = "";
+                DateTime date = new DateTime();
+                TimeSpan time = new TimeSpan();
+
+                while (Invalid)
                 {
-                    bool Invalid = true;
-                    String name = "", description = "";
-                    DateTime date = new DateTime();
-                    TimeSpan time = new TimeSpan();
-
-                    while (Invalid)
+                    var dialog = new ContentDialog
                     {
-                        var dialog = new ContentDialog
-                        {
-                            Title = "Add Subtask",
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Visibility = Visibility.Visible
-                        };
-
-                        var stack = new StackPanel();
-                        var nameTextBox = new TextBox();
-                        var descriptionTextBox = new TextBox();
-                        var selectedDueDate = new DatePicker();
-                        var selectedDueTime = new TimePicker();
-                        stack.Children.Add(new TextBlock { Text = "Subtask Name" });
-                        stack.Children.Add(nameTextBox);
-                        stack.Children.Add(new TextBlock { Text = "Description" });
-                        stack.Children.Add(descriptionTextBox);
-                        stack.Children.Add(new TextBlock { Text = "Due Date" });
-                        stack.Children.Add(selectedDueDate);
-                        stack.Children.Add(selectedDueTime);
-
-                        dialog.Content = stack;
-                        dialog.PrimaryButtonText = "Add";
-                        dialog.SecondaryButtonText = "Cancel";
-
-                        var result = await dialog.ShowAsync();
-
-                        if (result != ContentDialogResult.Primary) return;
-
-                        Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
-                        if (Invalid)
-                        {
-                            MessageDialog error = new MessageDialog("Invalid Subtask Name or Description", "ERROR");
-                            var ok = error.ShowAsync();
-                        }
-                        else
-                        {
-                            name = nameTextBox.Text;
-                            description = descriptionTextBox.Text;
-                            date = selectedDueDate.Date.DateTime;
-                            time = selectedDueTime.Time;
-                        }
-                    }
-
-                    var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
-                        date.Date.Day, time.Hours, time.Minutes,
-                        time.Seconds);
-                    var rawTime = selectedTime.Subtract(DateTime.Now);
-                    var addedTask = new Task
-                    {
-                        TaskId = uniqueID,
-                        Name = name,
-                        Description = description,
-                        DueDate = selectedTime,
-                        RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                        Title = "Add Subtask",
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Visibility = Visibility.Visible
                     };
-                    uniqueID++;
+
+                    var stack = new StackPanel();
+                    var nameTextBox = new TextBox();
+                    var descriptionTextBox = new TextBox();
+                    var selectedDueDate = new DatePicker();
+                    var selectedDueTime = new TimePicker();
+                    stack.Children.Add(new TextBlock { Text = "Subtask Name" });
+                    stack.Children.Add(nameTextBox);
+                    stack.Children.Add(new TextBlock { Text = "Description" });
+                    stack.Children.Add(descriptionTextBox);
+                    stack.Children.Add(new TextBlock { Text = "Due Date" });
+                    stack.Children.Add(selectedDueDate);
+                    stack.Children.Add(selectedDueTime);
+
+                    dialog.Content = stack;
+                    dialog.PrimaryButtonText = "Add";
+                    dialog.SecondaryButtonText = "Cancel";
+
+                    var result = await dialog.ShowAsync();
+
+                    if (result != ContentDialogResult.Primary) return;
+
+                    Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
+                    if (Invalid)
+                    {
+                        MessageDialog error = new MessageDialog("Invalid Subtask Name or Description", "ERROR");
+                        var ok = error.ShowAsync();
+                    }
+                    else
+                    {
+                        name = nameTextBox.Text;
+                        description = descriptionTextBox.Text;
+                        date = selectedDueDate.Date.DateTime;
+                        time = selectedDueTime.Time;
+                    }
+                }
+
+                var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
+                    date.Date.Day, time.Hours, time.Minutes,
+                    time.Seconds);
+                var rawTime = selectedTime.Subtract(DateTime.Now);
+                var addedTask = new Task
+                {
+                    TaskId = uniqueID,
+                    Name = name,
+                    Description = description,
+                    DueDate = selectedTime,
+                    RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                };
+                uniqueID++;
+                if (MyContentControl.Content is ListViewer)
+                {
                     var updatedSubtaskList = SearchedTaskList.Count == 0
                         ? new Task[TaskList[selectedItem].Subtasks.Length + 1]
                         : new Task[SearchedTaskList[selectedItem].Subtasks.Length + 1];
 
-                    for(int i = 0; i < TaskList[selectedItem].Subtasks.Length; i++)
+                    var currentList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+
+                    for (int i = 0; i < currentList[selectedItem].Subtasks.Length; i++)
                     {
-                        updatedSubtaskList[i] = TaskList[selectedItem].Subtasks[i];
+                        updatedSubtaskList[i] = currentList[selectedItem].Subtasks[i];
                     }
 
-                    if (SearchedTaskList.Count == 0)
+                    updatedSubtaskList[currentList[selectedItem].Subtasks.Length] = addedTask;
+                    currentList[selectedItem].Subtasks = updatedSubtaskList;
+
+                    if (SearchedTaskList.Count != 0)
                     {
-                        updatedSubtaskList[TaskList[selectedItem].Subtasks.Length] = addedTask;
-                        TaskList[selectedItem].Subtasks = updatedSubtaskList;
-                        DisplayedPage = ListTaskView;
-                        ListTaskView.TaskList = TaskList;
-                        Bindings.Update();
-                    }
-                    else
-                    {
-                        updatedSubtaskList[SearchedTaskList[selectedItem].Subtasks.Length] = addedTask;
-                        SearchedTaskList[selectedItem].Subtasks = updatedSubtaskList;
                         foreach (Task t in TaskList)
                         {
                             if (t.TaskId == SearchedTaskList[selectedItem].TaskId)
@@ -380,123 +398,156 @@ namespace Countdown
                                 break;
                             }
                         }
-                        DisplayedPage = ListTaskView;
-                        ListTaskView.TaskList = SearchedTaskList;
-                        Bindings.Update();
+                    }
+                    ListTaskView.TaskList = currentList;
+                }
+                else if (MyContentControl.Content is CalendarViewer)
+                {
+                    var currentList = CalendarTaskView.DaysTasksList;
+                    var updatedSubtaskList = new Task[currentList[selectedItem].Subtasks.Length + 1];
+
+                    for (int i = 0; i < currentList[selectedItem].Subtasks.Length; i++)
+                    {
+                        updatedSubtaskList[i] = currentList[selectedItem].Subtasks[i];
+                    }
+
+                    updatedSubtaskList[currentList[selectedItem].Subtasks.Length] = addedTask;
+                    TaskList[TaskList.IndexOf(currentList[selectedItem])].Subtasks = updatedSubtaskList;
+                    currentList[selectedItem].Subtasks = updatedSubtaskList;
+                    if (SearchedTaskList.Count != 0)
+                    {
+                        SearchedTaskList[SearchedTaskList.IndexOf(currentList[selectedItem])].Subtasks =
+                            updatedSubtaskList;
+                        CalendarTaskView.TaskList = SearchedTaskList;
+                    }
+                    else
+                    {
+                        CalendarTaskView.TaskList = TaskList;
                     }
                 }
-                else
-                {
-                    var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
-                    await error.ShowAsync();
-                }
+            }
+            else
+            {
+                var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
+                await error.ShowAsync();
             }
         }
 
         private async void EditTaskButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MyContentControl.Content is ListViewer)
+            var TaskComboBox = MyContentControl.Content is ListViewer
+                ? FindElementByName<ListBox>(MyContentControl, "TaskListBox")
+                : FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+            int selectedItem = TaskComboBox.SelectedIndex;
+            if (selectedItem != -1)
             {
-                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
-                int selectedItem = TaskComboBox.SelectedIndex;
-                if (selectedItem != -1)
+                bool Invalid = true;
+                var currentList = SearchedTaskList.Count != 0 ? SearchedTaskList : TaskList;
+                currentList = MyContentControl.Content is CalendarViewer ? CalendarTaskView.DaysTasksList : currentList;
+
+                String name = currentList[selectedItem].Name, description = currentList[selectedItem].Description;
+                DateTime date = currentList[selectedItem].DueDate.Date;
+                TimeSpan time = currentList[selectedItem].DueDate.TimeOfDay;
+
+                while (Invalid)
                 {
-                    bool Invalid = true;
-                    var currentList = SearchedTaskList.Count != 0 ? SearchedTaskList : TaskList;
-                    String name = currentList[selectedItem].Name, description = currentList[selectedItem].Description;
-                    DateTime date = currentList[selectedItem].DueDate.Date;
-                    TimeSpan time = currentList[selectedItem].DueDate.TimeOfDay;
-
-                    while (Invalid)
+                    var dialog = new ContentDialog
                     {
-                        var dialog = new ContentDialog
-                        {
-                            Title = "Edit Task",
-                            HorizontalAlignment = HorizontalAlignment.Center,
-                            VerticalAlignment = VerticalAlignment.Center,
-                            Visibility = Visibility.Visible
-                        };
-
-                        var stack = new StackPanel();
-                        var nameTextBox = new TextBox {Text = name};
-                        var descriptionTextBox = new TextBox {Text = description};
-                        var selectedDueDate = new DatePicker {Date = date};
-                        var selectedDueTime = new TimePicker {Time = time};
-                        stack.Children.Add(new TextBlock { Text = "Task Name" });
-                        stack.Children.Add(nameTextBox);
-                        stack.Children.Add(new TextBlock { Text = "Description" });
-                        stack.Children.Add(descriptionTextBox);
-                        stack.Children.Add(new TextBlock { Text = "Due Date" });
-                        stack.Children.Add(selectedDueDate);
-                        stack.Children.Add(selectedDueTime);
-
-                        dialog.Content = stack;
-                        dialog.PrimaryButtonText = "Update";
-                        dialog.SecondaryButtonText = "Cancel";
-
-                        var result = await dialog.ShowAsync();
-
-                        if (result != ContentDialogResult.Primary) return;
-
-                        Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
-                        if (Invalid)
-                        {
-                            MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
-                            var ok = error.ShowAsync();
-                        }
-                        else
-                        {
-                            name = nameTextBox.Text;
-                            description = descriptionTextBox.Text;
-                            date = selectedDueDate.Date.DateTime;
-                            time = selectedDueTime.Time;
-                        }
-                    }
-
-                    var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
-                        date.Date.Day, time.Hours, time.Minutes,
-                        time.Seconds);
-                    var rawTime = selectedTime.Subtract(DateTime.Now);
-                    var editedTask = new Task
-                    {
-                        TaskId = currentList[selectedItem].TaskId,
-                        Name = name,
-                        Description = description,
-                        DueDate = selectedTime,
-                        Subtasks = currentList[selectedItem].Subtasks,
-                        RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                        Title = "Edit Task",
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Visibility = Visibility.Visible
                     };
 
+                    var stack = new StackPanel();
+                    var nameTextBox = new TextBox {Text = name};
+                    var descriptionTextBox = new TextBox {Text = description};
+                    var selectedDueDate = new DatePicker {Date = date};
+                    var selectedDueTime = new TimePicker {Time = time};
+                    stack.Children.Add(new TextBlock { Text = "Task Name" });
+                    stack.Children.Add(nameTextBox);
+                    stack.Children.Add(new TextBlock { Text = "Description" });
+                    stack.Children.Add(descriptionTextBox);
+                    stack.Children.Add(new TextBlock { Text = "Due Date" });
+                    stack.Children.Add(selectedDueDate);
+                    stack.Children.Add(selectedDueTime);
+
+                    dialog.Content = stack;
+                    dialog.PrimaryButtonText = "Update";
+                    dialog.SecondaryButtonText = "Cancel";
+
+                    var result = await dialog.ShowAsync();
+
+                    if (result != ContentDialogResult.Primary) return;
+
+                    Invalid = nameTextBox.Text == "" || descriptionTextBox.Text == "";
+                    if (Invalid)
+                    {
+                        MessageDialog error = new MessageDialog("Invalid Task Name or Description", "ERROR");
+                        var ok = error.ShowAsync();
+                    }
+                    else
+                    {
+                        name = nameTextBox.Text;
+                        description = descriptionTextBox.Text;
+                        date = selectedDueDate.Date.DateTime;
+                        time = selectedDueTime.Time;
+                    }
+                }
+
+                var selectedTime = new DateTime(date.Date.Year, date.Date.Month,
+                    date.Date.Day, time.Hours, time.Minutes,
+                    time.Seconds);
+                var rawTime = selectedTime.Subtract(DateTime.Now);
+                var editedTask = new Task
+                {
+                    TaskId = currentList[selectedItem].TaskId,
+                    Name = name,
+                    Description = description,
+                    DueDate = selectedTime,
+                    Subtasks = currentList[selectedItem].Subtasks,
+                    RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                };
+
+                if (MyContentControl.Content is ListViewer)
+                {
                     if (SearchedTaskList.Count != 0)
                     {
                         SearchedTaskList[selectedItem] = editedTask;
-                        for (int i = 0; i < TaskList.Count; i++)
-                        {
-                            if (TaskList[i].TaskId == SearchedTaskList[selectedItem].TaskId)
-                            {
-                                TaskList[i] = editedTask;
-                                break;
-                            }
-                        }
-                        DisplayedPage = ListTaskView;
+                        TaskList[TaskList.IndexOf(SearchedTaskList[selectedItem])] = editedTask;
                         ListTaskView.TaskList = SearchedTaskList;
-                        Bindings.Update();
                         SearchBar_TextChanged(SearchBar, null);
                     }
                     else
                     {
                         TaskList[selectedItem] = editedTask;
-                        DisplayedPage = ListTaskView;
                         ListTaskView.TaskList = TaskList;
-                        Bindings.Update();
                     }
                 }
-                else
+                else if (MyContentControl.Content is CalendarViewer)
                 {
-                    var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
-                    await error.ShowAsync();
+                    var selectedElement = CalendarTaskView.DaysTasksList[selectedItem];
+
+                    TaskList[TaskList.IndexOf(selectedElement)] = editedTask;
+
+                    if (SearchedTaskList.Count != 0)
+                    {
+                        SearchedTaskList[SearchedTaskList.IndexOf(selectedElement)] = editedTask;
+                        CalendarTaskView.TaskList = SearchedTaskList;
+                        SearchBar_TextChanged(SearchBar, null);
+                    }
+                    else
+                    {
+                        CalendarTaskView.TaskList = TaskList;
+                    }
                 }
             }
+            else
+            {
+                var error = new MessageDialog("No Task selected to add Subtask to.", "ERROR");
+                await error.ShowAsync();
+            }
+            
         }
     }
 

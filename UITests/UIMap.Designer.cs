@@ -478,19 +478,19 @@ namespace UITests
             }
         }
         
-        public XamlText NoTasksTodayText
+        public XamlText NoTasksText
         {
             get
             {
-                if ((this.mNoTasksTodayText == null))
+                if ((this.mNoTasksText == null))
                 {
-                    this.mNoTasksTodayText = new XamlText(this);
+                    this.mNoTasksText = new XamlText(this);
                     #region Search Criteria
-                    this.mNoTasksTodayText.SearchProperties[XamlText.PropertyNames.Name] = "No Tasks Today";
-                    this.mNoTasksTodayText.WindowTitles.Add("Countdown");
+                    this.mNoTasksText.SearchProperties[XamlText.PropertyNames.Name] = "No Tasks";
+                    this.mNoTasksText.WindowTitles.Add("Countdown");
                     #endregion
                 }
-                return this.mNoTasksTodayText;
+                return this.mNoTasksText;
             }
         }
         #endregion
@@ -548,7 +548,7 @@ namespace UITests
         
         private DayTaskListBox mDayTaskListBox;
         
-        private XamlText mNoTasksTodayText;
+        private XamlText mNoTasksText;
         #endregion
     }
     
