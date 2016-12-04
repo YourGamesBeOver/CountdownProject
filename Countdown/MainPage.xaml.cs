@@ -8,6 +8,8 @@ using System.ComponentModel;
 using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using Countdown.Networking;
 using Countdown.Networking.Results;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -22,11 +24,14 @@ namespace Countdown
         public ObservableCollection<Task> TaskList = new ObservableCollection<Task>();
         public ObservableCollection<Task> SearchedTaskList { get; set; } = new ObservableCollection<Task>();
 
+        private ServerConnection conn;
+
         public Page DisplayedPage;
         private ListViewer ListTaskView = new ListViewer();
         private CalendarViewer CalendarTaskView = new CalendarViewer();
         private SettingsViewer SettingsView = new SettingsViewer();
         private LoginViewer LoginView = new LoginViewer();
+        
 
         private int uniqueID = 0;
 
@@ -37,6 +42,21 @@ namespace Countdown
             DisplayedPage = ListTaskView;
             Bindings.Update();
             CreateTimer();
+        }
+
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        {
+            conn = e.Parameter as ServerConnection;
+            var newTasks = await conn.GetTasksForUser();
+            var newInactiveTasks = await conn.GetInactiveTasksForUser();
+            foreach (Task t in newTasks)
+            {
+                TaskList.Add(t);
+            }
+            foreach (Task t in newInactiveTasks)
+            {
+                TaskList.Add(t);
+            }
         }
 
         public void CreateTimer()

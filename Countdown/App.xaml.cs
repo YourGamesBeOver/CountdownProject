@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -15,6 +17,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Countdown.Networking;
+using Countdown.Networking.Results;
+using ResourceManager = Windows.ApplicationModel.Resources.Core.ResourceManager;
 
 namespace Countdown
 {
@@ -73,7 +78,33 @@ namespace Countdown
                     // When the navigation stack isn't restored navigate to the first page,
                     // configuring the new page by passing required information as a navigation
                     // parameter
-                    rootFrame.Navigate(typeof(MainPage), e.Arguments);
+                    bool loggedin = AuthStorage.LoggedIn();
+                    if (loggedin)
+                    {
+                        ServerConnection conn = new ServerConnection();
+                        conn.Connect(ResourceManager.Current.MainResourceMap.GetSubtree("Resources").GetValue("ServerURL", ResourceContext.GetForViewIndependentUse()).ValueAsString);
+                        var auth = AuthStorage.GetAuth();
+                        if (auth == null)
+                        {
+                            rootFrame.Navigate(typeof(LoginViewer), e.Arguments);
+                        }
+                        else
+                        {
+                            var loginResult = await conn.LogIn(auth.Value);
+                            if (loginResult != LoginResult.Success)
+                            {
+                                rootFrame.Navigate(typeof(LoginViewer), e.Arguments);
+                            }
+                            else
+                            {
+                                rootFrame.Navigate(typeof(MainPage), conn);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        rootFrame.Navigate(typeof(LoginViewer), e.Arguments);
+                    }
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();

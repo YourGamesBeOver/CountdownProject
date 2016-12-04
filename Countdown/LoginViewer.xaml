@@ -18,7 +18,7 @@
         <TextBox Name="UserNameTextBox" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,75,0,0" Width="150"/>
         <TextBlock Name="PasswordText" Grid.Column="1" FontSize="24" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,150,0,0"/>
         <PasswordBox Name="PasswordTextBox" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,225,0,0" Width="150"/>
-        <Button Name="LoginButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-105,400,0,0" Width="100" Height="30" Content="Login"/>
-        <Button Name="RegisterButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="105,400,0,0" Width="100" Height="30" Content="Register" Click="ButtonBase_OnClick"/>
+        <Button Name="LoginButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-105,400,0,0" Width="100" Height="30" Content="Login" Click="LoginButton_OnClick"/>
+        <Button Name="RegisterButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="105,400,0,0" Width="100" Height="30" Content="Register" Click="RegisterButton_OnClick"/>
     </Grid>
 </Page>
