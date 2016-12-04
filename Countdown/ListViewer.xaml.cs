@@ -53,8 +53,16 @@ namespace Countdown
         {
             if (SelectedTask != null)
             {
-                TimeSpan rawValue = SelectedTask.DueDate.Subtract(DateTime.Now);
-                SelectedTask.RemainingTime = new TimeSpan(rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
+                if (SelectedTask.RemainingTime.TotalSeconds > 0)
+                {
+                    TimeSpan rawValue = SelectedTask.DueDate.Subtract(DateTime.Now);
+                    SelectedTask.RemainingTime = new TimeSpan(rawValue.Days, rawValue.Hours, rawValue.Minutes,
+                        rawValue.Seconds);
+                }
+                else
+                {
+                    SelectedTask.RemainingTime = new TimeSpan(0,0,0,0);
+                }
                 Bindings.Update();
             }
         }

@@ -49,7 +49,15 @@ namespace Countdown
         {
             foreach (Task t in TaskList)
             {
-                t.RemainingTime = t.DueDate.Subtract(DateTime.Now);
+                if (t.RemainingTime.TotalSeconds > 0)
+                {
+                    TimeSpan rawValue = t.DueDate.Subtract(DateTime.Now);
+                    t.RemainingTime = new TimeSpan(rawValue.Days, rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
+                }
+                else
+                {
+                    t.RemainingTime = new TimeSpan(0,0,0,0);
+                }
             }
         }
 
@@ -165,7 +173,7 @@ namespace Countdown
                 Name = name,
                 Description = description,
                 DueDate = selectedTime,
-                RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                RemainingTime = new TimeSpan(rawTime.Days, rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
             };
             uniqueID++;
             TaskList.Add(addedTask);
@@ -369,7 +377,7 @@ namespace Countdown
                     Name = name,
                     Description = description,
                     DueDate = selectedTime,
-                    RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                    RemainingTime = new TimeSpan(rawTime.Days, rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                 };
                 uniqueID++;
                 if (MyContentControl.Content is ListViewer)
@@ -506,7 +514,7 @@ namespace Countdown
                     Description = description,
                     DueDate = selectedTime,
                     Subtasks = currentList[selectedItem].Subtasks,
-                    RemainingTime = new TimeSpan(rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
+                    RemainingTime = new TimeSpan(rawTime.Days, rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                 };
 
                 if (MyContentControl.Content is ListViewer)
