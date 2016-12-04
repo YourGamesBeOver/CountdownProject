@@ -1,0 +1,24 @@
+﻿<Page
+    x:Class="Countdown.LoginViewer"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Countdown"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Image Grid.Column="1" Source="Assets/Square310x310Logo.scale-200.png" Height="100" Margin="0,-150,0,0"/>
+        <TextBlock Name="UserNameText"  Grid.Column="1" FontSize="24" Text="User Name" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <TextBox Name="UserNameTextBox" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,75,0,0" Width="150"/>
+        <TextBlock Name="PasswordText" Grid.Column="1" FontSize="24" Text="Password" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,150,0,0"/>
+        <PasswordBox Name="PasswordTextBox" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,225,0,0" Width="150"/>
+        <Button Name="LoginButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="-105,400,0,0" Width="100" Height="30" Content="Login"/>
+        <Button Name="RegisterButton" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="105,400,0,0" Width="100" Height="30" Content="Register" Click="ButtonBase_OnClick"/>
+    </Grid>
+</Page>
