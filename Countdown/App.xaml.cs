@@ -7,6 +7,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -37,7 +38,7 @@ namespace Countdown
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
@@ -76,6 +77,18 @@ namespace Countdown
                 }
                 // Ensure the current window is active
                 Window.Current.Activate();
+            }
+
+            //install cortana VCD
+            try
+            {
+                StorageFile vcdStorageFile =
+                    await Package.Current.InstalledLocation.GetFileAsync(@"CountdownVoiceCommands.xml");
+                await
+                    Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinitionManager
+                        .InstallCommandDefinitionsFromStorageFileAsync(vcdStorageFile);
+            } catch (Exception ex) {
+                System.Diagnostics.Debug.WriteLine("Installing Voice Commands Failed: " + ex.ToString());
             }
         }
 

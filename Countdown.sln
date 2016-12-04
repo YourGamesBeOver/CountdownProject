@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Networking", "Networking\Networking.csproj", "{AD34C37B-EDF9-4BFF-B228-664DD4B4A262}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CountdownCortanaResponderService", "CountdownCortanaResponderService\CountdownCortanaResponderService.csproj", "{2417D0C8-7E35-4FCE-821C-A3878D0BB352}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -98,6 +100,22 @@ Global
 		{AD34C37B-EDF9-4BFF-B228-664DD4B4A262}.Release|x64.Build.0 = Release|x64
 		{AD34C37B-EDF9-4BFF-B228-664DD4B4A262}.Release|x86.ActiveCfg = Release|x86
 		{AD34C37B-EDF9-4BFF-B228-664DD4B4A262}.Release|x86.Build.0 = Release|x86
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|ARM.ActiveCfg = Debug|ARM
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|ARM.Build.0 = Debug|ARM
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|x64.ActiveCfg = Debug|x64
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|x64.Build.0 = Debug|x64
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|x86.ActiveCfg = Debug|x86
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Debug|x86.Build.0 = Debug|x86
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|ARM.ActiveCfg = Release|ARM
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|ARM.Build.0 = Release|ARM
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|x64.ActiveCfg = Release|x64
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|x64.Build.0 = Release|x64
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|x86.ActiveCfg = Release|x86
+		{2417D0C8-7E35-4FCE-821C-A3878D0BB352}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
