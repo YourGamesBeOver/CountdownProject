@@ -108,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Parameters\CreateUserParams.cs" />
+    <Compile Include="AuthStorage.cs" />
     <Compile Include="Parameters\SingleTaskParams.cs" />
     <Compile Include="Parameters\SingleTaskIdParams.cs" />
     <Compile Include="Parameters\TaskAndIdParams.cs" />
