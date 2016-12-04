@@ -199,6 +199,7 @@ namespace Countdown
             };
             uniqueID++;
             TaskList.Add(addedTask);
+            await conn.CreateTask(addedTask);
             if (MyContentControl.Content is ListViewer)
             {
                 ListTaskView.TaskList = TaskList;
@@ -232,12 +233,14 @@ namespace Countdown
                     if (SearchedTaskList.Count != 0)
                     {
                         TaskList.Remove(SearchedTaskList[selectedItemToRemove]);
+                        await conn.DeleteTask(SearchedTaskList[selectedItemToRemove]);
                         SearchedTaskList.RemoveAt(selectedItemToRemove);
                         ListTaskView.TaskList = SearchedTaskList;
                     }
                     else
                     {
-                        TaskList.RemoveAt(selectedItemToRemove);
+                        await conn.DeleteTask(TaskList[selectedItemToRemove]);
+                        TaskList.RemoveAt(selectedItemToRemove);                        
                         ListTaskView.TaskList = TaskList;
                     }
                 }
@@ -259,6 +262,7 @@ namespace Countdown
 
                     var result = await dialog.ShowAsync();
                     if (result != ContentDialogResult.Primary) return;
+                    await conn.DeleteTask(TaskToRemove);
                     if (SearchedTaskList.Count != 0)
                     {
                         TaskList.Remove(TaskToRemove);
@@ -299,13 +303,25 @@ namespace Countdown
             return childElement;
         }
 
-        private void CompleteButton_Click(object sender, RoutedEventArgs e)
+        private async void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
-            if (MyContentControl.Content is ListViewer)
+            var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+            int selectedItemToComplete = TaskComboBox.SelectedIndex;
+            if (selectedItemToComplete != -1)
             {
-                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
-                int selectedItemToComplete = TaskComboBox.SelectedIndex;
-                TaskList[selectedItemToComplete].IsCompleted = !TaskList[selectedItemToComplete].IsCompleted;
+                if (MyContentControl.Content is ListViewer)
+                {
+                    TaskList[selectedItemToComplete].IsCompleted = !TaskList[selectedItemToComplete].IsCompleted;
+                    if (TaskList[selectedItemToComplete].IsCompleted)
+                    {
+                        await conn.MarkTaskAsCompleted(TaskList[selectedItemToComplete]);
+                    }
+                    else
+                    {
+                        await conn.MarkTaskAsNotCompleted(TaskList[selectedItemToComplete]);
+                    }
+
+                }
             }
         }
 
@@ -416,19 +432,9 @@ namespace Countdown
                     }
 
                     updatedSubtaskList[currentList[selectedItem].Subtasks.Length] = addedTask;
+                    await conn.CreateSubTask(addedTask, currentList[selectedItem]);
                     currentList[selectedItem].Subtasks = updatedSubtaskList;
 
-                    if (SearchedTaskList.Count != 0)
-                    {
-                        foreach (Task t in TaskList)
-                        {
-                            if (t.TaskId == SearchedTaskList[selectedItem].TaskId)
-                            {
-                                t.Subtasks = updatedSubtaskList;
-                                break;
-                            }
-                        }
-                    }
                     ListTaskView.TaskList = currentList;
                 }
                 else if (MyContentControl.Content is CalendarViewer)
@@ -442,6 +448,7 @@ namespace Countdown
                     }
 
                     updatedSubtaskList[currentList[selectedItem].Subtasks.Length] = addedTask;
+                    await conn.CreateSubTask(addedTask, currentList[selectedItem]);
                     TaskList[TaskList.IndexOf(currentList[selectedItem])].Subtasks = updatedSubtaskList;
                     currentList[selectedItem].Subtasks = updatedSubtaskList;
                     if (SearchedTaskList.Count != 0)
@@ -539,6 +546,7 @@ namespace Countdown
                     RemainingTime = new TimeSpan(rawTime.Days, rawTime.Hours, rawTime.Minutes, rawTime.Seconds)
                 };
 
+                await conn.EditTask(editedTask);
                 if (MyContentControl.Content is ListViewer)
                 {
                     if (SearchedTaskList.Count != 0)
