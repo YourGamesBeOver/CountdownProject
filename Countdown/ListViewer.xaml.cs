@@ -33,7 +33,7 @@ namespace Countdown
 
         public Task SelectedTask;
 
-        private int previousSelection = -1;
+        private int previousSelection = -1, previousSubtaskSelection = -1;
 
         public ListViewer()
         {
@@ -67,7 +67,7 @@ namespace Countdown
             }
         }
 
-        private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void TaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             int selectedIndex = TaskListBox.SelectedIndex;
             if (selectedIndex != -1)
@@ -75,20 +75,43 @@ namespace Countdown
                 if (selectedIndex == previousSelection)
                 {
                     TaskListBox.SelectedIndex = -1;
-                    previousSelection = selectedIndex;
+                    previousSelection = -1;
                 }
                 else
                 {
                     SelectedTask = TaskList[selectedIndex];
+                    previousSelection = selectedIndex;
                     Bindings.Update();
                 }
             }
             else
             {
                 SelectedTask = null;
+                previousSelection = -1;
                 Bindings.Update();
             }
+        }
 
+        private void SubtaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            int selectedIndex = SubtaskListBox.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                if (selectedIndex == previousSubtaskSelection)
+                {
+                    SubtaskListBox.SelectedIndex = -1;
+                    previousSubtaskSelection = -1;
+                }
+                else
+                {
+                    previousSubtaskSelection = selectedIndex;
+                }
+            }
+            else
+            {
+                previousSubtaskSelection = -1;
+                Bindings.Update();
+            }
         }
     }
 }

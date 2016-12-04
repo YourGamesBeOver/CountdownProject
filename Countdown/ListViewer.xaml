@@ -13,7 +13,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" SelectionChanged="TaskListBox_SelectionChanged">
+        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" Tapped="TaskListBox_Tapped">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
                     <Grid>
@@ -73,7 +73,7 @@
                 </Grid>
             </ItemsControl>
             <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
-            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}">
+            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}" Tapped="SubtaskListBox_Tapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="serialization:Task">
                         <Grid>

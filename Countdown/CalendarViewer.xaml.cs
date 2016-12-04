@@ -30,6 +30,8 @@ namespace Countdown
 
         public string NoTasksMessage = "No Tasks";
 
+        private int previousSelection = -1;
+
         public CalendarViewer()
         {
             this.InitializeComponent();
@@ -64,6 +66,28 @@ namespace Countdown
             NoTasksMessage = DaysTasksList.Count == 0 ? "No Tasks" : " ";
             Bindings.Update();
 
+        }
+
+        private void DayTaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            int selectedIndex = DayTaskListBox.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                if (selectedIndex == previousSelection)
+                {
+                    DayTaskListBox.SelectedIndex = -1;
+                    previousSelection = -1;
+                }
+                else
+                {
+                    previousSelection = selectedIndex;
+                }
+            }
+            else
+            {
+                previousSelection = -1;
+                Bindings.Update();
+            }
         }
     }
 }
