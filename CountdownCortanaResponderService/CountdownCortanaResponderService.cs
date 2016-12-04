@@ -8,6 +8,7 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.ApplicationModel.VoiceCommands;
 using Countdown.Networking;
 using Countdown.Networking.Results;
+using Countdown.Networking.Serialization;
 using AsyncTask = System.Threading.Tasks.Task;
 
 namespace Countdown.CortanaResponderService
@@ -77,13 +78,54 @@ namespace Countdown.CortanaResponderService
                 }
                 else
                 {
-                    message =
-                        $"Your next task is {responseTask.Name}, it is due on {responseTask.DueDate}; in {responseTask.DueDate - DateTime.Now}";
+                    message = GetTimePhrase(responseTask);
                 }
                 userMessage.SpokenMessage = userMessage.DisplayMessage = message;
                 var userResponse = VoiceCommandResponse.CreateResponse(userMessage);
                 await _voiceServiceConnection.ReportSuccessAsync(userResponse);
             }
+        }
+
+        private static string GetTimePhrase(Task task)
+        {
+            var sb = new StringBuilder("Your next task ");
+            var remaining = task.DueDate - DateTime.Now;
+            var inPast = task.DueDate < DateTime.Now;
+            if (inPast) remaining = remaining.Negate();
+            var isWas = inPast ? "was" : "is";
+            sb.Append($"{isWas} {task.Name}, it {isWas} due on {task.DueDate}; ");
+            if (!inPast) sb.Append("in");
+            var comma = false;
+            if (remaining.Days > 0)
+            {
+                sb.Append(" ");
+                sb.Append(remaining.Days);
+                sb.Append(remaining.Days == 1 ? " Day" : " Days");
+                comma = true;
+            }
+            if (remaining.Hours > 0)
+            {
+                if (comma) sb.Append(",");
+                sb.Append(" ");
+                sb.Append(remaining.Hours);
+                sb.Append(remaining.Hours == 1 ? " Hour" : " Hours");
+                comma = true;
+            }
+            if (remaining.Minutes> 0) {
+                if (comma) sb.Append(",");
+                sb.Append(" ");
+                sb.Append(remaining.Minutes);
+                sb.Append(remaining.Minutes == 1 ? " Minute" : " Minutes");
+                comma = true;
+            }
+            if (remaining.Seconds > 0) {
+                if (comma) sb.Append(", and");
+                sb.Append(" ");
+                sb.Append(remaining.Seconds);
+                sb.Append(remaining.Seconds == 1 ? " Second" : " Seconds");
+            }
+            if (inPast) sb.Append(" ago");
+            return sb.ToString();
         }
 
         private async System.Threading.Tasks.Task<bool> LogIn(ServerConnection connection)
