@@ -38,8 +38,9 @@ namespace Countdown
         public MainPage()
         {
             this.InitializeComponent();
-            //MyContentControl.Content = new ListViewer();
             DisplayedPage = ListTaskView;
+            MyListBox.SelectedIndex = 0;
+            ListTaskView.TaskList = TaskList;
             Bindings.Update();
             CreateTimer();
         }
