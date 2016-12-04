@@ -16,7 +16,7 @@ namespace Countdown.CortanaResponderService
     {
         private BackgroundTaskDeferral _serviceDeferral;
 
-        //private ResourceMap _resourceMap = ResourceManager.Current.MainResourceMap.GetSubtree("Resources");
+        private ResourceMap _resourceMap = ResourceManager.Current.MainResourceMap.GetSubtree("Resources");
 
         /// <summary>
         /// the service connection is maintained for the lifetime of a cortana session, once a voice command
@@ -88,8 +88,8 @@ namespace Countdown.CortanaResponderService
 
         private async System.Threading.Tasks.Task<bool> LogIn(ServerConnection connection)
         {
-            //connection.Connect(_resourceMap.GetValue("ServerURL", ResourceContext.GetForViewIndependentUse()).ValueAsString);
-            connection.Connect("http://localhost:5000");
+            connection.Connect(_resourceMap.GetValue("ServerURL", ResourceContext.GetForViewIndependentUse()).ValueAsString);
+            //connection.Connect("http://localhost:5000");
 
             if (!AuthStorage.LoggedIn()) {
                 LaunchAppInForeground("You need to log in first");
