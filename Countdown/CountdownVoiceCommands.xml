@@ -8,6 +8,8 @@
       <Example> What is my next countdown? </Example>
       <ListenFor RequireAppName="ExplicitlySpecified"> What is my next [due] {builtin:AppName} </ListenFor>
       <ListenFor RequireAppName="BeforeOrAfterPhrase"> What is my next [due] event </ListenFor>
+      <ListenFor RequireAppName="ExplicitlySpecified"> What's my next [due] {builtin:AppName} </ListenFor>
+      <ListenFor RequireAppName="BeforeOrAfterPhrase"> What's my next [due] event </ListenFor>
       <Feedback> Let me check </Feedback>
       <VoiceCommandService Target="CountdownCortanaResponderService"/>
     </Command>
