@@ -13,32 +13,81 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" HorizontalContentAlignment="Stretch" SelectionChanged="TaskListBox_SelectionChanged">
+        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" Tapped="TaskListBox_Tapped">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
-                    <Grid >
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*" MinWidth="200"/>
                             <ColumnDefinition Width="1*" MinWidth="200"/>
                         </Grid.ColumnDefinitions>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
                         <Border BorderThickness="10" Grid.Column="0" HorizontalAlignment="Stretch">
                             <TextBlock Text="{x:Bind Name}" />
                         </Border>
                         <Border BorderThickness="10" Grid.Column="1" HorizontalAlignment="Stretch">
                             <TextBlock Text="{x:Bind DueDate}" Margin="10,0,0,0"/>
                         </Border>
-                        <Border BorderThickness="10" Grid.Column="1" Grid.Row="1">
-                            <TextBlock Text="{x:Bind RemainingTime}" Margin="10,0,0,0"/>
-                        </Border>
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <StackPanel Name="DetailsStackPanel" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
-        
+        <StackPanel Name="DetailsStackPanel" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Task Name: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Name, Mode=OneWay}" />
+                </Grid>
+            </ItemsControl>
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Task Description: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.Description, Mode=OneWay}"/>
+                </Grid>
+            </ItemsControl>
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Due Date: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.DueDate, Mode=OneWay}"/>
+                </Grid>
+            </ItemsControl>
+            <ItemsControl>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="Remaining Time: " HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Column="1" Text ="{x:Bind SelectedTask.RemainingTime, Mode=OneWay}"/>
+                </Grid>
+            </ItemsControl>
+            <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
+            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}" Tapped="SubtaskListBox_Tapped">
+                <ListBox.ItemTemplate>
+                    <DataTemplate x:DataType="serialization:Task">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="1*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0" Text="{x:Bind Name}"/>
+                            <TextBlock Grid.Row="1" Text="{x:Bind DueDate}"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </StackPanel>
+       
     </Grid>
 </Page>

@@ -1,10 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
+using System.ComponentModel;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -15,98 +19,114 @@ namespace Countdown
     /// </summary>
     public sealed partial class ListViewer : Page
     {
-        public ObservableCollection<Task> TaskList { get; private set; } = new ObservableCollection<Task>();
+        public ObservableCollection<Task> TaskList
+        {
+            get { return taskList; }
+            set
+            {
+                taskList = value;
+                Bindings.Update();
+            }
+        }
 
+        private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
+
+        public Task SelectedTask;
+
+        private int previousSelection = -1, previousSubtaskSelection = -1;
 
         public ListViewer()
         {
             this.InitializeComponent();
+            CreateTimer();
+        }
+
+        public void CreateTimer()
+        {
             DispatcherTimer timer = new DispatcherTimer();
             timer.Tick += timer_Tick;
             timer.Interval = TimeSpan.FromSeconds(1);
             timer.Start();
         }
 
-        protected override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            var list = e.Parameter as ObservableCollection<Task>;
-            if (list != null)
-            {
-                TaskList = list;
-            }
-        }
-
         private void timer_Tick(object sender, object e)
         {
-            foreach (Task t in TaskList)
+            if (SelectedTask != null)
             {
-                t.RemainingTime = t.DueDate.Subtract(DateTime.Now);
-            }
-            InvalidateArrange();
-        }
-
-        private void TaskListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int selectedIndex = TaskListBox.SelectedIndex;
-            while (DetailsStackPanel.Children.Count > 0)
-            {
-                DetailsStackPanel.Children.RemoveAt(0);
-            }
-
-            if (selectedIndex != -1)
-            {
-                string nameText = "Task Name: " + TaskList[selectedIndex].Name;
-                DetailsStackPanel.Children.Add(new TextBlock
+                if (SelectedTask.RemainingTime.TotalSeconds > 0)
                 {
-                    Text = nameText,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-                string descriptionText = "Description: " + TaskList[selectedIndex].Description;
-                DetailsStackPanel.Children.Add(new TextBlock
-                {
-                    Text = descriptionText,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-                string dueDateText = "Due Date: " + TaskList[selectedIndex].DueDate;
-                DetailsStackPanel.Children.Add(new TextBlock
-                {
-                    Text = dueDateText,
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-                DetailsStackPanel.Children.Add(new TextBlock
-                {
-                    Text = "-----------------------------",
-                    HorizontalAlignment = HorizontalAlignment.Center
-                });
-
-                if (TaskList[selectedIndex].Subtasks.Length == 0)
-                {
-                    DetailsStackPanel.Children.Add(new TextBlock
-                    {
-                        Text = "No Subtasks",
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    });
+                    TimeSpan rawValue = SelectedTask.DueDate.Subtract(DateTime.Now);
+                    SelectedTask.RemainingTime = new TimeSpan(rawValue.Days, rawValue.Hours, rawValue.Minutes,
+                        rawValue.Seconds);
                 }
                 else
                 {
-                    DetailsStackPanel.Children.Add(new TextBlock
+                    SelectedTask.RemainingTime = new TimeSpan(0,0,0,0);
+                }
+                Bindings.Update();
+            }
+        }
+
+        private void TaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            int selectedIndex = TaskListBox.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                if (selectedIndex == previousSelection)
+                {
+                    SelectedTask = new Task
                     {
-                        Text = "Subtasks:",
-                        HorizontalAlignment = HorizontalAlignment.Center
-                    });
-                    if (TaskList[selectedIndex].Subtasks == null) return;
-                    foreach (Task t in TaskList[selectedIndex].Subtasks)
-                    {
-                        string subtaskInfo = t.Name + ", Due: " + t.DueDate;
-                        DetailsStackPanel.Children.Add(new TextBlock
-                        {
-                            Text = subtaskInfo,
-                            HorizontalAlignment = HorizontalAlignment.Center
-                        });
-                    }
+                        Name = " ",
+                        Description = " ",
+                        Subtasks = new Task[0],
+                        DueDate = DateTime.MinValue,
+                        RemainingTime = new TimeSpan(0, 0, 0, 0)
+                    };
+                    TaskListBox.SelectedIndex = -1;
+                    previousSelection = -1;
+                }
+                else
+                {
+                    SelectedTask = TaskList[selectedIndex];
+                    previousSelection = selectedIndex;
+                    Bindings.Update();
                 }
             }
+            else
+            {
+                SelectedTask = new Task
+                {
+                    Name = " ",
+                    Description = " ",
+                    Subtasks = new Task[0],
+                    DueDate = DateTime.MinValue,
+                    RemainingTime = new TimeSpan(0,0,0,0)
+                };
+                previousSelection = -1;
+                Bindings.Update();
+            }
+        }
 
+        private void SubtaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        {
+            int selectedIndex = SubtaskListBox.SelectedIndex;
+            if (selectedIndex != -1)
+            {
+                if (selectedIndex == previousSubtaskSelection)
+                {
+                    SubtaskListBox.SelectedIndex = -1;
+                    previousSubtaskSelection = -1;
+                }
+                else
+                {
+                    previousSubtaskSelection = selectedIndex;
+                }
+            }
+            else
+            {
+                previousSubtaskSelection = -1;
+                Bindings.Update();
+            }
         }
     }
 }

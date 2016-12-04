@@ -107,11 +107,13 @@
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parameters\CreateUserParams.cs" />
     <Compile Include="AuthStorage.cs" />
     <Compile Include="Parameters\SingleTaskParams.cs" />
     <Compile Include="Parameters\SingleTaskIdParams.cs" />
     <Compile Include="Parameters\TaskAndIdParams.cs" />
     <Compile Include="Results\CreateTaskResponse.cs" />
+    <Compile Include="Results\CreateUserResult.cs" />
     <Compile Include="Results\ModifyTaskResult.cs" />
     <Compile Include="Results\GetTasksResponse.cs" />
     <Compile Include="Results\LoginResult.cs" />

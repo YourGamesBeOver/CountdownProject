@@ -5,6 +5,7 @@
     xmlns:local="using:Countdown"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:serialization="using:Countdown.Networking.Serialization"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -12,8 +13,28 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <CalendarView Name="MyCalendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedDatesChanged="MyCalendar_SelectedDatesChanged" />
-        <ListView Name="DayTaskListBox" Grid.Column="1"/>
+        <CalendarView Name="MyCalendar" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectedDatesChanged="MyCalendar_SelectedDatesChanged"/>
+        <ItemsControl Grid.Column="1">
+            <TextBlock Text ="{x:Bind NoTasksMessage, Mode=OneWay}" HorizontalAlignment="Center"/>
+        </ItemsControl>
+        <ListBox Name="DayTaskListBox" Grid.Column="1" Background="{x:Null}" ItemsSource="{x:Bind DaysTasksList}" Tapped="DayTaskListBox_Tapped">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="serialization:Task">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="1*" MinWidth="200"/>
+                            <ColumnDefinition Width="1*" MinWidth="200"/>
+                        </Grid.ColumnDefinitions>
+                        <Border BorderThickness="10" Grid.Column="0" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{x:Bind Name}" />
+                        </Border>
+                        <Border BorderThickness="10" Grid.Column="1" HorizontalAlignment="Stretch">
+                            <TextBlock Text="{x:Bind DueDate}" Margin="10,0,0,0"/>
+                        </Border>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         
     </Grid>
 </Page>

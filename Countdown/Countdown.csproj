@@ -105,6 +105,9 @@
     <Compile Include="ListViewer.xaml.cs">
       <DependentUpon>ListViewer.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LoginViewer.xaml.cs">
+      <DependentUpon>LoginViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -144,6 +147,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ListViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LoginViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

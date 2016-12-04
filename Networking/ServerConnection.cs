@@ -262,6 +262,22 @@ namespace Countdown.Networking {
             }
         }
 
+        public async System.Threading.Tasks.Task<CreateUserResult> CreateUser(UserAuth auth)
+        {
+            if (!IsConnected) {
+                throw new ConnectionException("No connection was established");
+            }
+
+            var param = new CreateUserParams {User = auth};
+            var rawresponse =
+                await _httpClient.PostAsync(@"/create_user", new StringContent(JsonConvert.SerializeObject(param)));
+            if(!rawresponse.IsSuccessStatusCode) return CreateUserResult.Error;
+            using (var content = rawresponse.Content) {
+                var response = JsonConvert.DeserializeObject<StatusOnlyResponse>(await content.ReadAsStringAsync());
+                return response.Status ? CreateUserResult.Success : CreateUserResult.UsernameTaken;
+            }
+        }
+
         private void SetUpClient(string url)
         {
             _httpClient = new HttpClient { BaseAddress = new Uri(url) };
