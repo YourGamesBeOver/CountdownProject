@@ -74,6 +74,14 @@ namespace Countdown
             {
                 if (selectedIndex == previousSelection)
                 {
+                    SelectedTask = new Task
+                    {
+                        Name = " ",
+                        Description = " ",
+                        Subtasks = new Task[0],
+                        DueDate = DateTime.MinValue,
+                        RemainingTime = new TimeSpan(0, 0, 0, 0)
+                    };
                     TaskListBox.SelectedIndex = -1;
                     previousSelection = -1;
                 }
@@ -86,7 +94,14 @@ namespace Countdown
             }
             else
             {
-                SelectedTask = null;
+                SelectedTask = new Task
+                {
+                    Name = " ",
+                    Description = " ",
+                    Subtasks = new Task[0],
+                    DueDate = DateTime.MinValue,
+                    RemainingTime = new TimeSpan(0,0,0,0)
+                };
                 previousSelection = -1;
                 Bindings.Update();
             }

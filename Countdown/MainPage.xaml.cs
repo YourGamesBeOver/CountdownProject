@@ -8,6 +8,7 @@ using System.ComponentModel;
 using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
 using Windows.UI.Xaml.Media;
+using Countdown.Networking.Results;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -25,6 +26,7 @@ namespace Countdown
         private ListViewer ListTaskView = new ListViewer();
         private CalendarViewer CalendarTaskView = new CalendarViewer();
         private SettingsViewer SettingsView = new SettingsViewer();
+        private LoginViewer LoginView = new LoginViewer();
 
         private int uniqueID = 0;
 
