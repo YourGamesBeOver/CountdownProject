@@ -13,19 +13,24 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" ItemsSource="{x:Bind TaskList}" Tapped="TaskListBox_Tapped">
+        <ListBox Name="TaskListBox" Background="{x:Null}" HorizontalContentAlignment="Stretch" ItemsSource="{x:Bind TaskList, Mode=OneWay}" Tapped="TaskListBox_Tapped">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*" MinWidth="200"/>
-                            <ColumnDefinition Width="1*" MinWidth="200"/>
+                            <ColumnDefinition Width="1*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
                         <Border BorderThickness="10" Grid.Column="0" HorizontalAlignment="Stretch">
-                            <TextBlock Text="{x:Bind Name}" />
+                            <TextBlock Text="{x:Bind Name, Mode=OneWay}" />
                         </Border>
                         <Border BorderThickness="10" Grid.Column="1" HorizontalAlignment="Stretch">
-                            <TextBlock Text="{x:Bind DueDate}" Margin="10,0,0,0"/>
+                            <TextBlock Text="{x:Bind DueDate, Mode= OneWay}" Margin="10,0,0,0"/>
+                        </Border>
+                        <Border BorderThickness="10" Grid.Column="2" HorizontalAlignment="Stretch">
+                            <TextBlock Text="&#xE081;" Visibility="{x:Bind IsCompleted, Mode=OneWay}" FontFamily="Segoe MDL2 Assets" Margin="10,0,0,0"/>
+                            
                         </Border>
                     </Grid>
                 </DataTemplate>

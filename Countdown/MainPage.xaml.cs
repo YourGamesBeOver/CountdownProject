@@ -4,7 +4,9 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Core;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 using Windows.UI.Popups;
 using Countdown.Networking.Serialization;
 using Windows.UI.Xaml.Media;
@@ -50,14 +52,33 @@ namespace Countdown
             conn = e.Parameter as ServerConnection;
             var newTasks = await conn.GetTasksForUser();
             var newInactiveTasks = await conn.GetInactiveTasksForUser();
+            var TempList = new List<Task>();
+            int maxID = -1;
             foreach (Task t in newTasks)
             {
-                TaskList.Add(t);
+                TempList.Add(t);
+                if (t.TaskId > maxID)
+                {
+                    maxID = t.TaskId;
+                }
             }
             foreach (Task t in newInactiveTasks)
             {
+                TempList.Add(t);
+                if (t.TaskId > maxID)
+                {
+                    maxID = t.TaskId;
+                }
+            }
+            uniqueID = maxID;
+
+            UserNameText.Text = AuthStorage.GetAuth().Value.Username;
+
+            foreach (Task t in TempList.OrderBy(x => x.DueDate))
+            {
                 TaskList.Add(t);
             }
+
         }
 
         public void CreateTimer()
@@ -72,15 +93,8 @@ namespace Countdown
         {
             foreach (Task t in TaskList)
             {
-                if (t.RemainingTime.TotalSeconds > 0)
-                {
-                    TimeSpan rawValue = t.DueDate.Subtract(DateTime.Now);
-                    t.RemainingTime = new TimeSpan(rawValue.Days, rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
-                }
-                else
-                {
-                    t.RemainingTime = new TimeSpan(0,0,0,0);
-                }
+                TimeSpan rawValue = t.DueDate.Subtract(DateTime.Now);
+                t.RemainingTime = new TimeSpan(rawValue.Days, rawValue.Hours, rawValue.Minutes, rawValue.Seconds);
             }
         }
 
@@ -91,17 +105,11 @@ namespace Countdown
 
         private void MyListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var currentView = SystemNavigationManager.GetForCurrentView();
-            currentView.AppViewBackButtonVisibility = MyListBox.SelectedItem == null ? AppViewBackButtonVisibility.Collapsed : AppViewBackButtonVisibility.Visible;
-
-            currentView.BackRequested += backButton_Tapped;
-
             if (ListViewListBoxItem.IsSelected)
             {
                 DisplayedPage = ListTaskView;
                 ListTaskView.TaskList = SearchBar.Text.Length == 0 ? TaskList: SearchedTaskList;
                 Bindings.Update();
-                currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
                 MyCommandBar.Visibility = Visibility.Visible;
                 SearchBar.IsEnabled = true;
             }
@@ -120,17 +128,6 @@ namespace Countdown
                 MyCommandBar.Visibility = Visibility.Collapsed;
                 SearchBar.IsEnabled = false;
             }
-        }
-
-        private void backButton_Tapped(object sender, BackRequestedEventArgs e)
-        {
-            var currentView = SystemNavigationManager.GetForCurrentView();
-            currentView.AppViewBackButtonVisibility = AppViewBackButtonVisibility.Collapsed;
-            MyListBox.SelectedItem = null;
-            DisplayedPage = ListTaskView;
-            ListTaskView.TaskList = SearchBar.Text.Length == 0 ? TaskList : SearchedTaskList;
-            Bindings.Update();
-            MyCommandBar.Visibility = Visibility.Visible;
         }
 
         private async void AddButton_Click(object sender, RoutedEventArgs e)
@@ -201,15 +198,25 @@ namespace Countdown
             uniqueID++;
             TaskList.Add(addedTask);
             await conn.CreateTask(addedTask);
+            var TempList = new List<Task>();
+
+            foreach (Task t in TaskList)
+            {
+                TempList.Add(t);
+            }
+            TaskList.Clear();
+            foreach (Task t in TempList.OrderBy(x => x.DueDate))
+            {
+                TaskList.Add(t);
+            }
+
             if (MyContentControl.Content is ListViewer)
             {
                 ListTaskView.TaskList = TaskList;
-                Bindings.Update();
             }
             else if (MyContentControl.Content is CalendarViewer)
             {
                 CalendarTaskView.TaskList = TaskList;
-                Bindings.Update();
             }
         }
 
@@ -306,22 +313,46 @@ namespace Countdown
 
         private async void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
-            int selectedItemToComplete = TaskComboBox.SelectedIndex;
-            if (selectedItemToComplete != -1)
+            if (MyContentControl.Content is ListViewer)
             {
-                if (MyContentControl.Content is ListViewer)
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
+                int selectedItemToComplete = TaskComboBox.SelectedIndex;
+                if (selectedItemToComplete != -1)
                 {
-                    TaskList[selectedItemToComplete].IsCompleted = !TaskList[selectedItemToComplete].IsCompleted;
-                    if (TaskList[selectedItemToComplete].IsCompleted)
+                    var currentList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+                    if (!currentList[selectedItemToComplete].IsCompleted)
                     {
-                        await conn.MarkTaskAsCompleted(TaskList[selectedItemToComplete]);
+                        await conn.MarkTaskAsCompleted(currentList[selectedItemToComplete]);
                     }
                     else
                     {
-                        await conn.MarkTaskAsNotCompleted(TaskList[selectedItemToComplete]);
+                        await conn.MarkTaskAsNotCompleted(currentList[selectedItemToComplete]);
                     }
 
+                    ListTaskView.TaskList = new ObservableCollection<Task>();
+                    ListTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+                    TaskComboBox.SelectedIndex = selectedItemToComplete;
+                }
+            }
+            else
+            {
+                var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+                int selectedItemToComplete = TaskComboBox.SelectedIndex;
+                if (selectedItemToComplete != -1)
+                {
+                    var currentList = CalendarTaskView.DaysTasksList;
+                    if (!currentList[selectedItemToComplete].IsCompleted)
+                    {
+                        await conn.MarkTaskAsCompleted(currentList[selectedItemToComplete]);
+                    }
+                    else
+                    {
+                        await conn.MarkTaskAsNotCompleted(currentList[selectedItemToComplete]);
+                    }
+
+                    CalendarTaskView.TaskList = new ObservableCollection<Task>();
+                    CalendarTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+                    TaskComboBox.SelectedIndex = selectedItemToComplete;
                 }
             }
         }

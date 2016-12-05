@@ -45,6 +45,7 @@
                        Height="45"
                        VerticalAlignment="Center"
                        />
+            <TextBlock Name="UserNameText" FontSize="20" Margin ="10,10,10,0" VerticalAlignment="Center" RelativePanel.LeftOf="SearchBar"/>
             <AutoSuggestBox Name="SearchBar"
                             PlaceholderText="Search"
                             Width="200"
