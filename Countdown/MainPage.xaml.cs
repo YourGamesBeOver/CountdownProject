@@ -198,25 +198,21 @@ namespace Countdown
             uniqueID++;
             TaskList.Add(addedTask);
             await conn.CreateTask(addedTask);
-            var TempList = new List<Task>();
 
-            foreach (Task t in TaskList)
+            TaskList = OrderList(TaskList);
+            if (SearchedTaskList.Count != 0)
             {
-                TempList.Add(t);
-            }
-            TaskList.Clear();
-            foreach (Task t in TempList.OrderBy(x => x.DueDate))
-            {
-                TaskList.Add(t);
+                SearchedTaskList.Add(addedTask);
+                SearchedTaskList = OrderList(SearchedTaskList);
             }
 
             if (MyContentControl.Content is ListViewer)
             {
-                ListTaskView.TaskList = TaskList;
+                ListTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
             }
             else if (MyContentControl.Content is CalendarViewer)
             {
-                CalendarTaskView.TaskList = TaskList;
+                CalendarTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
             }
         }
 
@@ -584,14 +580,14 @@ namespace Countdown
                     if (SearchedTaskList.Count != 0)
                     {
                         SearchedTaskList[selectedItem] = editedTask;
-                        TaskList[TaskList.IndexOf(SearchedTaskList[selectedItem])] = editedTask;
-                        ListTaskView.TaskList = SearchedTaskList;
+                        TaskList[TaskList.IndexOf(SearchedTaskList[selectedItem])] = editedTask;                        
+                        ListTaskView.TaskList = OrderList(SearchedTaskList);
                         SearchBar_TextChanged(SearchBar, null);
                     }
                     else
                     {
                         TaskList[selectedItem] = editedTask;
-                        ListTaskView.TaskList = TaskList;
+                        ListTaskView.TaskList = OrderList(TaskList);
                     }
                 }
                 else if (MyContentControl.Content is CalendarViewer)
@@ -603,12 +599,12 @@ namespace Countdown
                     if (SearchedTaskList.Count != 0)
                     {
                         SearchedTaskList[SearchedTaskList.IndexOf(selectedElement)] = editedTask;
-                        CalendarTaskView.TaskList = SearchedTaskList;
+                        CalendarTaskView.TaskList = OrderList(SearchedTaskList);
                         SearchBar_TextChanged(SearchBar, null);
                     }
                     else
                     {
-                        CalendarTaskView.TaskList = TaskList;
+                        CalendarTaskView.TaskList = OrderList(TaskList);
                     }
                 }
             }
@@ -618,6 +614,22 @@ namespace Countdown
                 await error.ShowAsync();
             }
             
+        }
+
+        public ObservableCollection<Task> OrderList(ObservableCollection<Task> currentList)
+        {
+            var TempList = new List<Task>();
+
+            foreach (Task t in currentList)
+            {
+                TempList.Add(t);
+            }
+            currentList.Clear();
+            foreach (Task t in TempList.OrderBy(x => x.DueDate))
+            {
+                currentList.Add(t);
+            }
+            return currentList;
         }
     }
 
