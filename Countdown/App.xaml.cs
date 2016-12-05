@@ -123,6 +123,53 @@ namespace Countdown
             }
         }
 
+        protected override async void OnActivated(IActivatedEventArgs args)
+        {
+            base.OnActivated(args);
+            // Re"peat the same basic initialization as OnLaunched() above, taking into account whether
+            // or not the app is already active.
+            Frame rootFrame = Window.Current.Content as Frame;
+
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
+            if (rootFrame == null) {
+                // Create a Frame to act as the navigation context and navigate to the first page
+                rootFrame = new Frame();
+
+                rootFrame.NavigationFailed += OnNavigationFailed;
+
+                // Place the frame in the current Window
+                Window.Current.Content = rootFrame;
+            }
+
+            if (rootFrame.Content == null) {
+                // When the navigation stack isn't restored navigate to the first page,
+                // configuring the new page by passing required information as a navigation
+                // parameter
+                bool loggedin = AuthStorage.LoggedIn();
+                if (loggedin) {
+                    ServerConnection conn = new ServerConnection();
+                    conn.Connect(ResourceManager.Current.MainResourceMap.GetSubtree("Resources").GetValue("ServerURL", ResourceContext.GetForViewIndependentUse()).ValueAsString);
+                    var auth = AuthStorage.GetAuth();
+                    if (auth == null) {
+                        rootFrame.Navigate(typeof(LoginViewer), null);
+                    } else {
+                        var loginResult = await conn.LogIn(auth.Value);
+                        if (loginResult != LoginResult.Success) {
+                            rootFrame.Navigate(typeof(LoginViewer), null);
+                        } else {
+                            rootFrame.Navigate(typeof(MainPage), conn);
+                        }
+                    }
+                } else {
+                    rootFrame.Navigate(typeof(LoginViewer), null);
+                }
+            }
+
+            // Ensure the current window is active
+            Window.Current.Activate();
+        }
+
         /// <summary>
         /// Invoked when Navigation to a certain page fails
         /// </summary>
