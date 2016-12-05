@@ -306,7 +306,7 @@ namespace Countdown
 
         private async void CompleteButton_Click(object sender, RoutedEventArgs e)
         {
-            var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "DayTaskListBox");
+            var TaskComboBox = FindElementByName<ListBox>(MyContentControl, "TaskListBox");
             int selectedItemToComplete = TaskComboBox.SelectedIndex;
             if (selectedItemToComplete != -1)
             {

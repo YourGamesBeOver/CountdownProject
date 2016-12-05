@@ -74,7 +74,7 @@ namespace Countdown.CortanaResponderService
                 string message;
                 if (responseTask == null)
                 {
-                    message = "I could not locate the task";
+                    message = "I couldn't find any remaining tasks for you";
                 }
                 else
                 {
