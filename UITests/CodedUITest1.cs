@@ -19,6 +19,16 @@ namespace UITests {
         }
 
         [TestMethod]
+        public void TestLogIn()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            this.UIMap.UICountdownWindow.LoginUserName.Text = "UITestSuite";
+            this.UIMap.UICountdownWindow.LoginPassword.Text = "eatme";
+            Mouse.Click(this.UIMap.UICountdownWindow.LoginButton);
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISearchBar.Exists);
+        }
+
+        [TestMethod]
         public void TestIfListViewButtonIsPresent()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
@@ -66,19 +76,9 @@ namespace UITests {
 
             Assert.AreEqual("Sample Task", this.UIMap.UICountdownWindow.DetailsTaskNameText.DisplayText, "Name Not Shown");
             Assert.AreEqual("Sample Description", this.UIMap.UICountdownWindow.DetailsTaskDescriptionText.DisplayText, "Description Not Shown");
-        }
 
-        [TestMethod]
-        public void TestDetailedInfoShownWhenTaskIsSelectedFromCalendarView()
-        {
-            /*
-             *  1) Open app
-             *  2) Navigate to Calendar view
-             *  3) create a task
-             *  4) Click on a day
-             *  5) Click on specific task
-             *  6) Check that the specific details appear  
-             */
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -92,9 +92,14 @@ namespace UITests {
                 "Sample Description";
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
 
-            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December3);
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December4);
 
             Assert.AreEqual(1, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.ListViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -108,11 +113,16 @@ namespace UITests {
                 "Sample Description";
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
 
-            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December4);
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December3);
 
             Assert.AreEqual(0, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
 
             Assert.AreEqual("No Tasks", this.UIMap.UICountdownWindow.NoTasksText.DisplayText, "Text Not Displayed");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.ListViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -127,6 +137,9 @@ namespace UITests {
 
             Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Item Not Created");
 
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -166,10 +179,10 @@ namespace UITests {
                 "Sample Description";
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
 
-            this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-
             Assert.AreEqual(1, this.UIMap.UICountdownWindow.SubtaskListBox.Items.Count, "Subtask not created");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -192,6 +205,10 @@ namespace UITests {
 
             Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Message not shown");
             Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.CancelButton);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
@@ -212,6 +229,9 @@ namespace UITests {
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
 
             Assert.AreEqual("Edited Task", this.UIMap.UICountdownWindow.EditedTaskText.DisplayText, "Name not edited");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
         [TestMethod]
         public void TestEditTaskDescription()
@@ -400,6 +420,16 @@ namespace UITests {
 
             this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "Sample";
             Assert.AreEqual(0, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Search did not work");
+        }
+
+        [TestMethod]
+        public void TestLogOut()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.SettingsViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.LogOutButton);
+
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.LoginButton.Exists);
         }
 
 

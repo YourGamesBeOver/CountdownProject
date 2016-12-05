@@ -493,6 +493,70 @@ namespace UITests
                 return this.mNoTasksText;
             }
         }
+        
+        public XamlEdit LoginUserName
+        {
+            get
+            {
+                if ((this.mLoginUserName == null))
+                {
+                    this.mLoginUserName = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mLoginUserName.SearchProperties[XamlEdit.PropertyNames.AutomationId] = "UserNameTextBox";
+                    this.mLoginUserName.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mLoginUserName;
+            }
+        }
+        
+        public XamlEdit LoginPassword
+        {
+            get
+            {
+                if ((this.mLoginPassword == null))
+                {
+                    this.mLoginPassword = new XamlEdit(this);
+                    #region Search Criteria
+                    this.mLoginPassword.SearchProperties[XamlEdit.PropertyNames.AutomationId] = "PasswordTextBox";
+                    this.mLoginPassword.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mLoginPassword;
+            }
+        }
+        
+        public XamlButton LoginButton
+        {
+            get
+            {
+                if ((this.mLoginButton == null))
+                {
+                    this.mLoginButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mLoginButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "LoginButton";
+                    this.mLoginButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mLoginButton;
+            }
+        }
+        
+        public XamlButton LogOutButton
+        {
+            get
+            {
+                if ((this.mLogOutButton == null))
+                {
+                    this.mLogOutButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mLogOutButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "logOutButton";
+                    this.mLogOutButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mLogOutButton;
+            }
+        }
         #endregion
         
         #region Fields
@@ -549,6 +613,14 @@ namespace UITests
         private DayTaskListBox mDayTaskListBox;
         
         private XamlText mNoTasksText;
+        
+        private XamlEdit mLoginUserName;
+        
+        private XamlEdit mLoginPassword;
+        
+        private XamlButton mLoginButton;
+        
+        private XamlButton mLogOutButton;
         #endregion
     }
     
@@ -597,12 +669,30 @@ namespace UITests
                 return this.mCalendarViewButton;
             }
         }
+        
+        public XamlListItem SettingsViewButton
+        {
+            get
+            {
+                if ((this.mSettingsViewButton == null))
+                {
+                    this.mSettingsViewButton = new XamlListItem(this);
+                    #region Search Criteria
+                    this.mSettingsViewButton.SearchProperties[XamlListItem.PropertyNames.AutomationId] = "SettingsListBoxItem";
+                    this.mSettingsViewButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mSettingsViewButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlListItem mListViewButton;
         
         private XamlListItem mCalendarViewButton;
+        
+        private XamlListItem mSettingsViewButton;
         #endregion
     }
     
@@ -1277,10 +1367,28 @@ namespace UITests
                 return this.mAddSubtaskButton;
             }
         }
+        
+        public XamlButton CancelButton
+        {
+            get
+            {
+                if ((this.mCancelButton == null))
+                {
+                    this.mCancelButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mCancelButton.SearchProperties[XamlButton.PropertyNames.Name] = "Cancel";
+                    this.mCancelButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mCancelButton;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlButton mAddSubtaskButton;
+        
+        private XamlButton mCancelButton;
         #endregion
     }
     
