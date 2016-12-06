@@ -557,6 +557,34 @@ namespace UITests
                 return this.mLogOutButton;
             }
         }
+        
+        public XamlButton RegisterButton
+        {
+            get
+            {
+                if ((this.mRegisterButton == null))
+                {
+                    this.mRegisterButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mRegisterButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "RegisterButton";
+                    this.mRegisterButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mRegisterButton;
+            }
+        }
+        
+        public UISubtaskListBoxList UISubtaskListBoxList
+        {
+            get
+            {
+                if ((this.mUISubtaskListBoxList == null))
+                {
+                    this.mUISubtaskListBoxList = new UISubtaskListBoxList(this);
+                }
+                return this.mUISubtaskListBoxList;
+            }
+        }
         #endregion
         
         #region Fields
@@ -621,6 +649,10 @@ namespace UITests
         private XamlButton mLoginButton;
         
         private XamlButton mLogOutButton;
+        
+        private XamlButton mRegisterButton;
+        
+        private UISubtaskListBoxList mUISubtaskListBoxList;
         #endregion
     }
     
@@ -710,17 +742,13 @@ namespace UITests
         }
         
         #region Properties
-        public XamlListItem FirstListBoxItem
+        public FirstListBoxItem FirstListBoxItem
         {
             get
             {
                 if ((this.mFirstListBoxItem == null))
                 {
-                    this.mFirstListBoxItem = new XamlListItem(this);
-                    #region Search Criteria
-                    this.mFirstListBoxItem.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Networking.Serialization.Task";
-                    this.mFirstListBoxItem.WindowTitles.Add("Countdown");
-                    #endregion
+                    this.mFirstListBoxItem = new FirstListBoxItem(this);
                 }
                 return this.mFirstListBoxItem;
             }
@@ -728,7 +756,43 @@ namespace UITests
         #endregion
         
         #region Fields
-        private XamlListItem mFirstListBoxItem;
+        private FirstListBoxItem mFirstListBoxItem;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class FirstListBoxItem : XamlListItem
+    {
+        
+        public FirstListBoxItem(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Networking.Serialization.Task";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlText Checkmark
+        {
+            get
+            {
+                if ((this.mCheckmark == null))
+                {
+                    this.mCheckmark = new XamlText(this);
+                    #region Search Criteria
+                    this.mCheckmark.SearchProperties[XamlText.PropertyNames.Name] = "";
+                    this.mCheckmark.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mCheckmark;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlText mCheckmark;
         #endregion
     }
     
@@ -811,6 +875,22 @@ namespace UITests
                 return this.mUIEditTaskButton;
             }
         }
+        
+        public XamlButton UICompleteTaskButton
+        {
+            get
+            {
+                if ((this.mUICompleteTaskButton == null))
+                {
+                    this.mUICompleteTaskButton = new XamlButton(this);
+                    #region Search Criteria
+                    this.mUICompleteTaskButton.SearchProperties[XamlButton.PropertyNames.AutomationId] = "CompleteButton";
+                    this.mUICompleteTaskButton.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mUICompleteTaskButton;
+            }
+        }
         #endregion
         
         #region Fields
@@ -821,6 +901,8 @@ namespace UITests
         private XamlButton mUIAddSubtaskButton;
         
         private XamlButton mUIEditTaskButton;
+        
+        private XamlButton mUICompleteTaskButton;
         #endregion
     }
     
@@ -1477,12 +1559,69 @@ namespace UITests
                 return this.mDecember4;
             }
         }
+        
+        public XamlControl December6
+        {
+            get
+            {
+                if ((this.mDecember6 == null))
+                {
+                    this.mDecember6 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember6.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember6.SearchProperties[UITestControl.PropertyNames.Name] = "6";
+                    this.mDecember6.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember6;
+            }
+        }
+        
+        public XamlControl December7
+        {
+            get
+            {
+                if ((this.mDecember7 == null))
+                {
+                    this.mDecember7 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember7.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember7.SearchProperties[UITestControl.PropertyNames.Name] = "7";
+                    this.mDecember7.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember7;
+            }
+        }
+        
+        public XamlControl December8
+        {
+            get
+            {
+                if ((this.mDecember8 == null))
+                {
+                    this.mDecember8 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember8.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember8.SearchProperties[UITestControl.PropertyNames.Name] = "8";
+                    this.mDecember8.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember8;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlControl mDecember3;
         
         private XamlControl mDecember4;
+        
+        private XamlControl mDecember6;
+        
+        private XamlControl mDecember7;
+        
+        private XamlControl mDecember8;
         #endregion
     }
     
@@ -1523,6 +1662,74 @@ namespace UITests
     }
     
     [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class UISubtaskListBoxList : XamlList
+    {
+        
+        public UISubtaskListBoxList(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlList.PropertyNames.AutomationId] = "SubtaskListBox";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public FirstSubtask FirstSubtask
+        {
+            get
+            {
+                if ((this.mFirstSubtask == null))
+                {
+                    this.mFirstSubtask = new FirstSubtask(this);
+                }
+                return this.mFirstSubtask;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private FirstSubtask mFirstSubtask;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
+    public class FirstSubtask : XamlListItem
+    {
+        
+        public FirstSubtask(XamlControl searchLimitContainer) : 
+                base(searchLimitContainer)
+        {
+            #region Search Criteria
+            this.SearchProperties[XamlListItem.PropertyNames.Name] = "Countdown.Networking.Serialization.Task";
+            this.WindowTitles.Add("Countdown");
+            #endregion
+        }
+        
+        #region Properties
+        public XamlText CheckMark
+        {
+            get
+            {
+                if ((this.mCheckMark == null))
+                {
+                    this.mCheckMark = new XamlText(this);
+                    #region Search Criteria
+                    this.mCheckMark.SearchProperties[XamlText.PropertyNames.Name] = "";
+                    this.mCheckMark.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mCheckMark;
+            }
+        }
+        #endregion
+        
+        #region Fields
+        private XamlText mCheckMark;
+        #endregion
+    }
+    
+    [GeneratedCode("Coded UITest Builder", "14.0.23107.0")]
     public class ErrorWindow : UITestControl
     {
         
@@ -1549,10 +1756,28 @@ namespace UITests
                 return this.mErrorWindowButtons;
             }
         }
+        
+        public DirectUIControl UsernametakenText
+        {
+            get
+            {
+                if ((this.mUsernametakenText == null))
+                {
+                    this.mUsernametakenText = new DirectUIControl(this);
+                    #region Search Criteria
+                    this.mUsernametakenText.SearchProperties[DirectUIControl.PropertyNames.AutomationId] = "Content_String";
+                    this.mUsernametakenText.WindowTitles.Add("ERROR");
+                    #endregion
+                }
+                return this.mUsernametakenText;
+            }
+        }
         #endregion
         
         #region Fields
         private ErrorWindowButtons mErrorWindowButtons;
+        
+        private DirectUIControl mUsernametakenText;
         #endregion
     }
     

@@ -13,7 +13,7 @@
             <ColumnDefinition Width="1*"/>
             <ColumnDefinition Width="1*"/>
         </Grid.ColumnDefinitions>
-        <ListBox Name="TaskListBox" Background="{x:Null}" HorizontalContentAlignment="Stretch" ItemsSource="{x:Bind TaskList, Mode=OneWay}" Tapped="TaskListBox_Tapped">
+        <ListBox Name="TaskListBox" Background="{x:Null}" HorizontalContentAlignment="Stretch" ItemsSource="{x:Bind TaskList, Mode=OneWay}" SelectionChanged="TaskListBox_OnSelectionChanged">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
                     <Grid>
@@ -78,16 +78,21 @@
                 </Grid>
             </ItemsControl>
             <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
-            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}" Tapped="SubtaskListBox_Tapped">
+            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="serialization:Task">
                         <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="4*"/>
                                 <RowDefinition Height="1*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Grid.Row="0" Text="{x:Bind Name}"/>
                             <TextBlock Grid.Row="1" Text="{x:Bind DueDate}"/>
+                            <TextBlock Grid.Column="1" Text="&#xE081;" FontFamily="Segoe MDL2 Assets" Visibility="{x:Bind IsCompleted}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

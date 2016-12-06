@@ -315,19 +315,45 @@ namespace Countdown
                 int selectedItemToComplete = TaskComboBox.SelectedIndex;
                 if (selectedItemToComplete != -1)
                 {
+                    var SubtaskListBox = FindElementByName<ListBox>(MyContentControl, "SubtaskListBox");
+                    var selectedSubtaskIndex = SubtaskListBox.SelectedIndex;
                     var currentList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
-                    if (!currentList[selectedItemToComplete].IsCompleted)
-                    {
-                        await conn.MarkTaskAsCompleted(currentList[selectedItemToComplete]);
+                    if (selectedSubtaskIndex == -1)
+                    { 
+                        if (!currentList[selectedItemToComplete].IsCompleted)
+                        {
+                            await conn.MarkTaskAsCompleted(currentList[selectedItemToComplete]);
+                        }
+                        else
+                        {
+                            await conn.MarkTaskAsNotCompleted(currentList[selectedItemToComplete]);
+                        }
+
+                        ListTaskView.TaskList = new ObservableCollection<Task>();
+                        ListTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+                        TaskComboBox.SelectedIndex = selectedItemToComplete;
                     }
                     else
                     {
-                        await conn.MarkTaskAsNotCompleted(currentList[selectedItemToComplete]);
-                    }
+                        var subtaskList = currentList[selectedItemToComplete].Subtasks;
+                        var selectedSubtask = subtaskList[selectedSubtaskIndex];
+                        if (!selectedSubtask.IsCompleted)
+                        {
+                            await conn.MarkTaskAsCompleted(selectedSubtask);
+                        }
+                        else
+                        {
+                            await conn.MarkTaskAsNotCompleted(selectedSubtask);
+                        }
 
-                    ListTaskView.TaskList = new ObservableCollection<Task>();
-                    ListTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
-                    TaskComboBox.SelectedIndex = selectedItemToComplete;
+                        ListTaskView.TaskList = new ObservableCollection<Task>();
+                        ListTaskView.TaskList = SearchedTaskList.Count == 0 ? TaskList : SearchedTaskList;
+                        TaskComboBox.SelectedIndex = selectedItemToComplete;
+                        SubtaskListBox.SelectedIndex = selectedSubtaskIndex;
+                    }
+                    ListTaskView.SelectedTask = new Task {Name = "filler"};
+                    ListTaskView.SelectedTask = currentList[selectedItemToComplete];
+                    SubtaskListBox.SelectedIndex = selectedSubtaskIndex;
                 }
             }
             else

@@ -17,7 +17,7 @@
         <ItemsControl Grid.Column="1">
             <TextBlock Text ="{x:Bind NoTasksMessage, Mode=OneWay}" HorizontalAlignment="Center"/>
         </ItemsControl>
-        <ListBox Name="DayTaskListBox" Grid.Column="1" Background="{x:Null}" ItemsSource="{x:Bind DaysTasksList}" Tapped="DayTaskListBox_Tapped">
+        <ListBox Name="DayTaskListBox" Grid.Column="1" Background="{x:Null}" ItemsSource="{x:Bind DaysTasksList}">
             <ListBox.ItemTemplate>
                 <DataTemplate x:DataType="serialization:Task">
                     <Grid>

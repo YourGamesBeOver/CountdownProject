@@ -31,9 +31,13 @@ namespace Countdown
 
         private ObservableCollection<Task> taskList = new ObservableCollection<Task>();
 
-        public Task SelectedTask;
+        private Task selectedTask;
 
-        private int previousSelection = -1, previousSubtaskSelection = -1;
+        public Task SelectedTask
+        {
+            get { return selectedTask; }
+            set { selectedTask = value; Bindings.Update(); }
+        }
 
         public ListViewer()
         {
@@ -60,66 +64,15 @@ namespace Countdown
             }
         }
 
-        private void TaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
+        private void TaskListBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selectedIndex = TaskListBox.SelectedIndex;
             if (selectedIndex != -1)
             {
-                if (selectedIndex == previousSelection)
-                {
-                    SelectedTask = new Task
-                    {
-                        Name = " ",
-                        Description = " ",
-                        Subtasks = new Task[0],
-                        DueDate = DateTime.MinValue,
-                        RemainingTime = new TimeSpan(0, 0, 0, 0)
-                    };
-                    TaskListBox.SelectedIndex = -1;
-                    previousSelection = -1;
-                }
-                else
-                {
-                    SelectedTask = TaskList[selectedIndex];
-                    previousSelection = selectedIndex;
-                    Bindings.Update();
-                }
-            }
-            else
-            {
-                SelectedTask = new Task
-                {
-                    Name = " ",
-                    Description = " ",
-                    Subtasks = new Task[0],
-                    DueDate = DateTime.MinValue,
-                    RemainingTime = new TimeSpan(0,0,0,0)
-                };
-                previousSelection = -1;
-                Bindings.Update();
+                SelectedTask = TaskList[selectedIndex];
+                Bindings.Update();    
             }
         }
 
-        private void SubtaskListBox_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
-        {
-            int selectedIndex = SubtaskListBox.SelectedIndex;
-            if (selectedIndex != -1)
-            {
-                if (selectedIndex == previousSubtaskSelection)
-                {
-                    SubtaskListBox.SelectedIndex = -1;
-                    previousSubtaskSelection = -1;
-                }
-                else
-                {
-                    previousSubtaskSelection = selectedIndex;
-                }
-            }
-            else
-            {
-                previousSubtaskSelection = -1;
-                Bindings.Update();
-            }
-        }
     }
 }
