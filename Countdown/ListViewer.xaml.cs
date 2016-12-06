@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
 using System.ComponentModel;
 using System.Diagnostics;
+using Windows.UI.Xaml.Input;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -36,8 +37,11 @@ namespace Countdown
         public Task SelectedTask
         {
             get { return selectedTask; }
-            set { selectedTask = value; Bindings.Update(); }
+            set { selectedTask = value;
+                Bindings.Update(); }
         }
+
+        private int previousSelection = -1;
 
         public ListViewer()
         {
@@ -74,5 +78,16 @@ namespace Countdown
             }
         }
 
+        private void SubtaskListBox_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            var currentSelection = SubtaskListBox.SelectedIndex;
+            if (currentSelection != -1 && previousSelection == currentSelection)
+            {
+                    SubtaskListBox.SelectedIndex = -1;
+                    previousSelection = -1;
+                    return;
+            }
+            previousSelection = currentSelection;
+        }
     }
 }

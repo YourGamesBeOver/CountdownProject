@@ -78,7 +78,7 @@
                 </Grid>
             </ItemsControl>
             <TextBlock Text="----------------------------------------" HorizontalAlignment="Center"/>
-            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}">
+            <ListBox Name="SubtaskListBox" ItemsSource="{x:Bind SelectedTask.Subtasks,Mode=OneWay}" Tapped="SubtaskListBox_OnTapped">
                 <ListBox.ItemTemplate>
                     <DataTemplate x:DataType="serialization:Task">
                         <Grid>

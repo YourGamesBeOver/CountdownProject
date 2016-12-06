@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Windows.UI;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
 using Countdown.Networking.Serialization;
 
@@ -25,6 +26,8 @@ namespace Countdown
                 Bindings.Update();
                 }
         }
+
+        private int previousSelection = -1;
 
         public ObservableCollection<Task> DaysTasksList { get; set; } = new ObservableCollection<Task>();
 
@@ -64,6 +67,21 @@ namespace Countdown
             NoTasksMessage = DaysTasksList.Count == 0 ? "No Tasks" : " ";
             Bindings.Update();
 
+        }
+
+        private void DayTaskListBox_OnTapped(object sender, TappedRoutedEventArgs e)
+        {
+            int currentSelection = DayTaskListBox.SelectedIndex;
+            if (currentSelection != -1)
+            {
+                if (previousSelection == currentSelection)
+                {
+                    DayTaskListBox.SelectedIndex = -1;
+                    previousSelection = -1;
+                    return;
+                }
+            }
+            previousSelection = currentSelection;
         }
     }
 }
