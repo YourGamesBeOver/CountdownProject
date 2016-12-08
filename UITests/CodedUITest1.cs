@@ -15,20 +15,48 @@ namespace UITests {
     /// </summary>
     [CodedUITest(CodedUITestType.WindowsStore)]
     public class CodedUITest1 {
+
         public CodedUITest1() {
+
+        }
+
+        //pick any unused username
+        private string username = "User6";
+
+        [TestMethod]
+        public void TestSignUpNewUserWithValidValues()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+
+            this.UIMap.UICountdownWindow.LoginUserName.Text = username;
+            this.UIMap.UICountdownWindow.LoginPassword.Text = "whatever";
+            Mouse.Click(this.UIMap.UICountdownWindow.RegisterButton);
+
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISearchBar.Enabled, "Did not register user");
+        }
+
+        [TestMethod]
+        public void TestSignUpNewUserWithInValidValues()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.SettingsViewButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.LogOutButton);
+
+            this.UIMap.UICountdownWindow.LoginUserName.Text = username;
+            this.UIMap.UICountdownWindow.LoginPassword.Text = "whatever";
+            Mouse.Click(this.UIMap.UICountdownWindow.RegisterButton);
+
+            Mouse.Click(this.UIMap.UICountdownWindow);
+            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Not Displayed");
+            Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
         }
 
         [TestMethod]
         public void TestLogIn()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            if (this.UIMap.UICountdownWindow.UISearchBar.Enabled)
-            {
-                Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.SettingsViewButton);
-                Mouse.Click(this.UIMap.UICountdownWindow.LogOutButton);
-            }
-            this.UIMap.UICountdownWindow.LoginUserName.Text = "UITestSuite";
-            this.UIMap.UICountdownWindow.LoginPassword.Text = "eatme";
+            this.UIMap.UICountdownWindow.LoginUserName.Text = username;
+            this.UIMap.UICountdownWindow.LoginPassword.Text = "whatever";
             Mouse.Click(this.UIMap.UICountdownWindow.LoginButton);
             Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISearchBar.Exists);
         }
@@ -69,84 +97,27 @@ namespace UITests {
         }
 
         [TestMethod]
-        public void TestDetailedInfoShownWhenTaskIsSelectedFromTaskView()
+        public void TestErrorShownWhenCompleteClickedWithNoSelectedTask()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-
-            Assert.AreEqual("Sample Task", this.UIMap.UICountdownWindow.DetailsTaskNameText.DisplayText, "Name Not Shown");
-            Assert.AreEqual("Sample Description", this.UIMap.UICountdownWindow.DetailsTaskDescriptionText.DisplayText, "Description Not Shown");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UICompleteTaskButton);
+            Assert.AreEqual(true,this.UIMap.ErrorWindow.Enabled, "Error message not displayed");
         }
 
         [TestMethod]
-        public void TestDaysTasksAreShownWhenDaySelected()
+        public void TestErrorShownWhenAddSubtaskClickedWithNoSelectedTask()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task 1";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-
-            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December6);
-
-            Assert.AreEqual(1, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.ListViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddSubtaskButton);
+            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error message not displayed");
         }
 
         [TestMethod]
-        public void TestCalendarViewClickedDayShowsNoEvents()
+        public void TestErrorShownWhenEditClickedWithNoSelectedTask()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task 1";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-
-            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December3);
-
-            Assert.AreEqual(0, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
-
-            Assert.AreEqual("No Tasks", this.UIMap.UICountdownWindow.NoTasksText.DisplayText, "Text Not Displayed");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.ListViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
-        }
-
-        [TestMethod]
-        public void TestCreatingANewTaskWithValidValues()
-        {
-            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-
-            Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Item Not Created");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
+            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error message not displayed");
         }
 
         [TestMethod]
@@ -168,7 +139,7 @@ namespace UITests {
         }
 
         [TestMethod]
-        public void TestCreatingANewSubTaskWithValidValues()
+        public void TestCreatingANewTaskWithValidValues()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
@@ -177,122 +148,135 @@ namespace UITests {
                 "Sample Description";
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
 
+            Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Item Not Created");
+        }
+
+        [TestMethod]
+        public void TestDetailedInfoShownWhenTaskIsSelectedFromTaskView()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
 
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddSubtaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UISubtaskNameText.NameTextBox.Text = "Sample Subtask";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
+            Assert.AreEqual("Sample Task", this.UIMap.UICountdownWindow.DetailsTaskNameText.DisplayText, "Name Not Shown");
+            Assert.AreEqual("Sample Description", this.UIMap.UICountdownWindow.DetailsTaskDescriptionText.DisplayText, "Description Not Shown");
 
-            Assert.AreEqual(1, this.UIMap.UICountdownWindow.SubtaskListBox.Items.Count, "Subtask not created");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
         public void TestCreatingANewSubTaskWithInValidValues()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
 
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddSubtaskButton);
             this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UISubtaskNameText.NameTextBox.Text = "Sample Subtask";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
 
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
 
             Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Message not shown");
             Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.CancelButton);
+        }
 
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+        [TestMethod]
+        public void TestCreatingANewSubTaskWithValidValues()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddSubtaskButton);
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UISubtaskNameText.NameTextBox.Text = "Sample Subtask";
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
+                "Sample Description";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
+
+            Assert.AreEqual(1, this.UIMap.UICountdownWindow.SubtaskListBox.Items.Count, "Subtask not created");
         }
 
         [TestMethod]
         public void TestEditTaskName()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
 
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Find();
             this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Edited Task";
             Mouse.Click(this.UIMap.UICountdownWindow.UIEditTaskWindow.UIUpdateButton);
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
 
             Assert.AreEqual("Edited Task", this.UIMap.UICountdownWindow.EditedTaskText.DisplayText, "Name not edited");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
+
         [TestMethod]
         public void TestEditTaskDescription()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
 
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
             this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text = "Edited Description";
             Mouse.Click(this.UIMap.UICountdownWindow.UIEditTaskWindow.UIUpdateButton);
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
 
             Assert.AreEqual("Edited Description", this.UIMap.UICountdownWindow.EditedDescriptionText.DisplayText, "Description not edited");
+        }
+
+        [TestMethod]
+        public void TestEditSubtask()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIEditTaskButton);
+
+            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UISubtaskNameText.NameTextBox.Text = "Edited Subtask";
+            Mouse.Click(this.UIMap.UICountdownWindow.UIEditTaskWindow.UIUpdateButton);
+
+            Assert.AreEqual("Edited Subtask", this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask.EditedSubtaskText.DisplayText, "Description not edited");
+        }
+
+        [TestMethod]
+        public void TestCompleteTask()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UICompleteTaskButton);
+
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Checkmark.Enabled, "Item not completed");
+        }
+
+        [TestMethod]
+        public void TestCompleteSubTask()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+            Mouse.Click(this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UICompleteTaskButton);
+
+            Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask.CheckMark.Enabled, "Subtask not marked as complete");
+        }
+
+        [TestMethod]
+        public void TestDeleteSubTask()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+
+            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
+
+            Mouse.Click(this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask);
 
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
             Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
-        }
 
-        [TestMethod]
-        public void TestEditTaskDueDate()
-        {
-            /*
-                *  1) Open app
-                *  2) create new task
-                *  3) click on task
-                *  4) click edit task
-                *  5) edit due date
-                *  6) check that due date is different
-            */
-        }
-
-        [TestMethod]
-        public void TestDeleteTaskWithNoTasks()
-        {
-            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Message saying no tasks should be displayed");
+            Assert.AreEqual(0, this.UIMap.UICountdownWindow.UISubtaskListBoxList.Items.Count, "Subtask not deleted");
         }
 
         [TestMethod]
         public void TestDeleteTaskWithTasks()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
             Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
             Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
@@ -301,98 +285,12 @@ namespace UITests {
         }
 
         [TestMethod]
-        public void TestDeleteSubTask()
-        {
-            /*
-                *  1) Open app
-                *  2) create new task
-                *  3) click on task
-                *  4) add subtask
-                *  4) click delete
-                *  5) click delete subtask
-                *  6) choose subtask
-                *  7) check subtask is removed
-            */
-        }
-
-        [TestMethod]
-        public void TestCompleteTask()
+        public void TestDeleteTaskWithNoTasks()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UICompleteTaskButton);
-
-            Assert.AreEqual(true, this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Checkmark.Enabled, "Item not completed");
-
             Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
-        }
-
-        [TestMethod]
-        public void TestCompleteSubTask()
-        {
-            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Sample Task";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
-
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddSubtaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UISubtaskNameText.NameTextBox.Text = "Sample Subtask";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UICompleteTaskButton);
-
-            Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISubtaskListBoxList.FirstSubtask.CheckMark.Enabled, "Subtask not marked as complete");
-
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
-        }
-
-        [TestMethod]
-        public void TestSignUpNewUserWithValidValues()
-        {
-            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.SettingsViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.LogOutButton);
-
-            Random rand = new Random();
-            string newUserName = "u" + rand.Next();
-
-            this.UIMap.UICountdownWindow.LoginUserName.Text = newUserName;
-            this.UIMap.UICountdownWindow.LoginPassword.Text = "eatme";
-            Mouse.Click(this.UIMap.UICountdownWindow.RegisterButton);
-
-            Assert.AreEqual(true, this.UIMap.UICountdownWindow.UISearchBar.Enabled, "Did not register user");
-        }
-
-        [TestMethod]
-        public void TestSignUpNewUserWithInValidValues()
-        {
-            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.SettingsViewButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.LogOutButton);
-
-            this.UIMap.UICountdownWindow.LoginUserName.Text = "UITestSuite";
-            this.UIMap.UICountdownWindow.LoginPassword.Text = "eatme";
-            Mouse.Click(this.UIMap.UICountdownWindow.RegisterButton);
-            
             Mouse.Click(this.UIMap.UICountdownWindow);
-            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Not Displayed");
-            Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.LoginButton);
+            Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Message saying no tasks should be displayed");
         }
 
         [TestMethod]
@@ -423,57 +321,36 @@ namespace UITests {
             Assert.AreEqual(1, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "search didn't work with different capitalization");
 
             this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Find();
-            this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "";
+            this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "3";
 
-            this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Mouse.Click(this.UIMap.UICountdownWindow);
+            Assert.AreEqual(0,this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Search did not work");
 
-            this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
         }
 
         [TestMethod]
-        public void TestSearchForNonExistingTask()
+        public void TestDaysTasksAreShownWhenDaySelected()
         {
             XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Task 1";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
 
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIAddTaskButton);
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Find();
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UITaskNameText.AddTaskTextBox.Text = "Task 2";
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Find();
-            this.UIMap.UICountdownWindow.UIContentScrollViewerPane.UIDescriptionText.DescriptionTextBox.Text =
-                "Sample Description";
-            this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.UIAddTaskWindow.AddTaskAddButton);
+            //must set to current day
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December7);
 
-            this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "Sample";
-            Assert.AreEqual(0, this.UIMap.UICountdownWindow.TaskListBox.Items.Count, "Search did not work");
+            Assert.AreEqual(2, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
+        }
 
-            this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Find();
-            this.UIMap.UICountdownWindow.UISearchBar.SearchBar.Text = "";
+        [TestMethod]
+        public void TestCalendarViewClickedDayShowsNoEvents()
+        {
+            XamlWindow.Launch("b708e79f-bf08-442b-b3f1-6b3d8ee1315f_mdkh4ynn2814y!App");
+            Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
 
-            this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December3);
 
-            this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.TaskListBox.FirstListBoxItem);
-            this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.UIMyCommandBarCustom.UIRemoveTaskButton);
-            this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton.Find();
-            Mouse.Click(this.UIMap.UICountdownWindow.UIDeleteWindow.UIYesButton);
+            Assert.AreEqual(0, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
+
+            Assert.AreEqual("No Tasks", this.UIMap.UICountdownWindow.NoTasksText.DisplayText, "Text Not Displayed");
         }
 
         [TestMethod]

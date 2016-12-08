@@ -1722,10 +1722,28 @@ namespace UITests
                 return this.mCheckMark;
             }
         }
+        
+        public XamlText EditedSubtaskText
+        {
+            get
+            {
+                if ((this.mEditedSubtaskText == null))
+                {
+                    this.mEditedSubtaskText = new XamlText(this);
+                    #region Search Criteria
+                    this.mEditedSubtaskText.SearchProperties[XamlText.PropertyNames.Name] = "Edited Subtask";
+                    this.mEditedSubtaskText.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mEditedSubtaskText;
+            }
+        }
         #endregion
         
         #region Fields
         private XamlText mCheckMark;
+        
+        private XamlText mEditedSubtaskText;
         #endregion
     }
     

@@ -26,6 +26,7 @@ namespace Countdown
             set
             {
                 taskList = value;
+                previousSelection = -1;
                 Bindings.Update();
             }
         }
