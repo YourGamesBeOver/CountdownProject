@@ -636,10 +636,12 @@ namespace Countdown
                     await conn.EditTask(editedTask);
                     if (MyContentControl.Content is ListViewer)
                     {
+                        var currentItem = currentList[selectedItem];
+
                         if (SearchedTaskList.Count != 0)
                         {
                             SearchedTaskList[selectedItem] = editedTask;
-                            TaskList[TaskList.IndexOf(SearchedTaskList[selectedItem])] = editedTask;
+                            TaskList[TaskList.IndexOf(currentItem)] = editedTask;
                             ListTaskView.TaskList = OrderList(SearchedTaskList);
                             SearchBar_TextChanged(SearchBar, null);
                         }

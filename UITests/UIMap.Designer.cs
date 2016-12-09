@@ -1610,6 +1610,23 @@ namespace UITests
                 return this.mDecember8;
             }
         }
+        
+        public XamlControl December9
+        {
+            get
+            {
+                if ((this.mDecember9 == null))
+                {
+                    this.mDecember9 = new XamlControl(this);
+                    #region Search Criteria
+                    this.mDecember9.SearchProperties[UITestControl.PropertyNames.ControlType] = "DataItem";
+                    this.mDecember9.SearchProperties[UITestControl.PropertyNames.Name] = "9";
+                    this.mDecember9.WindowTitles.Add("Countdown");
+                    #endregion
+                }
+                return this.mDecember9;
+            }
+        }
         #endregion
         
         #region Fields
@@ -1622,6 +1639,8 @@ namespace UITests
         private XamlControl mDecember7;
         
         private XamlControl mDecember8;
+        
+        private XamlControl mDecember9;
         #endregion
     }
     

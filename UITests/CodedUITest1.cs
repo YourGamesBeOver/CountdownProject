@@ -21,7 +21,7 @@ namespace UITests {
         }
 
         //pick any unused username
-        private string username = "User6";
+        private string username = "User7";
 
         [TestMethod]
         public void TestSignUpNewUserWithValidValues()
@@ -173,6 +173,7 @@ namespace UITests {
 
             Mouse.Click(this.UIMap.UICountdownWindow.UIAddSubtaskWindow.AddSubtaskButton);
 
+            Mouse.Click(this.UIMap.UICountdownWindow);
             Assert.AreEqual(true, this.UIMap.ErrorWindow.Enabled, "Error Message not shown");
             Mouse.Click(this.UIMap.ErrorWindow.ErrorWindowButtons.CloseButton);
         }
@@ -335,7 +336,7 @@ namespace UITests {
             Mouse.Click(this.UIMap.UICountdownWindow.SidebarMenuListBox.CalendarViewButton);
 
             //must set to current day
-            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December7);
+            Mouse.Click(this.UIMap.UICountdownWindow.CalendarView.December9);
 
             Assert.AreEqual(2, this.UIMap.UICountdownWindow.DayTaskListBox.Items.Count, "Day does not contain task");
         }

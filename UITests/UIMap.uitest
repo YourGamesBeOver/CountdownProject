@@ -857,6 +857,19 @@
                   <SupportLevel>0</SupportLevel>
                   <Descendants />
                 </UIObject>
+                <UIObject ControlType="DataItem" Id="December9" FriendlyName="9" SpecialControlType="None">
+                  <TechnologyName>UIA</TechnologyName>
+                  <WindowTitles>
+                    <WindowTitle>Countdown</WindowTitle>
+                  </WindowTitles>
+                  <AndCondition>
+                    <PropertyCondition Name="FrameworkId">XAML</PropertyCondition>
+                    <PropertyCondition Name="ControlType">DataItem</PropertyCondition>
+                    <PropertyCondition Name="Name">9</PropertyCondition>
+                  </AndCondition>
+                  <SupportLevel>0</SupportLevel>
+                  <Descendants />
+                </UIObject>
               </Descendants>
             </UIObject>
             <UIObject ControlType="List" Id="DayTaskListBox" FriendlyName="DayTaskListBox" SpecialControlType="None">
